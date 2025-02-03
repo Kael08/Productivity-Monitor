@@ -1,0 +1,68 @@
+/* Основной фон */
+.root {
+    -fx-background-color: #f0e6f5; /* Светло-фиолетовый фон */
+}
+
+/* Кнопки */
+.button {
+    -fx-background-color: #8e44ad; /* Фиолетовый цвет фона */
+    -fx-text-fill: white; /* Белый цвет текста */
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #6c3483; /* Темно-фиолетовый цвет фона при наведении */
+}
+
+/* Лейблы */
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #6c3483; /* Темно-фиолетовый цвет текста */
+}
+
+/* Текстовые поля */
+.text-field {
+    -fx-background-color: white; /* Белый цвет фона */
+    -fx-text-fill: #6c3483; /* Темно-фиолетовый цвет текста */
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #8e44ad; /* Фиолетовый цвет границы */
+    -fx-border-radius: 5px;
+}
+
+/* Многострочные текстовые поля */
+.text-area {
+    -fx-background-color: white; /* Белый цвет фона */
+    -fx-text-fill: #6c3483; /* Темно-фиолетовый цвет текста */
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-border-color: #8e44ad; /* Фиолетовый цвет границы */
+    -fx-border-radius: 5px;
+}
+
+/* Выпадающий список */
+.combo-box {
+    -fx-background-color: white; /* Белый цвет фона */
+    -fx-border-color: #8e44ad; /* Фиолетовый цвет границы */
+    -fx-border-radius: 5px;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #6c3483; /* Темно-фиолетовый цвет текста */
+}
+
+.combo-box .list-cell:filled:selected {
+    -fx-background-color: #8e44ad; /* Фиолетовый цвет фона при выборе */
+    -fx-text-fill: white; /* Белый цвет текста при выборе */
+}
+
+.combo-box .arrow {
+    -fx-background-color: #8e44ad; /* Фиолетовый цвет стрелки */
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: white; /* Белый цвет фона стрелки */
+}
