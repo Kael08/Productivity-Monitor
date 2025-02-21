@@ -1,4 +1,4 @@
-package eneev.monitor1;
+package productivityMonitor.controllers;
 
 
 import javafx.collections.FXCollections;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-public class HelloController {
+
+public class MainController {
 
     private Task<Void> task;
     @FXML

@@ -3,6 +3,8 @@ module eneev.monitor1 {
     requires javafx.fxml;
 
 
-    opens eneev.monitor1 to javafx.fxml;
-    exports eneev.monitor1;
+    opens productivityMonitor to javafx.fxml;
+    exports productivityMonitor;
+    exports productivityMonitor.controllers;
+    opens productivityMonitor.controllers to javafx.fxml;
 }

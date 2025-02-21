@@ -1,4 +1,4 @@
-package eneev.monitor1;
+package productivityMonitor;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,13 +8,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("mainView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 
-        stage.getIcons().add(new Image("icon1.png"));
+        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
         stage.setTitle("Productivity Monitor");
 
         stage.setScene(scene);
