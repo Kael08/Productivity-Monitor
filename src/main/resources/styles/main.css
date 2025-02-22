@@ -33,10 +33,30 @@
     -fx-border-width:5px;
 }
 
+#startPane .button {
+    -fx-background-color: transparent; /* Прозрачный фон */
+    -fx-border-color: transparent; /* Прозрачная граница */
+    -fx-padding: 0; /* Убрать отступы */
+    -fx-background-insets: 0; /* Убрать внутренние отступы */
+    -fx-background-radius: 0; /* Убрать скругление углов */
+    -fx-border-width: 0; /* Убрать границу */
+    -fx-effect: null; /* Убрать тени и эффекты */
+}
+
 #consolePane {
     -fx-border-color:#6A5CDA;
     -fx-border-radius:15px;
     -fx-border-width:5px;
+}
+
+#consolePane .button {
+    -fx-background-color: transparent; /* Прозрачный фон */
+    -fx-border-color: transparent; /* Прозрачная граница */
+    -fx-padding: 0; /* Убрать отступы */
+    -fx-background-insets: 0; /* Убрать внутренние отступы */
+    -fx-background-radius: 0; /* Убрать скругление углов */
+    -fx-border-width: 0; /* Убрать границу */
+    -fx-effect: null; /* Убрать тени и эффекты */
 }
 
 

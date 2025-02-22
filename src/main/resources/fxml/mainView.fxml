@@ -3,35 +3,88 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="productivityMonitor.controllers.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0"
+      prefWidth="1920.0" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="productivityMonitor.controllers.MainController">
    <children>
       <Pane fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0">
          <children>
-            <Button layoutX="20.0" layoutY="20.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" />
-            <Button layoutX="20.0" layoutY="80.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" />
-            <Button layoutX="20.0" layoutY="140.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" />
-            <Button layoutX="20.0" layoutY="200.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" />
-            <Button layoutX="20.0" layoutY="260.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" />
-            <Button layoutX="20.0" layoutY="320.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" />
+            <Button layoutX="20.0" layoutY="20.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" />
+            <Button layoutX="20.0" layoutY="80.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" />
+            <Button layoutX="20.0" layoutY="140.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" />
+            <Button layoutX="20.0" layoutY="200.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" />
+            <Button layoutX="20.0" layoutY="260.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" />
+            <Button layoutX="20.0" layoutY="320.0" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" />
          </children></Pane>
-      <Label fx:id="clockLabel" layoutX="760.0" layoutY="40.0" maxHeight="110.0" maxWidth="500.0" minHeight="110.0" minWidth="500.0" prefHeight="110.0" prefWidth="500.0" text="00:00 01.01.2000" />
-      <DatePicker fx:id="datePicker" layoutX="1580.0" layoutY="40.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" />
+      <Label fx:id="clockLabel" layoutX="760.0" layoutY="40.0" maxHeight="110.0" maxWidth="500.0" minHeight="110.0"
+             minWidth="500.0" prefHeight="110.0" prefWidth="500.0" text="00:00 01.01.2000" />
+      <DatePicker fx:id="datePicker" layoutX="1580.0" layoutY="40.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0"
+                  minWidth="300.0" prefHeight="300.0" prefWidth="300.0" />
       <Pane fx:id="startPane" layoutX="760.0" layoutY="200.0" prefHeight="110.0" prefWidth="500.0">
          <children>
-            <ImageView fx:id="runImageView" fitHeight="90.0" fitWidth="90.0" layoutX="60.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <!-- Кнопка с изображением для run -->
+            <Button fx:id="runButton" layoutX="60.0" layoutY="10.0" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleRunButton">
+               <graphic>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="runImageView">
 
-            </ImageView>
-            <ImageView fx:id="settingsImageView" fitHeight="90.0" fitWidth="90.0" layoutX="210.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                  </ImageView>
+               </graphic>
+            </Button>
 
-            </ImageView>
-            <ImageView fx:id="timerImageView" fitHeight="90.0" fitWidth="90.0" layoutX="360.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+            <!-- Кнопка с изображением для settings -->
+            <Button fx:id="settingsButton" layoutX="210.0" layoutY="10.0" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleSettingsButton">
+               <graphic>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="settingsImageView">
 
-            </ImageView>
+                  </ImageView>
+               </graphic>
+            </Button>
+
+            <!-- Кнопка с изображением для timer -->
+            <Button fx:id="timerButton" layoutX="360.0" layoutY="10.0" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleTimerButton">
+               <graphic>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="timerImageView">
+
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </Pane>
-      <Pane fx:id="consolePane" layoutX="760.0" layoutY="340.0" prefHeight="690.0" prefWidth="500.0" />
+
+      <Pane fx:id="consolePane" layoutX="766.0" layoutY="347.0" prefHeight="690.0" prefWidth="500.0">
+         <children>
+            <TextArea fx:id="consoleTextArea" editable="false" wrapText="true" layoutX="10.0" layoutY="10.0" prefHeight="620.0" prefWidth="480.0" />
+            <TextField fx:id="inputTextField" layoutX="10.0" layoutY="650.0" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="380.0" prefHeight="30.0" prefWidth="300.0" />
+
+            <!-- Кнопка с изображением для delete -->
+            <Button fx:id="deleteButton" layoutX="460.0" layoutY="650.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onAction="#handleDeleteButton">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" fx:id="deleteImageView">
+
+                  </ImageView>
+               </graphic>
+            </Button>
+
+            <!-- Кнопка с изображением для add -->
+            <Button fx:id="addButton" layoutX="410.0" layoutY="650.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onAction="#handleAddButton">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" fx:id="addImageView">
+
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </Pane>
    </children>
 </Pane>
