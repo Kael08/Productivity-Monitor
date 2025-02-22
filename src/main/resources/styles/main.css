@@ -1,0 +1,43 @@
+#navbarPane {
+    -fx-background-color: #6A5CDA;
+}
+
+#navbarPane .button {
+    -fx-text-fill: #6A5CDA;
+    -fx-background-radius: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+#clockLabel {
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 58px;
+    -fx-text-fill: #6A5CDA;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+}
+
+#startPane {
+    -fx-border-color:#6A5CDA;
+    -fx-border-radius:15px;
+    -fx-border-width:5px;
+}
+
+#consolePane {
+    -fx-border-color:#6A5CDA;
+    -fx-border-radius:15px;
+    -fx-border-width:5px;
+}
+
+
+
