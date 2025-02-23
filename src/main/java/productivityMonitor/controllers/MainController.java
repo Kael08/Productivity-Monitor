@@ -1,11 +1,18 @@
 package productivityMonitor.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainController {
     @FXML
@@ -35,6 +42,9 @@ public class MainController {
 
     @FXML
     private TextArea consoleTextArea; // Консоль
+
+    @FXML
+    private Label clockLabel; // Часы
 
     @FXML
     private void handleRunButton(ActionEvent event) {
@@ -81,6 +91,23 @@ public class MainController {
         addImageView.setImage(addImg);
         deleteImageView.setImage(deleteImg);
 
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(()->updateTime(clockLabel));
+            }
+        },0,1000);
+    }
+
+    private void updateTime(Label label) {
+        Date now = new Date();
+        // Форматируем время в нужный формат
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.LL.yyyy");
+
+        String currentTime = sdf.format(now);
+
+        label.setText(currentTime);
     }
 
 

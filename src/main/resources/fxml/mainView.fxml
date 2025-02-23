@@ -29,8 +29,6 @@
          </children></Pane>
       <Label fx:id="clockLabel" layoutX="760.0" layoutY="40.0" maxHeight="110.0" maxWidth="500.0" minHeight="110.0"
              minWidth="500.0" prefHeight="110.0" prefWidth="500.0" text="00:00 01.01.2000" />
-      <DatePicker fx:id="datePicker" layoutX="1580.0" layoutY="40.0" maxHeight="300.0" maxWidth="300.0" minHeight="300.0"
-                  minWidth="300.0" prefHeight="300.0" prefWidth="300.0" />
       <Pane fx:id="startPane" layoutX="760.0" layoutY="200.0" prefHeight="110.0" prefWidth="500.0">
          <children>
             <!-- Кнопка с изображением для run -->
