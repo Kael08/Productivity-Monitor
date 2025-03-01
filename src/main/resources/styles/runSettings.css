@@ -1,5 +1,60 @@
 #mainPane {
     -fx-background-color: white;
-    -fx-border-color: #6A5CDA;
-    -fx-border-width: 5px;
+    -fx-padding:10px;
+}
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+#topPane .button {
+    -fx-background-color: red;
+    -fx-border-color: black;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-border-width:1px;
+    -fx-border-radius:5px;
+    -fx-background-radius:5px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+#bottomPane .button {
+    -fx-background-color:green;
+    -fx-border-color:black;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-border-width:1px;
+    -fx-border-radius:5px;
+    -fx-background-radius:5px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+#consoleTextArea{
+    -fx-pref-width:100%;
+    -fx-pref-height:100%;
+    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-faint-focus-color: transparent; /* Убирает вторичный цвет фокуса */
+}
+
+#inputTextField {
+    -fx-pref-width: 100%;
+    -fx-max-width: infinity;
+    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-faint-focus-color: transparent;
+}
+
+#processListComboBox {
+    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-faint-focus-color: transparent;
 }

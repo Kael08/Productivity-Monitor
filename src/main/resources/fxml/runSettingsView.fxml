@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.geometry.Insets?>
 
+<!--600 на 400-->
+<BorderPane fx:id="mainPane" minWidth="300" minHeight="450" prefWidth="400" prefHeight="600"
+            stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox fx:id="topPane" spacing="10" alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <ComboBox fx:id="processListComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="addButton" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </top>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+   <center>
+      <TextArea fx:id="consoleTextArea">
+         <BorderPane.margin>
+            <Insets top="10" right="10" bottom="10" left="10" />
+         </BorderPane.margin>
+      </TextArea>
+   </center>
+
+   <bottom>
+      <HBox fx:id="bottomPane" spacing="10" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" text="Add" />
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
