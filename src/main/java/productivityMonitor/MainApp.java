@@ -1,6 +1,7 @@
 package productivityMonitor;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,6 +18,10 @@ public class MainApp extends Application {
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
         stage.setTitle("Productivity Monitor");
 
+        stage.setOnCloseRequest(event-> {
+            Platform.exit();
+            System.exit(0);
+        });
 
         stage.setScene(scene);
         stage.show();

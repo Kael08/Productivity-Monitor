@@ -3,12 +3,17 @@ package productivityMonitor.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import productivityMonitor.utils.SharedData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +21,8 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.*;
+
+import static productivityMonitor.utils.SharedData.processList;
 
 public class MainController {
     @FXML
@@ -34,25 +41,10 @@ public class MainController {
     private ImageView timerImageView; // Кнопка для настройки таймера
 
     @FXML
-    private Button addButton;
-    @FXML
-    private ImageView addImageView; // Кнопка для добавления нового процесса
-
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private ImageView deleteImageView; // Кнопка для удаления процесса
-
-    @FXML
     private TextArea consoleTextArea; // Консоль
 
     @FXML
     private Label clockLabel; // Часы
-
-    @FXML
-    private TextField inputTextField; // Поле ввода в консоли
-
-    List<String> processList = new ArrayList<>(); // Хранит имена блокируемых процессов
 
     // Флаг для работы монитора
     boolean runFlag = false;
@@ -79,28 +71,30 @@ public class MainController {
         }
     }
 
+    private Stage runSettingsStage = null;
+
     @FXML
-    private void handleSettingsButton(ActionEvent event) {
+    private void handleSettingsButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Settings нажата!");
-        consoleTextArea.appendText("SETTINGS"+"\n");
+        if(runSettingsStage!=null&&runSettingsStage.isShowing()){
+            runSettingsStage.toFront();
+            return;
+        }
+
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/runSettingsView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        runSettingsStage = new Stage();
+        runSettingsStage.setTitle("Process Settings");
+        runSettingsStage.setScene(new Scene(root,400,600));
+        runSettingsStage.show();
     }
 
     @FXML
     private void handleTimerButton(ActionEvent event) {
         System.out.println("Кнопка Timer нажата!");
         consoleTextArea.appendText("TIMER"+"\n");
-    }
-
-    @FXML
-    private void handleDeleteButton(ActionEvent event) {
-        System.out.println("Кнопка Delete нажата!");
-        deleteProcess(inputTextField.getText());
-    }
-
-    @FXML
-    private void handleAddButton(ActionEvent event) {
-        System.out.println("Кнопка Add нажата!");
-        addProcess(inputTextField.getText());
     }
 
     @FXML
@@ -114,8 +108,6 @@ public class MainController {
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
         timerImageView.setImage(timerImg);
-        addImageView.setImage(addImg);
-        deleteImageView.setImage(deleteImg);
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -156,13 +148,12 @@ public class MainController {
         }
     }
 
-
     // Задача для закрытия процессов
     Runnable runMonitor = () -> {
         while(runFlag){
             try {
                 closeProcess(processList);
-                Thread.currentThread().sleep(5000);
+                Thread.currentThread().sleep(2000);
                 System.out.println("Ещё один цикл");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Устанавливаем флаг прерывания
@@ -171,49 +162,4 @@ public class MainController {
             }
         }
     };
-    // Добавление процесса в список блокируемых процессов
-    private void addProcess(String processName){
-        if(processName.isEmpty()) {
-            consoleTextArea.appendText("Ошибка: Название процесса не может быть пустым!\n");
-            return;
-        } else if(processName.equals(".exe")) {
-            consoleTextArea.appendText("Ошибка: Введите название процесса!\n");
-            return;
-        }
-
-        if(!processName.endsWith(".exe")){
-            processName+=".exe";
-        }
-
-        consoleTextArea.appendText(processName+"\n");
-        processList.add(processName);
-    }
-
-    // Удаление процесса из списка блокируемых процессов
-    private void deleteProcess(String processName){
-        if(processName.isEmpty()) {
-            consoleTextArea.appendText("Ошибка: Название процесса не может быть пустым!\n");
-            return;
-        }
-
-        if(!processName.endsWith(".exe")){
-            processName+=".exe";
-        } else if(processName.equals(".exe")) {
-            consoleTextArea.appendText("Ошибка: Введите название процесса!\n");
-            return;
-        }
-
-        final String copyProcessName = processName;
-
-        boolean isRemoved =  processList.removeIf(process->process.equals(copyProcessName));
-
-        if(isRemoved){
-            consoleTextArea.appendText("Процесс успешно удален!\n");
-        } else {
-            consoleTextArea.appendText("Ошибка: Процесс с именем '" + processName + "' не найден!\n");
-        }
-    }
-
-
-
 }

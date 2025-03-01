@@ -50,14 +50,9 @@
     -fx-border-width:5px;
 }
 
-#consolePane .button {
-    -fx-background-color: transparent; /* Прозрачный фон */
-    -fx-border-color: transparent; /* Прозрачная граница */
-    -fx-padding: 0; /* Убрать отступы */
-    -fx-background-insets: 0; /* Убрать внутренние отступы */
-    -fx-background-radius: 0; /* Убрать скругление углов */
-    -fx-border-width: 0; /* Убрать границу */
-    -fx-effect: null; /* Убрать тени и эффекты */
+#consoleTextArea {
+    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-faint-focus-color: transparent;
 }
 
 

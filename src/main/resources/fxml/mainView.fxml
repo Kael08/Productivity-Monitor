@@ -62,26 +62,7 @@
 
       <Pane fx:id="consolePane" layoutX="766.0" layoutY="347.0" prefHeight="690.0" prefWidth="500.0">
          <children>
-            <TextArea fx:id="consoleTextArea" editable="false" wrapText="true" layoutX="10.0" layoutY="10.0" prefHeight="620.0" prefWidth="480.0" />
-            <TextField fx:id="inputTextField" layoutX="10.0" layoutY="650.0" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="380.0" prefHeight="30.0" prefWidth="300.0" />
-
-            <!-- Кнопка с изображением для delete -->
-            <Button fx:id="deleteButton" layoutX="460.0" layoutY="650.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onAction="#handleDeleteButton">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" fx:id="deleteImageView">
-
-                  </ImageView>
-               </graphic>
-            </Button>
-
-            <!-- Кнопка с изображением для add -->
-            <Button fx:id="addButton" layoutX="410.0" layoutY="650.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" onAction="#handleAddButton">
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" fx:id="addImageView">
-
-                  </ImageView>
-               </graphic>
-            </Button>
+            <TextArea fx:id="consoleTextArea" editable="false" wrapText="true" layoutX="10.0" layoutY="10.0" prefHeight="670.0" prefWidth="480.0" />
          </children>
       </Pane>
    </children>

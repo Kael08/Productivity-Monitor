@@ -11,18 +11,19 @@
 
 <!--600 на 400-->
 <BorderPane fx:id="mainPane" minWidth="300" minHeight="450" prefWidth="400" prefHeight="600"
-            stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+            stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="productivityMonitor.controllers.RunSettingsController">
    <top>
       <HBox fx:id="topPane" spacing="10" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
             <ComboBox fx:id="processListComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="addButton" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" onAction="#handleDeleteProcess" />
          </children>
       </HBox>
    </top>
 
    <center>
-      <TextArea fx:id="consoleTextArea">
+      <TextArea fx:id="consoleTextArea" editable="false">
          <BorderPane.margin>
             <Insets top="10" right="10" bottom="10" left="10" />
          </BorderPane.margin>
@@ -33,7 +34,7 @@
       <HBox fx:id="bottomPane" spacing="10" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
          <children>
             <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" />
-            <Button fx:id="deleteButton" mnemonicParsing="false" text="Add" />
+            <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" />
          </children>
       </HBox>
    </bottom>
