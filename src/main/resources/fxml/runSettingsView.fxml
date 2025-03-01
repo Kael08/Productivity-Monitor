@@ -9,8 +9,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.geometry.Insets?>
 
-<!--600 на 400-->
-<BorderPane fx:id="mainPane" minWidth="300" minHeight="450" prefWidth="400" prefHeight="600"
+<BorderPane fx:id="mainPane" minWidth="400" minHeight="550" prefWidth="400" prefHeight="600"
             stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="productivityMonitor.controllers.RunSettingsController">
    <top>

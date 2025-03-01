@@ -88,22 +88,36 @@ public class MainController {
         runSettingsStage = new Stage();
         runSettingsStage.setTitle("Process Settings");
         runSettingsStage.setScene(new Scene(root,400,600));
+        runSettingsStage.setMinWidth(400);
+        runSettingsStage.setMinHeight(550);
         runSettingsStage.show();
     }
 
+    private Stage timerStage = null;
     @FXML
-    private void handleTimerButton(ActionEvent event) {
+    private void handleTimerButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Timer нажата!");
-        consoleTextArea.appendText("TIMER"+"\n");
+        if(timerStage!=null&&timerStage.isShowing()){
+            timerStage.toFront();
+            return;
+        }
+
+        FXMLLoader fxmlLoader=new FXMLLoader(getClass().getResource("/fxml/timerView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        timerStage = new Stage();
+        timerStage.setTitle("Timer");
+        timerStage.setScene(new Scene(root,300,300));
+        timerStage.setMinWidth(200);
+        timerStage.setMinHeight(200);
+        timerStage.show();
     }
 
     @FXML
     public void initialize(){
         Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
                 settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
-                timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
-                addImg = new Image(getClass().getResource("/images/plus-ico.png").toExternalForm()),
-                deleteImg = new Image(getClass().getResource("/images/minus-ico.png").toExternalForm());
+                timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm());
 
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
