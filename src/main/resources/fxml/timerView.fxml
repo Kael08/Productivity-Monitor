@@ -11,10 +11,10 @@
       spacing="10" prefWidth="300" prefHeight="300" minWidth="200" minHeight="200">
    <TextArea fx:id="consoleTextArea" VBox.vgrow="ALWAYS" editable="false" />
    <HBox minHeight="32.0" minWidth="200" alignment="CENTER" spacing="10">
-      <TextField fx:id="hourTextField" minWidth="40" maxWidth="40" />
-      <TextField fx:id="minuteTextField" minWidth="40" maxWidth="40" />
-      <Button fx:id="setButton" mnemonicParsing="false" text="Set" />
-      <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" />
+      <TextField fx:id="hourTextField" minWidth="40" maxWidth="40" promptText="H" />
+      <TextField fx:id="minuteTextField" minWidth="40" maxWidth="40" promptText="M"/>
+      <Button fx:id="setButton" mnemonicParsing="false" text="Set" onAction="#handleSetTime" />
+      <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" onAction="#handleClearTime" />
    </HBox>
 </VBox>
 

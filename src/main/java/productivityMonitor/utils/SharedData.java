@@ -9,4 +9,7 @@ import java.util.List;
 public class SharedData {
     // Список запрещенных процессов
     public static ObservableList<String> processList = FXCollections.observableArrayList();
+
+    // Установленное время работы мониторы(в минутах)
+    public static int minutes = 0;
 }
