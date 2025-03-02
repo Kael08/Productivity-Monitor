@@ -3,24 +3,18 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="productivityMonitor.controllers.TimerController" stylesheets="@../styles/timer.css"
+      spacing="10" prefWidth="300" prefHeight="300" minWidth="200" minHeight="200">
+   <TextArea fx:id="consoleTextArea" VBox.vgrow="ALWAYS" editable="false" />
+   <HBox minHeight="32.0" minWidth="200" alignment="CENTER" spacing="10">
+      <TextField fx:id="hourTextField" minWidth="40" maxWidth="40" />
+      <TextField fx:id="minuteTextField" minWidth="40" maxWidth="40" />
+      <Button fx:id="setButton" mnemonicParsing="false" text="Set" />
+      <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" />
+   </HBox>
+</VBox>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="200" minWidth="200" prefHeight="300.0" prefWidth="300.0"
-            stylesheets="@../styles/timer.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="productivityMonitor.controllers.TimerController">
-   <bottom>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <TextField />
-            <TextField />
-            <Button mnemonicParsing="false" text="Button" />
-            <Button mnemonicParsing="false" text="Button" />
-         </children>
-      </HBox>
-   </bottom>
-   <center>
-      <TextArea prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </center>
-</BorderPane>

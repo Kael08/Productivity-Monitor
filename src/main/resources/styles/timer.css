@@ -1,0 +1,53 @@
+#mainPane {
+
+}
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+.button {
+    -fx-background-color: white;
+    -fx-border-color: #6a5cda;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-text-fill: #6a5cda;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+}
+
+#setButton{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+#clearButton{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+#consoleTextArea {
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+#hourTextField{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+    -fx-border-color:#6a5cda;
+    -fx-border-radius:10px;
+    -fx-background-radius:10px;
+    -fx-border-width:2px;
+    -fx-text-fill:#6a5cda;
+}
+
+#minuteTextField{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+    -fx-border-color:#6a5cda;
+    -fx-border-radius:10px;
+    -fx-background-radius:10px;
+    -fx-border-width:2px;
+    -fx-text-fill:#6a5cda;
+}

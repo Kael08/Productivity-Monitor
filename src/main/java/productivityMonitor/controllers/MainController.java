@@ -94,6 +94,7 @@ public class MainController {
     }
 
     private Stage timerStage = null;
+
     @FXML
     private void handleTimerButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Timer нажата!");
