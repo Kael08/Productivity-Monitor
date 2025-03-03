@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.*;
 
+import static productivityMonitor.utils.SharedData.minutes;
 import static productivityMonitor.utils.SharedData.processList;
 
 public class MainController {
@@ -165,16 +166,18 @@ public class MainController {
 
     // Задача для закрытия процессов
     Runnable runMonitor = () -> {
-        while(runFlag){
+        long endTime = (minutes > 0) ? System.currentTimeMillis() + minutes * 60 * 1000 : Long.MAX_VALUE;
+        while (runFlag && System.currentTimeMillis() < endTime) {
             try {
                 closeProcess(processList);
-                Thread.currentThread().sleep(2000);
-                System.out.println("Ещё один цикл");
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Устанавливаем флаг прерывания
+                Thread.currentThread().interrupt();
                 System.out.println("Мониторинг был прерван.");
-                return; // Прерываем выполнение потока
+                return;
             }
         }
+        Platform.runLater(() -> consoleTextArea.appendText("Мониторинг завершён по таймеру!\n"));
+        runFlag = false;
     };
 }
