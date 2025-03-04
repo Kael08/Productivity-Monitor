@@ -9,18 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import productivityMonitor.utils.SharedData;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.*;
 
 import static productivityMonitor.utils.SharedData.minutes;
 import static productivityMonitor.utils.SharedData.processList;
@@ -47,31 +41,70 @@ public class MainController {
     @FXML
     private Label clockLabel; // Часы
 
+    // Иконки
+    private Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
+            settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
+            timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
+            pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm());
+
+
     // Флаг для работы монитора
     boolean runFlag = false;
 
     // Поток для работы монитора
     private Thread runThread;
 
+    // Запуск потока монитора
     @FXML
     private void handleRunButton(ActionEvent event) {
         System.out.println("Кнопка Run нажата!");
 
         if (!runFlag) {
-            consoleTextArea.appendText("Монитор запущен!\n");
+            runImageView.setImage(pauseImg);
             runFlag = true;
             runThread = new Thread(runMonitor);
             runThread.start();
         } else {
-            consoleTextArea.appendText("Монитор остановлен!\n");
+            runImageView.setImage(runImg);
             runFlag = false;
-            if (runThread != null) {
-                runThread.interrupt(); // Прерываем поток корректно
-                runThread = null;
-            }
+            runThread.interrupt();
+            runThread=null;
         }
     }
 
+    // Задача для закрытия процессов
+    Runnable runMonitor = () -> {
+        if(minutes==0) {
+            consoleTextArea.appendText("Монитор запущен!\n");
+            while (runFlag) {
+                try {
+                    closeProcess(processList);
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    consoleTextArea.appendText("Монитор остановлен!\n");
+                    return;
+                }
+            }
+        } else {
+            long endTime = System.currentTimeMillis()+minutes * 60 * 1000;
+            consoleTextArea.appendText("Монитор запущен с таймеров на "+minutes+" минут!");
+            while (runFlag&&System.currentTimeMillis()<endTime){
+                try{
+                    closeProcess(processList);
+                    Thread.sleep(2000);
+                } catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                    consoleTextArea.appendText("Монитор прерван!\n");
+                    return;
+                }
+            }
+            consoleTextArea.appendText("Монитор завершил работу! Время вышло!\n");
+        }
+        runFlag=false;
+    };
+
+    // Окно для настройки запуска
     private Stage runSettingsStage = null;
 
     @FXML
@@ -81,7 +114,6 @@ public class MainController {
             runSettingsStage.toFront();
             return;
         }
-
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/runSettingsView.fxml"));
         Parent root = fxmlLoader.load();
@@ -94,6 +126,7 @@ public class MainController {
         runSettingsStage.show();
     }
 
+    // Окно для настройки таймера
     private Stage timerStage = null;
 
     @FXML
@@ -117,14 +150,11 @@ public class MainController {
 
     @FXML
     public void initialize(){
-        Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
-                settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
-                timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm());
-
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
         timerImageView.setImage(timerImg);
 
+        // Часы в главном меню
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -134,6 +164,7 @@ public class MainController {
         },0,1000);
     }
 
+    // Функция для обновления времени
     private void updateTime(Label label) {
         Date now = new Date();
         // Форматируем время в нужный формат
@@ -164,20 +195,5 @@ public class MainController {
         }
     }
 
-    // Задача для закрытия процессов
-    Runnable runMonitor = () -> {
-        long endTime = (minutes > 0) ? System.currentTimeMillis() + minutes * 60 * 1000 : Long.MAX_VALUE;
-        while (runFlag && System.currentTimeMillis() < endTime) {
-            try {
-                closeProcess(processList);
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Мониторинг был прерван.");
-                return;
-            }
-        }
-        Platform.runLater(() -> consoleTextArea.appendText("Мониторинг завершён по таймеру!\n"));
-        runFlag = false;
-    };
+
 }
