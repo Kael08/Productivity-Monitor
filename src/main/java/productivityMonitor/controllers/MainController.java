@@ -88,7 +88,7 @@ public class MainController {
             }
         } else {
             long endTime = System.currentTimeMillis()+minutes * 60 * 1000;
-            consoleTextArea.appendText("Монитор запущен с таймеров на "+minutes+" минут!");
+            consoleTextArea.appendText("Монитор запущен с таймеров на "+minutes+" минут!\n");
             while (runFlag&&System.currentTimeMillis()<endTime){
                 try{
                     closeProcess(processList);

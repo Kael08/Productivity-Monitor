@@ -48,6 +48,7 @@
     -fx-border-color:#6A5CDA;
     -fx-border-radius:15px;
     -fx-border-width:5px;
+    -fx-padding:5px;
 }
 
 #consoleTextArea {

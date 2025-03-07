@@ -62,8 +62,6 @@ public class RunSettingsController {
         processList.add(processName);
     }
 
-
-
     public void initialize(){
         processListComboBox.setItems(processList);
     }
