@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="productivityMonitor.controllers.RegController"
+      prefHeight="300.0" prefWidth="300.0" alignment="CENTER" spacing="10"
+      stylesheets="@../styles/reg.css" >
+    <children>
+        <ImageView fx:id="iconImageView" fitHeight="90" fitWidth="90">
+            <VBox.margin>
+                <Insets top="10" bottom="30"/>
+            </VBox.margin>
+        </ImageView>
+        <TextField fx:id="loginEmailTextField" promptText="email or login..." >
+            <VBox.margin>
+                <Insets left="10" right="10"/>
+            </VBox.margin>
+        </TextField>
+        <TextField fx:id="passwordTextField" promptText="password...">
+            <VBox.margin>
+                <Insets left="10" right="10"/>
+            </VBox.margin>
+        </TextField>
+        <Button fx:id="regButton" onAction="#handleRegButton" text="Sign Up">
+
+        </Button>
+        <Button fx:id="authButton" onAction="#handleAuthButton" text="Do you have an account?">
+            <VBox.margin>
+                <Insets bottom="10"/>
+            </VBox.margin>
+        </Button>
+    </children>
+</VBox>

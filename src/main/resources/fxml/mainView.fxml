@@ -19,8 +19,8 @@
    <left>
       <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="20">
          <children>
-            <Button maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile">
+            <Button fx:id="profileButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton">
                <VBox.margin>
                   <Insets top="20"/>
                </VBox.margin>

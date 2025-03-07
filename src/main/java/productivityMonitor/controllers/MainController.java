@@ -20,6 +20,21 @@ import static productivityMonitor.utils.SharedData.minutes;
 import static productivityMonitor.utils.SharedData.processList;
 
 public class MainController {
+    private Stage auth_regStage = null;
+    @FXML
+    private Button profileButton;
+    @FXML
+    private void handleProfileButton(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        auth_regStage=new Stage();
+        auth_regStage.setTitle("Authentification");
+        auth_regStage.setScene(new Scene(root));
+        auth_regStage.setResizable(false);
+        auth_regStage.show();
+    }
+
     @FXML
     private Button runButton;
     @FXML
