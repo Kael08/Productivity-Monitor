@@ -1,4 +1,4 @@
-#loginEmailTextField {
+#emailTextField {
     -fx-text-fill: #6A5CDA;
     -fx-background-radius: 10px;
     -fx-font-family: 'Jomhuria-Regular';
@@ -9,6 +9,16 @@
 }
 
 #passwordTextField {
+    -fx-text-fill: #6A5CDA;
+    -fx-background-radius: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+#usernameTextField {
     -fx-text-fill: #6A5CDA;
     -fx-background-radius: 10px;
     -fx-font-family: 'Jomhuria-Regular';

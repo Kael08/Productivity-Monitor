@@ -13,13 +13,39 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class AuthController {
+    private final HttpClient client = HttpClient.newHttpClient();
+
+    // Функция для POST-запросов на авторизацию
+    private void sendAuthRequest(String email,String password){
+        try{
+            String json = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:3000/auth"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response code: " + response.statusCode());
+            System.out.println("Response body: " + response.body());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private ImageView iconImageView;
 
     @FXML
-    private TextField logimEmailTextField;
+    private TextField emailTextField;
 
     @FXML
     private TextField passwordTextField;
@@ -28,7 +54,16 @@ public class AuthController {
     private Button authButton;
     @FXML
     private void handleAuthButton(ActionEvent event){
+        String email = emailTextField.getText();
+        String password = passwordTextField.getText();
 
+        if(email.isEmpty()||password.isEmpty())
+        {
+            System.out.println("Email и Password не должны быть пустыми!");
+            return;
+        }
+
+        sendAuthRequest(email,password);
     }
 
     @FXML
