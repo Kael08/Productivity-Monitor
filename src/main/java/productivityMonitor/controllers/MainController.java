@@ -36,12 +36,48 @@ public class MainController {
     }
 
     @FXML
+    private Button settingsButton;
+    @FXML
+    private void handleSettingsButton(ActionEvent action){
+
+    }
+
+    @FXML
+    private Button statisticsButton;
+    @FXML
+    private void handleStatisticsButton(ActionEvent action){
+
+    }
+
+    @FXML
+    private Button achievementsButton;
+    @FXML
+    private void handleAchievementsButton(ActionEvent event){
+
+    }
+
+    @FXML
+    private Button notesButton;
+    @FXML
+    private void handleNotesButton(ActionEvent action){
+
+    }
+
+    @FXML
+    private Button plansButton;
+    @FXML
+    private void handlePlansButton(ActionEvent action){
+
+    }
+
+
+    @FXML
     private Button runButton;
     @FXML
     private ImageView runImageView; // Кнопка для запуска фокусировки
 
     @FXML
-    private Button settingsButton;
+    private Button runSettingsButton;
     @FXML
     private ImageView settingsImageView; // Кнопка для настроек фокусировки
 
@@ -69,17 +105,43 @@ public class MainController {
     // Поток для работы монитора
     private Thread runThread;
 
+    // Заблокировать все кнопки
+    private void disableAllButtons(){
+        profileButton.setDisable(true);
+        settingsButton.setDisable(true);
+        statisticsButton.setDisable(true);
+        achievementsButton.setDisable(true);
+        notesButton.setDisable(true);
+        plansButton.setDisable(true);
+        runSettingsButton.setDisable(true);
+        timerButton.setDisable(true);
+    }
+
+    // Разблокировать все кнопки
+    private void enableAllButtons(){
+        profileButton.setDisable(false);
+        settingsButton.setDisable(false);
+        statisticsButton.setDisable(false);
+        achievementsButton.setDisable(false);
+        notesButton.setDisable(false);
+        plansButton.setDisable(false);
+        runSettingsButton.setDisable(false);
+        timerButton.setDisable(false);
+    }
+
     // Запуск потока монитора
     @FXML
     private void handleRunButton(ActionEvent event) {
         System.out.println("Кнопка Run нажата!");
 
         if (!runFlag) {
+            disableAllButtons();
             runImageView.setImage(pauseImg);
             runFlag = true;
             runThread = new Thread(runMonitor);
             runThread.start();
         } else {
+            enableAllButtons();
             runImageView.setImage(runImg);
             runFlag = false;
             runThread.interrupt();
@@ -123,7 +185,7 @@ public class MainController {
     private Stage runSettingsStage = null;
 
     @FXML
-    private void handleSettingsButton(ActionEvent event) throws IOException {
+    private void handleRunSettingsButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Settings нажата!");
         if(runSettingsStage!=null&&runSettingsStage.isShowing()){
             runSettingsStage.toFront();
