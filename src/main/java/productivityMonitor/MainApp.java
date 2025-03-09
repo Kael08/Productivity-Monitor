@@ -18,7 +18,7 @@ public class MainApp extends Application {
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
         stage.setTitle("Productivity Monitor");
         stage.setMinWidth(850);
-        stage.setMinHeight(450);
+        stage.setMinHeight(500);
 
         stage.setOnCloseRequest(event-> {
             Platform.exit();

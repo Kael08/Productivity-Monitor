@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="productivityMonitor.controllers.ProfileController"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@../styles/profile.css">
+    <left>
+        <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="20">
+            <children>
+                <ImageView fx:id="mainImageView" fitWidth="64" fitHeight="64" pickOnBounds="true" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets top="20"/>
+                    </VBox.margin>
+                </ImageView>
+                <Button fx:id="profileButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton">
+                </Button>
+                <Button fx:id="statisticsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton" />
+                <Button fx:id="settingsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton" />
+                <Button fx:id="achievementsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton" />
+                <Button fx:id="notesButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton" />
+                <Button fx:id="plansButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton" />
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <VBox>
+            <children>
+                <ImageView fx:id="avatarImageView" fitHeight="160" fitWidth="160">
+
+                </ImageView>
+                <Label fx:id="usernameLabel" text="username">
+
+                </Label>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

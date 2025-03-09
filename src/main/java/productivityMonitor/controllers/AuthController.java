@@ -19,10 +19,16 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AuthController {
+    private Stage thisStage;
+
+    public void setThisStage(Stage thisStage){
+        this.thisStage = thisStage;
+    }
+
     private final HttpClient client = HttpClient.newHttpClient();
 
     // Функция для POST-запросов на авторизацию
-    private void sendAuthRequest(String email,String password){
+    private int sendAuthRequest(String email,String password){
         try{
             String json = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
 
@@ -36,9 +42,18 @@ public class AuthController {
 
             System.out.println("Response code: " + response.statusCode());
             System.out.println("Response body: " + response.body());
+            return response.statusCode();
         } catch (Exception e){
             e.printStackTrace();
         }
+
+        return 0;
+    }
+
+    private Stage mainStage;
+
+    public void setMainStage(Stage mainStage){
+        this.mainStage=mainStage;
     }
 
     @FXML
@@ -63,7 +78,21 @@ public class AuthController {
             return;
         }
 
-        sendAuthRequest(email,password);
+        int status = sendAuthRequest(email,password);
+
+        if(status==200){
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/profileView.fxml"));
+                Parent root = loader.load();
+
+                // Устанавливаем новую сцену в главное окно
+                mainStage.setScene(new Scene(root));
+                mainStage.setTitle("Profile");
+                mainStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
@@ -73,11 +102,15 @@ public class AuthController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/regView.fxml"));
         Parent registrationRoot = fxmlLoader.load();
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(registrationRoot));
-        stage.setTitle("Registration");
-        stage.setResizable(false);
-        stage.show();
+        RegController regController = fxmlLoader.getController();
+        regController.setMainStage(mainStage);
+
+        Stage regStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        regController.setThisStage(regStage);
+        regStage.setScene(new Scene(registrationRoot));
+        regStage.setTitle("Registration");
+        regStage.setResizable(false);
+        regStage.show();
     }
 
     private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());

@@ -19,10 +19,22 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class RegController {
+    private Stage mainStage;
+
+    public void setMainStage(Stage mainStage){
+        this.mainStage=mainStage;
+    }
+
+    private Stage thisStage;
+
+    public void setThisStage(Stage thisStage){
+        this.thisStage=thisStage;
+    }
+
     private final HttpClient client = HttpClient.newHttpClient();
 
     // Функция для POST-запросов на авторизацию
-    private void sendRegRequest(String email,String password, String username){
+    private int sendRegRequest(String email,String password, String username){
         try{
             String json = String.format("{\"email\": \"%s\", \"password\": \"%s\", \"username\": \"%s\"}", email, password,username);
 
@@ -36,10 +48,14 @@ public class RegController {
 
             System.out.println("Response code: " + response.statusCode());
             System.out.println("Response body: " + response.body());
+
+            return response.statusCode();
         } catch(Exception e)
         {
             e.printStackTrace();
         }
+
+        return 0;
     }
 
     @FXML
@@ -61,8 +77,12 @@ public class RegController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
         Parent authentificationRoot = fxmlLoader.load();
 
+        AuthController authController = fxmlLoader.getController();
+        authController.setMainStage(mainStage);
+
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(authentificationRoot));
+        authController.setThisStage(stage);
         stage.setTitle("Authentification");
         stage.setResizable(false);
         stage.show();
@@ -82,7 +102,22 @@ public class RegController {
             return;
         }
 
-        sendRegRequest(email,password,username);
+        int status = sendRegRequest(email,password,username);
+
+        if(status==201){
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/profileView.fxml"));
+                Parent root = loader.load();
+
+                // Устанавливаем новую сцену в главное окно
+                mainStage.setScene(new Scene(root));
+                mainStage.setTitle("Profile");
+                mainStage.show();
+                thisStage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());

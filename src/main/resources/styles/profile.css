@@ -1,0 +1,11 @@
+#navbarPane {
+    -fx-background-color: #6A5CDA;
+}
+
+#navbarPane .button {
+    -fx-text-fill: #6A5CDA;
+    -fx-background-radius: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}

@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,7 +21,7 @@ import static productivityMonitor.utils.SharedData.minutes;
 import static productivityMonitor.utils.SharedData.processList;
 
 public class MainController {
-    private Stage auth_regStage = null;
+    private Stage authStage = null;
     @FXML
     private Button profileButton;
     @FXML
@@ -28,11 +29,15 @@ public class MainController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
         Parent root = fxmlLoader.load();
 
-        auth_regStage=new Stage();
-        auth_regStage.setTitle("Authentification");
-        auth_regStage.setScene(new Scene(root));
-        auth_regStage.setResizable(false);
-        auth_regStage.show();
+        AuthController authController = fxmlLoader.getController();
+        authController.setMainStage((Stage) ((Node) event.getSource()).getScene().getWindow());
+
+        authStage=new Stage();
+        authController.setThisStage(authStage);
+        authStage.setTitle("Authentification");
+        authStage.setScene(new Scene(root));
+        authStage.setResizable(false);
+        authStage.show();
     }
 
     @FXML
@@ -87,16 +92,21 @@ public class MainController {
     private ImageView timerImageView; // Кнопка для настройки таймера
 
     @FXML
+    private ImageView mainImageView;
+
+    @FXML
     private TextArea consoleTextArea; // Консоль
 
     @FXML
     private Label clockLabel; // Часы
 
+
     // Иконки
     private Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
             settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
             timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
-            pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm());
+            pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
+            iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
 
     // Флаг для работы монитора
@@ -230,6 +240,7 @@ public class MainController {
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
         timerImageView.setImage(timerImg);
+        mainImageView.setImage(iconImg);
 
         // Часы в главном меню
         Timer timer = new Timer();
