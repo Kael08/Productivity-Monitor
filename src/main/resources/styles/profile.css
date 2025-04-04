@@ -9,3 +9,14 @@
     -fx-font-weight: bold;
     -fx-font-size: 20px;
 }
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+#usernameLabel{
+    -fx-font-size:20px;
+    -fx-font-family:'Jomhuria-Regular';
+    -fx-font-weight:bold;
+}

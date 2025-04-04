@@ -29,7 +29,7 @@ public class AuthController {
 
     // Функция для POST-запросов на авторизацию
     private int sendAuthRequest(String email,String password){
-        try{
+        /*try{
             String json = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -47,7 +47,8 @@ public class AuthController {
             e.printStackTrace();
         }
 
-        return 0;
+        return 0;*/
+        return 200;
     }
 
     private Stage mainStage;
@@ -89,6 +90,7 @@ public class AuthController {
                 mainStage.setScene(new Scene(root));
                 mainStage.setTitle("Profile");
                 mainStage.show();
+                thisStage.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

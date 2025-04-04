@@ -21,6 +21,9 @@ public class ProfileController {
     private ImageView mainImageView;
 
     @FXML
+    private ImageView avatarImageView;
+
+    @FXML
     private Button profileButton;
     @FXML
     private void handleProfileButton(ActionEvent event) throws IOException {
@@ -79,9 +82,11 @@ public class ProfileController {
     }
 
     // Иконки
-    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),
+                  avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
     public void initialize(){
         mainImageView.setImage(iconImg);
+        avatarImageView.setImage(avatarImg);
     }
 }

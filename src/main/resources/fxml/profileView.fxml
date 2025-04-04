@@ -38,7 +38,7 @@
         </VBox>
     </left>
     <center>
-        <VBox>
+        <VBox alignment="TOP_CENTER">
             <children>
                 <ImageView fx:id="avatarImageView" fitHeight="160" fitWidth="160">
 
