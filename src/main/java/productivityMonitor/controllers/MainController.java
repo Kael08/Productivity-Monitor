@@ -13,6 +13,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import productivityMonitor.FocusWebSocketServer;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -144,6 +146,8 @@ public class MainController {
     private void handleRunButton(ActionEvent event) {
         System.out.println("Кнопка Run нажата!");
 
+        runWebSocketServer();
+
         if (!runFlag) {
             disableAllButtons();
             runImageView.setImage(pauseImg);
@@ -190,6 +194,17 @@ public class MainController {
         }
         runFlag=false;
     };
+
+    private void runWebSocketServer(){
+        FocusWebSocketServer server = new FocusWebSocketServer(8081);
+        server.addToBlacklist("youtube.com");
+        Thread serverThread = new Thread(() -> {
+            server.start();
+            System.out.println("🟢 Сервер запущен");
+        });
+        serverThread.setDaemon(true); // Чтобы завершался при закрытии приложения
+        serverThread.start();
+    }
 
     // Окно для настройки запуска
     private Stage runSettingsStage = null;
@@ -282,6 +297,7 @@ public class MainController {
             }
         }
     }
+
 
 
 }
