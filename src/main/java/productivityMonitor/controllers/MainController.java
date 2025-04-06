@@ -110,9 +110,14 @@ public class MainController {
             pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
             iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
+    // Сервер для контроля браузера
+    private FocusWebSocketServer webSocketServer = new FocusWebSocketServer(8081);
 
     // Флаг для работы монитора
     boolean runFlag = false;
+
+    // Флаг для запуска веб-сервера
+    boolean runWebSocketServer = true;
 
     // Поток для работы монитора
     private Thread runThread;
@@ -143,10 +148,8 @@ public class MainController {
 
     // Запуск потока монитора
     @FXML
-    private void handleRunButton(ActionEvent event) {
+    private void handleRunButton(ActionEvent event) throws InterruptedException {
         System.out.println("Кнопка Run нажата!");
-
-        runWebSocketServer();
 
         if (!runFlag) {
             disableAllButtons();
@@ -154,12 +157,20 @@ public class MainController {
             runFlag = true;
             runThread = new Thread(runMonitor);
             runThread.start();
+            if(runWebSocketServer){
+                webSocketServer.start();
+                System.out.println("Сервер запущен");
+            }
         } else {
             enableAllButtons();
             runImageView.setImage(runImg);
             runFlag = false;
             runThread.interrupt();
             runThread=null;
+            if(runWebSocketServer){
+                webSocketServer.stop();
+                System.out.println("Сервер остановлен");
+            }
         }
     }
 
@@ -194,17 +205,6 @@ public class MainController {
         }
         runFlag=false;
     };
-
-    private void runWebSocketServer(){
-        FocusWebSocketServer server = new FocusWebSocketServer(8081);
-        server.addToBlacklist("youtube.com");
-        Thread serverThread = new Thread(() -> {
-            server.start();
-            System.out.println("🟢 Сервер запущен");
-        });
-        serverThread.setDaemon(true); // Чтобы завершался при закрытии приложения
-        serverThread.start();
-    }
 
     // Окно для настройки запуска
     private Stage runSettingsStage = null;
