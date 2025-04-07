@@ -24,7 +24,7 @@
     -fx-font-size: 15px;
 }
 
-#bottomPane .button {
+#middlePane .button {
     -fx-background-color:green;
     -fx-border-color:black;
     -fx-padding: 0;
@@ -57,4 +57,15 @@
 #processListComboBox {
     -fx-focus-color: transparent; /* Убирает цвет фокуса */
     -fx-faint-focus-color: transparent;
+}
+
+#selectModeLabel {
+    -fx-font-family:'Jomhuria-Regular';
+    -fx-font-size:20px;
+    -fx-font-weight:bold;
+}
+
+#modeListComboBox {
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
 }

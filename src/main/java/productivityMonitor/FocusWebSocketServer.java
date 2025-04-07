@@ -56,7 +56,6 @@ public class FocusWebSocketServer extends WebSocketServer {
         // Через 10 секунд добавим сайт в blacklist
         new Timer().schedule(new TimerTask() {
             public void run() {
-                server.addToBlacklist("youtube.com");
             }
         }, 10000);
     }

@@ -111,7 +111,7 @@ public class MainController {
             iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
     // Сервер для контроля браузера
-    private FocusWebSocketServer webSocketServer = new FocusWebSocketServer(8081);
+    private FocusWebSocketServer webSocketServer;
 
     // Флаг для работы монитора
     boolean runFlag = false;
@@ -158,7 +158,9 @@ public class MainController {
             runThread = new Thread(runMonitor);
             runThread.start();
             if(runWebSocketServer){
+                webSocketServer=new FocusWebSocketServer(8081);
                 webSocketServer.start();
+                webSocketServer.addToBlacklist("youtube.com");
                 System.out.println("Сервер запущен");
             }
         } else {
@@ -169,6 +171,7 @@ public class MainController {
             runThread=null;
             if(runWebSocketServer){
                 webSocketServer.stop();
+                webSocketServer=null;
                 System.out.println("Сервер остановлен");
             }
         }

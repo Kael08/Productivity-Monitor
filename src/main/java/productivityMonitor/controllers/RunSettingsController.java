@@ -62,6 +62,16 @@ public class RunSettingsController {
         processList.add(processName);
     }
 
+    @FXML
+    private void handleDeleteUrl(ActionEvent event){
+
+    }
+
+    @FXML
+    private void handleAddUrl(ActionEvent event){
+
+    }
+
     public void initialize(){
         processListComboBox.setItems(processList);
     }
