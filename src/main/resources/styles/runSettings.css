@@ -8,7 +8,7 @@
     font-family: 'Jomhuria-Regular';
 }
 
-#topPane .button {
+#deleteButton, #deleteUrlButton {
     -fx-background-color: red;
     -fx-border-color: black;
     -fx-padding: 0;
@@ -24,7 +24,7 @@
     -fx-font-size: 15px;
 }
 
-#middlePane .button {
+#addButton, #addUrlButton {
     -fx-background-color:green;
     -fx-border-color:black;
     -fx-padding: 0;
@@ -68,4 +68,10 @@
 #modeListComboBox {
     -fx-focus-color:transparent;
     -fx-faint-focus-color:transparent;
+}
+
+#blockDomainLabel{
+    -fx-font-family:'Jomhuria-Regular';
+    -fx-font-size:15px;
+    -fx-font-weight:bold;
 }

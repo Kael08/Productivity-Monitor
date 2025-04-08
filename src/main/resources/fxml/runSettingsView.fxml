@@ -12,60 +12,63 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.CheckBox?>
-<BorderPane fx:id="mainPane" minWidth="400" minHeight="550" prefWidth="400" prefHeight="600"
+<BorderPane fx:id="mainPane"
             stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="productivityMonitor.controllers.RunSettingsController">
    <top>
-      <VBox fx:id="topPane" alignment="CENTER">
-         <Label fx:id="selectModeLabel" text="Выберите режим"/>
-         <ComboBox fx:id="modeListComboBox"/>
+      <VBox fx:id="topPane">
+         <Label fx:id="selectModeLabel" text="Select mode"/>
+         <ComboBox fx:id="modeListComboBox" prefWidth="150.0" minWidth="150.0" maxWidth="150.0">
+            <VBox.margin>
+               <Insets bottom="10"/>
+            </VBox.margin>
+         </ComboBox>
       </VBox>
    </top>
 
    <center>
       <VBox fx:id="middlePane" spacing="10">
-         <VBox fx:id="processPane" spacing="10">
-            <HBox fx:id="processDelete" spacing="10">
-               <children>
-                  <ComboBox fx:id="processListComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" HBox.hgrow="ALWAYS" onAction="#handleDeleteProcess" />
-               </children>
-            </HBox>
-            <HBox fx:id="processAdd" spacing="10">
-               <children>
-                  <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" />
-               </children>
-            </HBox>
-         </VBox>
-         <VBox fx:id="urlPane" spacing="10">
-            <HBox spacing="10">
-               <children>
-                  <Label fx:id="blockDomainLabel" text="Блокировка URL"/>
-                  <CheckBox fx:id="blockDomainCheckBox" selected="true" />
-               </children>
-            </HBox>
-            <HBox fx:id="urlDelete" spacing="10">
-               <children>
-                  <ComboBox fx:id="urlListComboBox" prefWidth="150.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="deleteUrlButton" mnemonicParsing="false" text="Delete URL" HBox.hgrow="ALWAYS" onAction="#handleDeleteUrl" />
-               </children>
-            </HBox>
-            <HBox fx:id="urlAdd" spacing="10">
-               <children>
-                  <TextField fx:id="inputUrlTextField" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addUrlButton" mnemonicParsing="false" text="Add URL" onAction="#handleAddUrl" />
-               </children>
-            </HBox>
-         </VBox>
+         <children>
+            <VBox fx:id="processPane" spacing="10">
+               <HBox fx:id="processDelete" spacing="10">
+                  <children>
+                     <ComboBox fx:id="processListComboBox" minWidth="150.0" HBox.hgrow="ALWAYS" />
+                     <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" HBox.hgrow="NEVER" prefWidth="100.0" onAction="#handleDeleteProcess" />
+                  </children>
+               </HBox>
+               <HBox fx:id="processAdd" spacing="10">
+                  <children>
+                     <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" minWidth="50.0" />
+                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" HBox.hgrow="NEVER" prefWidth="80.0" />
+                  </children>
+               </HBox>
+            </VBox>
+            <VBox fx:id="urlPane" spacing="10">
+               <HBox spacing="10">
+                  <children>
+                     <Label fx:id="blockDomainLabel" text="Block URL"/>
+                     <CheckBox fx:id="blockDomainCheckBox" selected="true" />
+                  </children>
+               </HBox>
+               <HBox fx:id="urlDelete" spacing="10">
+                  <children>
+                     <ComboBox fx:id="urlListComboBox" minWidth="150.0" HBox.hgrow="ALWAYS" />
+                     <Button fx:id="deleteUrlButton" mnemonicParsing="false" text="Delete URL" HBox.hgrow="NEVER" prefWidth="100.0" onAction="#handleDeleteUrl" />
+                  </children>
+               </HBox>
+               <HBox fx:id="urlAdd" spacing="10">
+                  <children>
+                     <TextField fx:id="inputUrlTextField" HBox.hgrow="ALWAYS" minWidth="50.0" />
+                     <Button fx:id="addUrlButton" mnemonicParsing="false" text="Add URL" onAction="#handleAddUrl" HBox.hgrow="NEVER" prefWidth="80.0"  />
+                  </children>
+               </HBox>
+            </VBox>
+            <TextArea fx:id="consoleTextArea" editable="false" VBox.vgrow="ALWAYS">
+               <BorderPane.margin>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+               </BorderPane.margin>
+            </TextArea>
+         </children>
       </VBox>
    </center>
-
-   <bottom>
-      <TextArea fx:id="consoleTextArea" editable="false">
-         <BorderPane.margin>
-            <Insets top="10" right="10" bottom="10" left="10" />
-         </BorderPane.margin>
-      </TextArea>
-   </bottom>
 </BorderPane>

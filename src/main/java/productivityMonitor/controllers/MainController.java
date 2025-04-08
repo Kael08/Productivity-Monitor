@@ -226,8 +226,8 @@ public class MainController {
         runSettingsStage = new Stage();
         runSettingsStage.setTitle("Process Settings");
         runSettingsStage.setScene(new Scene(root,400,600));
-        runSettingsStage.setMinWidth(400);
-        runSettingsStage.setMinHeight(550);
+        runSettingsStage.setMinWidth(280);
+        runSettingsStage.setMinHeight(320);
         runSettingsStage.show();
     }
 
