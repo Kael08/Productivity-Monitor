@@ -47,7 +47,7 @@
                <HBox spacing="10">
                   <children>
                      <Label fx:id="blockDomainLabel" text="Block URL"/>
-                     <CheckBox fx:id="blockDomainCheckBox" selected="true" />
+                     <CheckBox fx:id="blockDomainCheckBox"/>
                   </children>
                </HBox>
                <HBox fx:id="urlDelete" spacing="10">

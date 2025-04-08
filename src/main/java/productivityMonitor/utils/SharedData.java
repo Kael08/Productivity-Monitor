@@ -12,4 +12,10 @@ public class SharedData {
 
     // Установленное время работы мониторы(в минутах)
     public static int minutes = 0;
+
+    // Список запрещенных доменов
+    public static ObservableList<String> urlList = FXCollections.observableArrayList();
+
+    // Флаг для запуска веб-сервера
+    public static boolean runWebSocketServer = true;
 }

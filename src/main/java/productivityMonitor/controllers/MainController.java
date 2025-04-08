@@ -19,8 +19,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static productivityMonitor.utils.SharedData.minutes;
-import static productivityMonitor.utils.SharedData.processList;
+import static productivityMonitor.utils.SharedData.*;
 
 public class MainController {
     private Stage authStage = null;
@@ -116,9 +115,6 @@ public class MainController {
     // Флаг для работы монитора
     boolean runFlag = false;
 
-    // Флаг для запуска веб-сервера
-    boolean runWebSocketServer = true;
-
     // Поток для работы монитора
     private Thread runThread;
 
@@ -160,7 +156,6 @@ public class MainController {
             if(runWebSocketServer){
                 webSocketServer=new FocusWebSocketServer(8081);
                 webSocketServer.start();
-                webSocketServer.addToBlacklist("youtube.com");
                 System.out.println("Сервер запущен");
             }
         } else {

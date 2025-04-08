@@ -2,12 +2,9 @@ package productivityMonitor.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
-import static productivityMonitor.utils.SharedData.processList;
+import static productivityMonitor.utils.SharedData.*;
 
 public class RunSettingsController {
     @FXML
@@ -26,6 +23,18 @@ public class RunSettingsController {
     private TextField inputTextField;
 
     @FXML
+    private TextField inputUrlTextField;
+
+    @FXML
+    private CheckBox blockDomainCheckBox;
+
+    @FXML
+    private ComboBox<String> modeListComboBox;
+
+    @FXML
+    private ComboBox<String> urlListComboBox;
+
+    @FXML
     private void handleDeleteProcess(ActionEvent event){
         String selectedProcess = processListComboBox.getValue();
         if(selectedProcess==null){
@@ -39,7 +48,6 @@ public class RunSettingsController {
                 consoleTextArea.appendText("Ошибка: Процесс с именем '" + selectedProcess + "' не найден!\n");
             }
         }
-
     }
 
     @FXML
@@ -64,15 +72,44 @@ public class RunSettingsController {
 
     @FXML
     private void handleDeleteUrl(ActionEvent event){
+        String selectedUrl = urlListComboBox.getValue();
 
+        if(selectedUrl==null){
+            consoleTextArea.appendText("Ошибка: домен не выбран\n");
+        } else {
+            Boolean isRemoved = urlList.removeIf(url->url.equals(selectedUrl));
+
+            if(isRemoved){
+                consoleTextArea.appendText("Домен успешно удален!\n");
+            } else {
+                consoleTextArea.appendText("Ошибка: домен "+selectedUrl+" не найден!\n");
+            }
+        }
     }
 
     @FXML
     private void handleAddUrl(ActionEvent event){
+        String urlName = inputUrlTextField.getText();
 
+        if(urlName.isEmpty()){
+            consoleTextArea.appendText("Ошибка: Домен не может быть пустым!\n");
+            return;
+        }
+
+        consoleTextArea.appendText("Домен "+urlName+" добавлен\n");
+        urlList.add(urlName);
     }
 
     public void initialize(){
         processListComboBox.setItems(processList);
+        urlListComboBox.setItems(urlList);
+
+        blockDomainCheckBox.setSelected(runWebSocketServer);
+
+        blockDomainCheckBox.setOnAction(event->{
+            if(blockDomainCheckBox.isSelected())
+                runWebSocketServer=true;
+            else runWebSocketServer=false;
+        });
     }
 }
