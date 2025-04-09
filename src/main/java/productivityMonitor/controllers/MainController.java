@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import productivityMonitor.FocusMode;
 import productivityMonitor.FocusWebSocketServer;
 
 import java.io.IOException;
@@ -76,7 +77,6 @@ public class MainController {
 
     }
 
-
     @FXML
     private Button runButton;
     @FXML
@@ -112,8 +112,8 @@ public class MainController {
     // Сервер для контроля браузера
     private FocusWebSocketServer webSocketServer;
 
-    // Флаг для работы монитора
-    boolean runFlag = false;
+    // Класс для запуска монитора с разными режимами
+    private FocusMode focusMode = new FocusMode(consoleTextArea);
 
     // Поток для работы монитора
     private Thread runThread;
@@ -147,10 +147,10 @@ public class MainController {
     private void handleRunButton(ActionEvent event) throws InterruptedException {
         System.out.println("Кнопка Run нажата!");
 
-        if (!runFlag) {
+        if (!isMonitoringActive) {
             disableAllButtons();
             runImageView.setImage(pauseImg);
-            runFlag = true;
+            isMonitoringActive = true;
             runThread = new Thread(runMonitor);
             runThread.start();
             if(runWebSocketServer){
@@ -161,7 +161,7 @@ public class MainController {
         } else {
             enableAllButtons();
             runImageView.setImage(runImg);
-            runFlag = false;
+            isMonitoringActive = false;
             runThread.interrupt();
             runThread=null;
             if(runWebSocketServer){
@@ -173,7 +173,7 @@ public class MainController {
     }
 
     // Задача для закрытия процессов
-    Runnable runMonitor = () -> {
+    /*Runnable runMonitor = () -> {
         if(minutes==0) {
             consoleTextArea.appendText("Монитор запущен!\n");
             while (runFlag) {
@@ -202,7 +202,7 @@ public class MainController {
             consoleTextArea.appendText("Монитор завершил работу! Время вышло!\n");
         }
         runFlag=false;
-    };
+    };*/
 
     // Окно для настройки запуска
     private Stage runSettingsStage = null;

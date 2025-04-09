@@ -18,4 +18,7 @@ public class SharedData {
 
     // Флаг для запуска веб-сервера
     public static boolean runWebSocketServer = true;
+
+    // Флаг для обозначения запуска мониторинга
+    public static volatile boolean isMonitoringActive = false;
 }
