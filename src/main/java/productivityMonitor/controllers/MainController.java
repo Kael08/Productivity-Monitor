@@ -150,10 +150,11 @@ public class MainController {
         if (!isMonitoringActive) {
             disableAllButtons();
             runImageView.setImage(pauseImg);
-            isMonitoringActive = true;
-            runThread = new Thread(runMonitor);
-            runThread.start();
-            if(runWebSocketServer){
+            //isMonitoringActive = true;
+            //runThread = new Thread(runMonitor);
+            //runThread.start();
+            focusMode.startMonitoring();
+            if(isWebSocketServerActive){
                 webSocketServer=new FocusWebSocketServer(8081);
                 webSocketServer.start();
                 System.out.println("Сервер запущен");
@@ -161,10 +162,11 @@ public class MainController {
         } else {
             enableAllButtons();
             runImageView.setImage(runImg);
-            isMonitoringActive = false;
-            runThread.interrupt();
-            runThread=null;
-            if(runWebSocketServer){
+            //isMonitoringActive = false;
+            //runThread.interrupt();
+            //runThread=null;
+            focusMode.stopMonitoring();
+            if(isWebSocketServerActive){
                 webSocketServer.stop();
                 webSocketServer=null;
                 System.out.println("Сервер остановлен");
@@ -255,6 +257,8 @@ public class MainController {
         timerImageView.setImage(timerImg);
         mainImageView.setImage(iconImg);
 
+        focusMode.setFullLockdownMode();
+
         // Часы в главном меню
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -277,7 +281,7 @@ public class MainController {
     }
 
     // Закрывает процессы по имени
-    private void closeProcess(List<String> list) {
+    /*private void closeProcess(List<String> list) {
         for (String pn : list) {
             try {
                 ProcessBuilder builder = new ProcessBuilder("taskkill", "/IM", pn, "/F");
@@ -294,7 +298,7 @@ public class MainController {
                 consoleTextArea.appendText("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
             }
         }
-    }
+    }*/
 
 
 

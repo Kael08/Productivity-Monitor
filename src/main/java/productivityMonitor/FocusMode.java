@@ -1,59 +1,92 @@
 package productivityMonitor;
 
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusMode {
-
     private TextArea consoleTextArea;
-
-    private final Thread monitorThread = new Thread();
-
+    private Thread monitorThread;
     private final AtomicReference<Runnable> currentTask = new AtomicReference<>();
 
-    public FocusMode(TextArea consoleTextArea){
-        this.consoleTextArea=consoleTextArea;
+    public FocusMode(TextArea consoleTextArea) {
+        this.consoleTextArea = consoleTextArea;
     }
 
-    // Режим, который блокирует запуск приложение и переход на определенные домены
-    public void fullLockdown(){
-
-    }
-
-    // Задача для закрытия процессов
-    Runnable runMonitor = () -> {
-        if(minutes==0) {
-            consoleTextArea.appendText("Монитор запущен!\n");
-            while (isMonitoringActive) {
-                try {
-                    closeProcess(processList);
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    consoleTextArea.appendText("Монитор остановлен!\n");
-                    return;
-                }
-            }
-        } else {
-            long endTime = System.currentTimeMillis()+minutes * 60 * 1000;
-            consoleTextArea.appendText("Монитор запущен с таймеров на "+minutes+" минут!\n");
-            while (isMonitoringActive&&System.currentTimeMillis()<endTime){
-                try{
-                    closeProcess(processList);
-                    Thread.sleep(2000);
-                } catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    consoleTextArea.appendText("Монитор прерван!\n");
-                    return;
-                }
-            }
-            consoleTextArea.appendText("Монитор завершил работу! Время вышло!\n");
+    private void appendToConsole(String text) {
+        if (consoleTextArea != null) {
+            Platform.runLater(() -> consoleTextArea.appendText(text));
         }
-        isMonitoringActive=false;
+    }
+
+    public void setFullLockdownMode() {
+        setMonitoringTask(fullLockdown);
+    }
+
+    private Runnable fullLockdown = () -> {
+        appendToConsole("Монитор запущен!\n");
+        while (isMonitoringActive) {
+            try {
+                closeProcess(processList);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                appendToConsole("Монитор остановлен!\n");
+                return;
+            }
+        }
+        appendToConsole("Монитор завершил работу!\n");
     };
+
+    public void startMonitoring() {
+        if (!isMonitoringActive) {
+            isMonitoringActive = true;
+            monitorThread = new Thread(() -> {
+                Runnable task = currentTask.get();
+                if (task != null) {
+                    task.run();
+                }
+            });
+            monitorThread.start();
+        }
+    }
+
+    public void stopMonitoring() {
+        isMonitoringActive = false;
+        if (monitorThread != null) {
+            monitorThread.interrupt();
+        }
+    }
+
+    private void setMonitoringTask(Runnable task) {
+        currentTask.set(task);
+    }
+
+    // Закрывает процессы по имени
+    private void closeProcess(List<String> list) {
+        for (String pn : list) {
+            try {
+                ProcessBuilder builder = new ProcessBuilder("taskkill", "/IM", pn, "/F");
+                Process process = builder.start();
+                int exitCode = process.waitFor();
+
+                if (exitCode == 0) {
+                    //consoleTextArea.appendText("Процесс " + pn + " был завершен\n");
+                    appendToConsole("Процесс " + pn + " был завершен\n");
+                } else {
+                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого мусорится консоль
+                    //consoleTextArea.appendText("Ошибка при завершении процесса " + pn + "\n");
+                }
+            } catch (Exception e) {
+                //consoleTextArea.appendText("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
+                appendToConsole("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
+            }
+        }
+    }
 
     // Режим, при котором для запуска приложения или перехода
     // на определенный домен требуется выполнить трудное задание

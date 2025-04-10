@@ -104,12 +104,12 @@ public class RunSettingsController {
         processListComboBox.setItems(processList);
         urlListComboBox.setItems(urlList);
 
-        blockDomainCheckBox.setSelected(runWebSocketServer);
+        blockDomainCheckBox.setSelected(isWebSocketServerActive);
 
         blockDomainCheckBox.setOnAction(event->{
             if(blockDomainCheckBox.isSelected())
-                runWebSocketServer=true;
-            else runWebSocketServer=false;
+                isWebSocketServerActive=true;
+            else isWebSocketServerActive=false;
         });
     }
 }

@@ -17,7 +17,7 @@ public class SharedData {
     public static ObservableList<String> urlList = FXCollections.observableArrayList();
 
     // Флаг для запуска веб-сервера
-    public static boolean runWebSocketServer = true;
+    public static boolean isWebSocketServerActive = true;
 
     // Флаг для обозначения запуска мониторинга
     public static volatile boolean isMonitoringActive = false;
