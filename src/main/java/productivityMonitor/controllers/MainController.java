@@ -110,10 +110,10 @@ public class MainController {
             iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
     // Сервер для контроля браузера
-    private FocusWebSocketServer webSocketServer;
+    //private FocusWebSocketServer webSocketServer;
 
     // Класс для запуска монитора с разными режимами
-    private FocusMode focusMode = new FocusMode(consoleTextArea);
+    private FocusMode focusMode;
 
     // Поток для работы монитора
     private Thread runThread;
@@ -154,11 +154,11 @@ public class MainController {
             //runThread = new Thread(runMonitor);
             //runThread.start();
             focusMode.startMonitoring();
-            if(isWebSocketServerActive){
+            /*if(isWebSocketServerActive){
                 webSocketServer=new FocusWebSocketServer(8081);
                 webSocketServer.start();
                 System.out.println("Сервер запущен");
-            }
+            }*/
         } else {
             enableAllButtons();
             runImageView.setImage(runImg);
@@ -166,11 +166,11 @@ public class MainController {
             //runThread.interrupt();
             //runThread=null;
             focusMode.stopMonitoring();
-            if(isWebSocketServerActive){
+            /*if(isWebSocketServerActive){
                 webSocketServer.stop();
                 webSocketServer=null;
                 System.out.println("Сервер остановлен");
-            }
+            }*/
         }
     }
 
@@ -257,6 +257,7 @@ public class MainController {
         timerImageView.setImage(timerImg);
         mainImageView.setImage(iconImg);
 
+        focusMode = new FocusMode(consoleTextArea);
         focusMode.setFullLockdownMode();
 
         // Часы в главном меню

@@ -13,6 +13,9 @@ public class FocusMode {
     private Thread monitorThread;
     private final AtomicReference<Runnable> currentTask = new AtomicReference<>();
 
+    // Сервер для контроля браузера
+    private FocusWebSocketServer webSocketServer;
+
     public FocusMode(TextArea consoleTextArea) {
         this.consoleTextArea = consoleTextArea;
     }
@@ -29,18 +32,45 @@ public class FocusMode {
 
     private Runnable fullLockdown = () -> {
         appendToConsole("Монитор запущен!\n");
-        while (isMonitoringActive) {
-            try {
-                closeProcess(processList);
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                appendToConsole("Монитор остановлен!\n");
-                return;
+
+        // Запуск WebSocket-сервера
+        if (isWebSocketServerActive && webSocketServer == null) {
+            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer.start();
+            System.out.println("WebSocket-сервер запущен");
+        }
+
+        try {
+            while (isMonitoringActive) {
+                try {
+                    closeProcess(processList);
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Монитор остановлен по прерыванию!\n");
+                    break;
+                }
+            }
+        } finally {
+            if (isWebSocketServerActive && webSocketServer != null) {
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                try {
+                    webSocketServer.stop();
+                } catch (Exception e) {
+                    System.err.println("Ошибка при остановке WebSocket: " + e.getMessage());
+                } finally {
+                    if (wasInterrupted) {
+                        Thread.currentThread().interrupt(); // Восстановить флаг
+                    }
+                    webSocketServer = null;
+                    System.out.println("WebSocket-сервер остановлен");
+                }
             }
         }
-        appendToConsole("Монитор завершил работу!\n");
+
+        appendToConsole("Монитор завершил работу.\n");
     };
+
 
     public void startMonitoring() {
         if (!isMonitoringActive) {
