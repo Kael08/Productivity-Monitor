@@ -49,18 +49,6 @@ public class FocusWebSocketServer extends WebSocketServer {
         System.out.println("Добавлен в blacklist: " + domain);
     }
 
-    /*public static void main(String[] args) throws Exception {
-        FocusWebSocketServer server = new FocusWebSocketServer(8081);
-        server.start();
-        System.out.println("WebSocket-сервер запущен на ws://localhost:8081");
-
-        // Через 10 секунд добавим сайт в blacklist
-        *//*new Timer().schedule(new TimerTask() {
-            public void run() {
-            }
-        }, 10000);*//*
-    }*/
-
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         System.out.println("Расширение отключилось: " + conn.getRemoteSocketAddress() + " по причине: " + reason);

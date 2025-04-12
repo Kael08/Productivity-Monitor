@@ -14,7 +14,7 @@
 <?import javafx.scene.control.CheckBox?>
 <BorderPane fx:id="mainPane"
             stylesheets="@../styles/runSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="productivityMonitor.controllers.RunSettingsController">
+            fx:controller="productivityMonitor.controllers.MonitoringSettingsController">
    <top>
       <VBox fx:id="topPane">
          <Label fx:id="selectModeLabel" text="Select mode"/>

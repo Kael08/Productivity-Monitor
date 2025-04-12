@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SharedData {
+    // Volatile - модификатор переменных, который обеспечивает видимость изменений переменной другими потоками
+
     // Список запрещенных процессов
     public static ObservableList<String> processList = FXCollections.observableArrayList();
 

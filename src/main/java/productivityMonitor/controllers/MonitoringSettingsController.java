@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 
 import static productivityMonitor.utils.SharedData.*;
 
-public class RunSettingsController {
+public class MonitoringSettingsController {
     @FXML
     private ComboBox<String> processListComboBox;
 

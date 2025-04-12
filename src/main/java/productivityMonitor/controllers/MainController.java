@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import productivityMonitor.FocusMode;
-import productivityMonitor.FocusWebSocketServer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,6 +22,7 @@ import java.util.*;
 import static productivityMonitor.utils.SharedData.*;
 
 public class MainController {
+    // Профиль
     private Stage authStage = null;
     @FXML
     private Button profileButton;
@@ -42,6 +42,7 @@ public class MainController {
         authStage.show();
     }
 
+    // Настройки
     @FXML
     private Button settingsButton;
     @FXML
@@ -49,6 +50,7 @@ public class MainController {
 
     }
 
+    // Статистика
     @FXML
     private Button statisticsButton;
     @FXML
@@ -56,6 +58,7 @@ public class MainController {
 
     }
 
+    // Достижения
     @FXML
     private Button achievementsButton;
     @FXML
@@ -63,6 +66,7 @@ public class MainController {
 
     }
 
+    // Заметки
     @FXML
     private Button notesButton;
     @FXML
@@ -70,6 +74,7 @@ public class MainController {
 
     }
 
+    // Планы
     @FXML
     private Button plansButton;
     @FXML
@@ -77,29 +82,17 @@ public class MainController {
 
     }
 
-    @FXML
-    private Button runButton;
-    @FXML
-    private ImageView runImageView; // Кнопка для запуска фокусировки
-
-    @FXML
-    private Button runSettingsButton;
-    @FXML
-    private ImageView settingsImageView; // Кнопка для настроек фокусировки
-
-    @FXML
-    private Button timerButton;
-    @FXML
-    private ImageView timerImageView; // Кнопка для настройки таймера
-
+    // Иконка приложения
     @FXML
     private ImageView mainImageView;
 
+    // Основная консоль
     @FXML
-    private TextArea consoleTextArea; // Консоль
+    private TextArea consoleTextArea;
 
+    // Часы
     @FXML
-    private Label clockLabel; // Часы
+    private Label clockLabel;
 
 
     // Иконки
@@ -109,14 +102,9 @@ public class MainController {
             pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
             iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
-    // Сервер для контроля браузера
-    //private FocusWebSocketServer webSocketServer;
 
-    // Класс для запуска монитора с разными режимами
+    // Класс для взаимодействия с мониторингом
     private FocusMode focusMode;
-
-    // Поток для работы монитора
-    private Thread runThread;
 
     // Заблокировать все кнопки
     private void disableAllButtons(){
@@ -126,107 +114,101 @@ public class MainController {
         achievementsButton.setDisable(true);
         notesButton.setDisable(true);
         plansButton.setDisable(true);
-        runSettingsButton.setDisable(true);
+        monitoringSettingsButton.setDisable(true);
         timerButton.setDisable(true);
     }
 
     // Разблокировать все кнопки
-    private void enableAllButtons(){
+    public void enableAllButtons(){
         profileButton.setDisable(false);
         settingsButton.setDisable(false);
         statisticsButton.setDisable(false);
         achievementsButton.setDisable(false);
         notesButton.setDisable(false);
         plansButton.setDisable(false);
-        runSettingsButton.setDisable(false);
+        monitoringSettingsButton.setDisable(false);
         timerButton.setDisable(false);
+    }
+
+    // Закрытие всех побочных окон
+    private void closeSideStages(){
+        if(monitoringSettingsStage!=null) {
+            monitoringSettingsStage.close();
+            monitoringSettingsStage = null;
+        }
+
+        if(authStage!=null) {
+            authStage.close();
+            authStage = null;
+        }
+
+        if(timerStage!=null) {
+            timerStage.close();
+            timerStage = null;
+        }
+    }
+
+    // Запуск мониторинга
+    @FXML
+    private Button runButton;
+    @FXML
+    private ImageView runImageView;
+    // Метод для установки картинки Play для кнопки запуска
+    public void setRunImageView() {
+        runImageView.setImage(runImg);
     }
 
     // Запуск потока монитора
     @FXML
-    private void handleRunButton(ActionEvent event) throws InterruptedException {
+    private void handleRunButton(ActionEvent event) {
         System.out.println("Кнопка Run нажата!");
 
         if (!isMonitoringActive) {
             disableAllButtons();
+            closeSideStages();
             runImageView.setImage(pauseImg);
-            //isMonitoringActive = true;
-            //runThread = new Thread(runMonitor);
-            //runThread.start();
             focusMode.startMonitoring();
-            /*if(isWebSocketServerActive){
-                webSocketServer=new FocusWebSocketServer(8081);
-                webSocketServer.start();
-                System.out.println("Сервер запущен");
-            }*/
         } else {
             enableAllButtons();
             runImageView.setImage(runImg);
-            //isMonitoringActive = false;
-            //runThread.interrupt();
-            //runThread=null;
             focusMode.stopMonitoring();
-            /*if(isWebSocketServerActive){
-                webSocketServer.stop();
-                webSocketServer=null;
-                System.out.println("Сервер остановлен");
-            }*/
         }
     }
 
-    // Задача для закрытия процессов
-    /*Runnable runMonitor = () -> {
-        if(minutes==0) {
-            consoleTextArea.appendText("Монитор запущен!\n");
-            while (runFlag) {
-                try {
-                    closeProcess(processList);
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    consoleTextArea.appendText("Монитор остановлен!\n");
-                    return;
-                }
-            }
-        } else {
-            long endTime = System.currentTimeMillis()+minutes * 60 * 1000;
-            consoleTextArea.appendText("Монитор запущен с таймеров на "+minutes+" минут!\n");
-            while (runFlag&&System.currentTimeMillis()<endTime){
-                try{
-                    closeProcess(processList);
-                    Thread.sleep(2000);
-                } catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    consoleTextArea.appendText("Монитор прерван!\n");
-                    return;
-                }
-            }
-            consoleTextArea.appendText("Монитор завершил работу! Время вышло!\n");
-        }
-        runFlag=false;
-    };*/
+    // Конфигурация мониторинга
+    @FXML
+    private Button monitoringSettingsButton;
+    @FXML
+    private ImageView settingsImageView;
 
     // Окно для настройки запуска
-    private Stage runSettingsStage = null;
+    private Stage monitoringSettingsStage = null;
 
     @FXML
-    private void handleRunSettingsButton(ActionEvent event) throws IOException {
+    private void handleMonitoringSettingsButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Settings нажата!");
-        if(runSettingsStage!=null&&runSettingsStage.isShowing()){
-            runSettingsStage.toFront();
+
+        if(monitoringSettingsStage!=null&&monitoringSettingsStage.isShowing()){
+            monitoringSettingsStage.toFront();
             return;
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/runSettingsView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/monitoringSettingsView.fxml"));
         Parent root = fxmlLoader.load();
 
-        runSettingsStage = new Stage();
-        runSettingsStage.setTitle("Process Settings");
-        runSettingsStage.setScene(new Scene(root,400,600));
-        runSettingsStage.setMinWidth(280);
-        runSettingsStage.setMinHeight(320);
-        runSettingsStage.show();
+        monitoringSettingsStage = new Stage();
+        monitoringSettingsStage.setTitle("Process Settings");
+        monitoringSettingsStage.setScene(new Scene(root,400,600));
+        monitoringSettingsStage.setMinWidth(280);
+        monitoringSettingsStage.setMinHeight(320);
+        monitoringSettingsStage.show();
     }
+
+    // Таймер мониторинга
+    @FXML
+    private Button timerButton;
+    @FXML
+    private ImageView timerImageView;
 
     // Окно для настройки таймера
     private Stage timerStage = null;
@@ -234,6 +216,7 @@ public class MainController {
     @FXML
     private void handleTimerButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Timer нажата!");
+
         if(timerStage!=null&&timerStage.isShowing()){
             timerStage.toFront();
             return;
@@ -257,7 +240,7 @@ public class MainController {
         timerImageView.setImage(timerImg);
         mainImageView.setImage(iconImg);
 
-        focusMode = new FocusMode(consoleTextArea);
+        focusMode = new FocusMode(consoleTextArea,this);
         focusMode.setFullLockdownMode();
 
         // Часы в главном меню
@@ -280,27 +263,4 @@ public class MainController {
 
         label.setText(currentTime);
     }
-
-    // Закрывает процессы по имени
-    /*private void closeProcess(List<String> list) {
-        for (String pn : list) {
-            try {
-                ProcessBuilder builder = new ProcessBuilder("taskkill", "/IM", pn, "/F");
-                Process process = builder.start();
-                int exitCode = process.waitFor();
-
-                if (exitCode == 0) {
-                    consoleTextArea.appendText("Процесс " + pn + " был завершен\n");
-                } else {
-                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого мусорится консоль
-                    //consoleTextArea.appendText("Ошибка при завершении процесса " + pn + "\n");
-                }
-            } catch (Exception e) {
-                consoleTextArea.appendText("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
-            }
-        }
-    }*/
-
-
-
 }

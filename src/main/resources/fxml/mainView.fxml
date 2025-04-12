@@ -55,7 +55,7 @@
                   </graphic>
                </Button>
 
-               <Button fx:id="runSettingsButton" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleRunSettingsButton">
+               <Button fx:id="monitoringSettingsButton" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleMonitoringSettingsButton">
                   <graphic>
                      <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="settingsImageView"/>
                   </graphic>
