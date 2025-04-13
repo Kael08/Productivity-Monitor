@@ -1,8 +1,10 @@
 package productivityMonitor.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import productivityMonitor.FocusMode;
 
 import static productivityMonitor.utils.SharedData.*;
 
@@ -33,6 +35,13 @@ public class MonitoringSettingsController {
 
     @FXML
     private ComboBox<String> urlListComboBox;
+
+    private FocusMode focusMode;
+
+
+    public void setFocusMode(FocusMode focusMode){
+        this.focusMode=focusMode;
+    }
 
     @FXML
     private void handleDeleteProcess(ActionEvent event){
@@ -103,6 +112,8 @@ public class MonitoringSettingsController {
     public void initialize(){
         processListComboBox.setItems(processList);
         urlListComboBox.setItems(urlList);
+        modeListComboBox.setItems(modeList);
+        modeListComboBox.setValue("FullLockdown");
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
 
@@ -110,6 +121,36 @@ public class MonitoringSettingsController {
             if(blockDomainCheckBox.isSelected())
                 isWebSocketServerActive=true;
             else isWebSocketServerActive=false;
+        });
+
+        modeListComboBox.setOnAction(actionEvent -> {
+            switch (modeListComboBox.getValue()){
+                case "FullLockdown":
+                    Platform.runLater(()->{
+                        focusMode.setFullLockdownMode();
+                    });
+                    break;
+                case "Mindfulless":
+                    Platform.runLater(()->{
+                        focusMode.setMindfulness();
+                    });
+                    break;
+                case "Sailors's Knot":
+                    Platform.runLater(()->{
+                        focusMode.setSailorsKnot();
+                    });
+                    break;
+                case "Delay Gratification":
+                    Platform.runLater(()->{
+                        focusMode.setDelayGratification();
+                    });
+                    break;
+                case "Pomodoro":
+                    Platform.runLater(()->{
+                        focusMode.setPomodoro();
+                    });
+                    break;
+            }
         });
     }
 }

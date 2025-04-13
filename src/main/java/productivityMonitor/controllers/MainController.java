@@ -96,7 +96,7 @@ public class MainController {
 
 
     // Иконки
-    private Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
+    private final Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
             settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
             timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
             pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
@@ -196,6 +196,9 @@ public class MainController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/monitoringSettingsView.fxml"));
         Parent root = fxmlLoader.load();
 
+        MonitoringSettingsController monitoringSettingsController = fxmlLoader.getController();
+        monitoringSettingsController.setFocusMode(focusMode);
+
         monitoringSettingsStage = new Stage();
         monitoringSettingsStage.setTitle("Process Settings");
         monitoringSettingsStage.setScene(new Scene(root,400,600));
@@ -251,6 +254,9 @@ public class MainController {
                 Platform.runLater(()->updateTime(clockLabel));
             }
         },0,1000);
+
+        // Чтения и сохранение мотивирующих сообщений
+        readMotivationMessages();
     }
 
     // Функция для обновления времени

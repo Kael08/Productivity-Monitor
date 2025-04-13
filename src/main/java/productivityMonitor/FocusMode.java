@@ -102,6 +102,34 @@ public class FocusMode {
         appendToConsole("Монитор завершил работу\n");
     };
 
+    // Режим, при котором для запуска приложения или перехода
+    // на определенный домен требуется выполнить трудное задание
+    public void setSailorsKnot(){
+        System.out.println("sailorsknot");
+    }
+
+    // Режим, который требует подождать несколько минут для
+    // запуска нежелательного приложения или домена
+    public void setDelayGratification(){
+        System.out.println("delaygratification");
+    }
+
+    // Режим, который пытается отговорить пользователя
+    // от запуска нежелательного приложения или домена
+    public void setMindfulness(){
+        System.out.println("mindfulness");
+    }
+
+    private Runnable mindfulness = () ->{
+
+    };
+
+    // Режим, суть которого заключается в перемене
+    // 5 минут каждые 25 минут работы(параметры времени можно настроить)
+    public void setPomodoro(){
+        System.out.println("pomodoro");
+    }
+
     // Начать мониторинг
     public void startMonitoring() {
         if (!isMonitoringActive) {
@@ -153,29 +181,5 @@ public class FocusMode {
                 appendToConsole("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
             }
         }
-    }
-
-    // Режим, при котором для запуска приложения или перехода
-    // на определенный домен требуется выполнить трудное задание
-    public void setSailorsKnot(){
-
-    }
-
-    // Режим, который требует подождать несколько минут для
-    // запуска нежелательного приложения или домена
-    public void setDelayGratification(){
-
-    }
-
-    // Режим, который пытается отговорить пользователя
-    // от запуска нежелательного приложения или домена
-    public void setMindfulness(){
-
-    }
-
-    // Режим, суть которого заключается в перемене
-    // 5 минут каждые 25 минут работы(параметры времени можно настроить)
-    public void setPomodoro(){
-
     }
 }
