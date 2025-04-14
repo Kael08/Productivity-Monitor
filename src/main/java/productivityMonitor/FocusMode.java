@@ -4,14 +4,20 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import productivityMonitor.controllers.MainController;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static productivityMonitor.controllers.MainController.countAlertWindow;
+import static productivityMonitor.controllers.MainController.maxAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusMode {
     // Основная сцена
-    private final MainController mainController;
+    private MainController mainController;
 
     // Основная консоль
     private TextArea consoleTextArea;
@@ -24,6 +30,9 @@ public class FocusMode {
 
     // Сервер для браузера
     private FocusWebSocketServer webSocketServer;
+
+    // Пауза
+    public static Object pauseLock = new Object();
 
     public FocusMode(TextArea consoleTextArea, MainController mainController) {
         this.consoleTextArea = consoleTextArea;
@@ -54,33 +63,33 @@ public class FocusMode {
 
         try {
             if(minutes==0) {
-                appendToConsole("Монитор запущен без таймера!\n");
+                appendToConsole("Мониторинг запущен в режиме FullLockdown!\n");
                 while (isMonitoringActive) {
                     try {
                         closeProcess(processList);
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        appendToConsole("Монитор остановлен по прерыванию!\n");
+                        appendToConsole("Мониторинг остановлен!\n");
                         break;
                     }
                 }
             } else {
                 long endTime = System.currentTimeMillis()+minutes*60*1000;
-                appendToConsole("Монитор запущен с таймером на "+minutes+" минут!\n");
+                appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме FullLockdown!\n");
                 while (isMonitoringActive&&System.currentTimeMillis()<endTime) {
                     try {
                         closeProcess(processList);
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        appendToConsole("Монитор остановлен по прерыванию!\n");
+                        appendToConsole("Мониторинг прерван!\n");
                         break;
                     }
                 }
                 stopMonitoring();
 
-                appendToConsole("Время вышло. Монитор завершил работу!\n");
+                appendToConsole("Время вышло!\n");
             }
         } finally {
             if (isWebSocketServerActive && webSocketServer != null) {
@@ -99,8 +108,28 @@ public class FocusMode {
             }
         }
 
-        appendToConsole("Монитор завершил работу\n");
+        appendToConsole("Мониторинг завершен\n");
     };
+
+    // Закрывает процессы по имени
+    private void closeProcess(List<String> list) {
+        for (String pn : list) {
+            try {
+                ProcessBuilder builder = new ProcessBuilder("taskkill", "/IM", pn, "/F");
+                Process process = builder.start();
+                int exitCode = process.waitFor();
+
+                if (exitCode == 0) {
+                    appendToConsole("Процесс " + pn + " был завершен\n");
+                } else {
+                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого мусорится консоль
+                    //consoleTextArea.appendText("Ошибка при завершении процесса " + pn + "\n");
+                }
+            } catch (Exception e) {
+                appendToConsole("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
+            }
+        }
+    }
 
     // Режим, при котором для запуска приложения или перехода
     // на определенный домен требуется выполнить трудное задание
@@ -117,12 +146,111 @@ public class FocusMode {
     // Режим, который пытается отговорить пользователя
     // от запуска нежелательного приложения или домена
     public void setMindfulness(){
-        System.out.println("mindfulness");
+        setMonitoringTask(mindfulness);
     }
 
     private Runnable mindfulness = () ->{
-
+        if(minutes==0){
+            appendToConsole("Мониторинг запущен в режиме Mindfulness!\n");
+            while (isMonitoringActive) {
+                try {
+                    if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
+                        Platform.runLater(()-> {
+                            mainController.createAlertWindow(motivationMessagesList);
+                        });
+                        isPaused=true;
+                        synchronized (pauseLock){
+                            while (isPaused){
+                                try{
+                                    pauseLock.wait();
+                                } catch (InterruptedException e){
+                                    Thread.currentThread().interrupt();
+                                    System.out.println("Ошибка во время паузы");
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг остановлен!\n");
+                    break;
+                }
+            }
+        } else {
+            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Mindfulness!\n");
+            long endTime=System.currentTimeMillis()+(minutes*60*1000);
+            while (isMonitoringActive&&System.currentTimeMillis()<endTime){
+                try {
+                    if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
+                        Platform.runLater(()-> {
+                            mainController.createAlertWindow(motivationMessagesList);
+                        });
+                        isPaused=true;
+                        synchronized (pauseLock){
+                            while (isPaused){
+                                try{
+                                    pauseLock.wait();
+                                } catch (InterruptedException e){
+                                    Thread.currentThread().interrupt();
+                                    System.out.println("Ошибка во время паузы");
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг прерван!\n");
+                    break;
+                }
+            }
+            stopMonitoring();
+            appendToConsole("Время вышло!\n");
+        }
+        appendToConsole("Мониторинг окончен!\n");
+        countAlertWindow=0;
     };
+
+    // Поиск активных процессов среди нежелательных процессов
+    private boolean isProcessesActive(List<String> requiredProcessesList){
+        return getProcessList().stream().anyMatch(requiredProcessesList::contains);
+    }
+
+    // Получить список всех процессов
+    private List<String> getProcessList(){
+        List<String> processList = new ArrayList<>();
+        ProcessBuilder builder = new ProcessBuilder("tasklist");
+        builder.redirectErrorStream(true);
+
+        try{
+            Process process = builder.start();
+            BufferedReader reader=new BufferedReader(
+                    new InputStreamReader(process.getInputStream())
+            );
+
+            String line;
+            boolean skipHeader = true;
+            while ((line = reader.readLine()) != null) {
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
+                if (!line.trim().isEmpty()) {
+                    String processName = line.split("\\s+")[0];
+                    processList.add(processName);
+                }
+            }
+
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return processList;
+    }
 
     // Режим, суть которого заключается в перемене
     // 5 минут каждые 25 минут работы(параметры времени можно настроить)
@@ -163,23 +291,5 @@ public class FocusMode {
         currentTask.set(task);
     }
 
-    // Закрывает процессы по имени
-    private void closeProcess(List<String> list) {
-        for (String pn : list) {
-            try {
-                ProcessBuilder builder = new ProcessBuilder("taskkill", "/IM", pn, "/F");
-                Process process = builder.start();
-                int exitCode = process.waitFor();
 
-                if (exitCode == 0) {
-                    appendToConsole("Процесс " + pn + " был завершен\n");
-                } else {
-                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого мусорится консоль
-                    //consoleTextArea.appendText("Ошибка при завершении процесса " + pn + "\n");
-                }
-            } catch (Exception e) {
-                appendToConsole("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");
-            }
-        }
-    }
 }

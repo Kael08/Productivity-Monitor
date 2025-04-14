@@ -7,9 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static productivityMonitor.FocusMode.pauseLock;
 import static productivityMonitor.utils.SharedData.*;
 
 public class MainController {
@@ -172,6 +171,33 @@ public class MainController {
             enableAllButtons();
             runImageView.setImage(runImg);
             focusMode.stopMonitoring();
+        }
+    }
+
+    public static int maxAlertWindow = 5;
+    public static int countAlertWindow = 0;
+
+    // Создания Alert-окон, которые пытаются отговорить пользователя от запуска нежелательных приложений
+    public void createAlertWindow(List<String> messagesList){
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        Random random = new Random();
+        String message = motivationMessagesList.get(random.nextInt(motivationMessagesList.size()));
+        confirmationAlert.setContentText(message);
+
+        Stage stage = (Stage) confirmationAlert.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+
+        synchronized (pauseLock) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                pauseLock.notify();
+                isPaused = false;
+            } else {
+                countAlertWindow++;
+                pauseLock.notify();
+                isPaused = false;
+            }
         }
     }
 
