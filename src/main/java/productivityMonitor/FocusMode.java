@@ -25,6 +25,18 @@ public class FocusMode {
     // Поток мониторинга
     private Thread monitorThread;
 
+    // Флаг для режима Sailors`s Knot, который проверяет, что задание выполнено
+    public static volatile boolean isTaskCompleted=false;
+
+    // Флаг для режима Sailor`s Knot, который говорит, что задача запущена
+    public static volatile  boolean isTaskRunning=false;
+
+    // Флаг для режима Delay Gratification, который проверяет, что задержка закончилась
+    public static volatile boolean isDelayOver=false;
+
+    // Флаг для режима Delay Gratification, который говорит, что таймер задержки запущен
+    public static volatile boolean isDelayRunning=false;
+
     // Задачи мониторинга
     private final AtomicReference<Runnable> currentTask = new AtomicReference<>();
 
@@ -134,13 +146,116 @@ public class FocusMode {
     // Режим, при котором для запуска приложения или перехода
     // на определенный домен требуется выполнить трудное задание
     public void setSailorsKnot(){
-        System.out.println("sailorsknot");
+        setMonitoringTask(sailorsKnot);
+    }
+
+    private Runnable sailorsKnot=()->{
+        if(minutes==0){
+            appendToConsole("Мониторинг запущен в режиме Sailor`s Knot!\n");
+            while(isMonitoringActive){
+                try{
+                    if(!isTaskCompleted){
+                        if(isProcessesActive(processList)){
+                            closeProcess(processList);
+                            if(!isTaskRunning){
+                                isTaskRunning=true;
+                                runSailorsKnotTask();
+                            }
+                        }
+                        Thread.sleep(2000);
+                    }
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг остановлен!\n");
+                    break;
+                }
+            }
+        }else{
+            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Sailor`s Knot!\n");
+            long endTime=System.currentTimeMillis()*(minutes*60*1000);
+            while(isMonitoringActive&&System.currentTimeMillis()<endTime){
+                try{
+                    if(!isTaskCompleted){
+                        if(isProcessesActive(processList)){
+                            closeProcess(processList);
+                            if(!isTaskRunning){
+                                isTaskRunning=true;
+                                runSailorsKnotTask();
+                            }
+                        }
+                        Thread.sleep(2000);
+                    }
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг прерван!\n");
+                    break;
+                }
+            }
+            stopMonitoring();
+
+            appendToConsole("Время вышло!\n");
+        }
+    };
+
+    private void runSailorsKnotTask(){
+        // После выполнения задачи, должен поменять флаг isTaskCompleted на true
     }
 
     // Режим, который требует подождать несколько минут для
     // запуска нежелательного приложения или домена
     public void setDelayGratification(){
-        System.out.println("delaygratification");
+        setMonitoringTask(delayGratification);
+    }
+
+    private Runnable delayGratification=()->{
+        if(minutes==0){
+            appendToConsole("Мониторинг запущен в режиме Delay Gratification!\n");
+            while(isMonitoringActive){
+                try {
+                    if(!isDelayOver){
+                        if(isProcessesActive(processList)){
+                            closeProcess(processList);
+                            if(!isDelayRunning){
+                                isDelayRunning=true;
+                                runDelay();
+                            }
+                        }
+                        Thread.sleep(2000);
+                    }
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг остановлен!\n");
+                    break;
+                }
+            }
+        }else{
+            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Delay Gratification!\n");
+            long endTime=System.currentTimeMillis()*(60*1000*minutes);
+            while (System.currentTimeMillis()<endTime){
+                try{
+                    if(!isDelayOver){
+                        if(isProcessesActive(processList)){
+                            closeProcess(processList);
+                            if(!isDelayRunning){
+                                isDelayRunning=true;
+                                runDelay();
+                            }
+                        }
+                        Thread.sleep(2000);
+                    }
+                }catch (InterruptedException e){
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг прерван!\n");
+                    break;
+                }
+            }
+            stopMonitoring();
+            appendToConsole("Время вышло!");
+        }
+    };
+
+    private void runDelay(){
+        // Метод, который запускает задержку и по окончании разрешает доступ к запрещенным процессам
     }
 
     // Режим, который пытается отговорить пользователя
@@ -255,8 +370,12 @@ public class FocusMode {
     // Режим, суть которого заключается в перемене
     // 5 минут каждые 25 минут работы(параметры времени можно настроить)
     public void setPomodoro(){
-        System.out.println("pomodoro");
+        setMonitoringTask(pomodoro);
     }
+
+    private Runnable pomodoro =()->{
+
+    };
 
     // Начать мониторинг
     public void startMonitoring() {
