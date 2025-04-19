@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="productivityMonitor.controllers.SailorsKnotWindowController"
+            prefHeight="400.0" prefWidth="300.0"
+            stylesheets="@../styles/sailorsKnotWindow.css">
+    <top>
+        <HBox>
+            <Label fx:id="enterTextLabel" text="Enter the Text"/>
+            <HBox.margin>
+                <Insets top="10"/>
+                <Insets bottom="10"/>
+            </HBox.margin>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox>
+            <TextArea fx:id="taskTextArea" editable="false">
+
+            </TextArea>
+            <TextArea fx:id="answerTextArea">
+
+            </TextArea>
+            <VBox.margin>
+                <Insets bottom="10"/>
+            </VBox.margin>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox>
+            <Button fx:id="enterButton" text="Enter" onAction="#handleEnter" HBox.hgrow="NEVER" prefWidth="50"/>
+        </HBox>
+    </bottom>
+</BorderPane>

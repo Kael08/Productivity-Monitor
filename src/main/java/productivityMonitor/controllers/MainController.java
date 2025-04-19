@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import productivityMonitor.FocusMode;
 
@@ -17,10 +18,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static productivityMonitor.FocusMode.pauseLock;
+import static productivityMonitor.FocusMode.*;
 import static productivityMonitor.utils.SharedData.*;
 
 public class MainController {
+
+    private Stage mainStage;
+
+    public MainController(){}
+
+    public void setMainStage(Stage mainStage){
+        this.mainStage=mainStage;
+    }
+
     // Профиль
     private Stage authStage = null;
     @FXML
@@ -201,6 +211,42 @@ public class MainController {
         }
     }
 
+    private Stage sailorsKnotStage = null;
+    // Создает окно с задачей для Sailor's Knot
+    public void createSailorsKnotWindow() throws IOException {
+        try {
+            // Загружаем FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/sailorsKnotWindowView.fxml"));
+
+            Parent root = fxmlLoader.load();
+
+            SailorsKnotWindowController sailorsKnotWindowController = fxmlLoader.getController();
+
+            sailorsKnotStage = new Stage();
+
+            sailorsKnotWindowController.setThisStage(sailorsKnotStage);
+
+            // Настраиваем Stage
+            sailorsKnotStage.setTitle("Task");
+            sailorsKnotStage.setScene(new Scene(root));
+            sailorsKnotStage.initOwner(mainStage);
+            sailorsKnotStage.initModality(Modality.WINDOW_MODAL);
+
+            sailorsKnotStage.setOnHidden(event -> {
+                isTaskRunning = false;
+            });
+
+            sailorsKnotStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Не удалось открыть окно задачи");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
     // Конфигурация мониторинга
     @FXML
     private Button monitoringSettingsButton;
@@ -283,6 +329,9 @@ public class MainController {
 
         // Чтения и сохранение мотивирующих сообщений
         readMotivationMessages();
+
+        // Чтение и сохранение текстов для Sailor's Knot
+        readSailorsKnotText();
     }
 
     // Функция для обновления времени

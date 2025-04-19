@@ -49,4 +49,20 @@ public class SharedData {
             e.printStackTrace();
         }
     }
+
+    // Список текстов для Sailor's Knot
+    public static List<String> sailorsKnotTextList = new ArrayList<>();
+
+    // Функция для чтения файла с текстом для Sailor's Knot
+    public static void readSailorsKnotText(){
+        Type sailorsKnotTextListType = new TypeToken<List<String>>() {}.getType();
+        Gson gson = new Gson();
+
+        try(FileReader reader = new FileReader("src/main/resources/json_files/sailorsKnotText.json")){
+            sailorsKnotTextList=gson.fromJson(reader,sailorsKnotTextListType);
+        } catch (Exception e){
+            System.out.println("Ошибка: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

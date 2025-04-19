@@ -134,7 +134,7 @@ public class FocusMode {
                 if (exitCode == 0) {
                     appendToConsole("Процесс " + pn + " был завершен\n");
                 } else {
-                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого мусорится консоль
+                    // Это также вызывается, когда процесса не было или он не найден, и из-за этого "мусорится" консоль
                     //consoleTextArea.appendText("Ошибка при завершении процесса " + pn + "\n");
                 }
             } catch (Exception e) {
@@ -159,7 +159,13 @@ public class FocusMode {
                             closeProcess(processList);
                             if(!isTaskRunning){
                                 isTaskRunning=true;
-                                runSailorsKnotTask();
+                                Platform.runLater(()->{
+                                    try {
+                                        mainController.createSailorsKnotWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
                             }
                         }
                         Thread.sleep(2000);
@@ -180,7 +186,13 @@ public class FocusMode {
                             closeProcess(processList);
                             if(!isTaskRunning){
                                 isTaskRunning=true;
-                                runSailorsKnotTask();
+                                Platform.runLater(()->{
+                                    try {
+                                        mainController.createSailorsKnotWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
                             }
                         }
                         Thread.sleep(2000);
@@ -196,10 +208,6 @@ public class FocusMode {
             appendToConsole("Время вышло!\n");
         }
     };
-
-    private void runSailorsKnotTask(){
-        // После выполнения задачи, должен поменять флаг isTaskCompleted на true
-    }
 
     // Режим, который требует подождать несколько минут для
     // запуска нежелательного приложения или домена
