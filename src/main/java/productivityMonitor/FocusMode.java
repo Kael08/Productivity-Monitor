@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static productivityMonitor.controllers.MainController.countAlertWindow;
@@ -16,6 +18,11 @@ import static productivityMonitor.controllers.MainController.maxAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusMode {
+    // Минуты для работы в Помодоро
+    private static volatile int pomodoroWorkTime=1500;
+    // Минуты для перемены в Помодоро
+    private static volatile int pomodoroChillTime=300;
+
     // Основная сцена
     private MainController mainController;
 
@@ -87,7 +94,7 @@ public class FocusMode {
                     }
                 }
             } else {
-                long endTime = System.currentTimeMillis()+minutes*60*1000;
+                long endTime = System.currentTimeMillis()+(minutes*60*1000);
                 appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме FullLockdown!\n");
                 while (isMonitoringActive&&System.currentTimeMillis()<endTime) {
                     try {
@@ -178,7 +185,7 @@ public class FocusMode {
             }
         }else{
             appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Sailor`s Knot!\n");
-            long endTime=System.currentTimeMillis()*(minutes*60*1000);
+            long endTime=System.currentTimeMillis()+(minutes*60*1000);
             while(isMonitoringActive&&System.currentTimeMillis()<endTime){
                 try{
                     if(!isTaskCompleted){
@@ -244,7 +251,7 @@ public class FocusMode {
             }
         }else{
             appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Delay Gratification!\n");
-            long endTime=System.currentTimeMillis()*(60*1000*minutes);
+            long endTime=System.currentTimeMillis()+(60*1000*minutes);
             while (System.currentTimeMillis()<endTime){
                 try{
                     if(!isDelayOver){
@@ -389,8 +396,91 @@ public class FocusMode {
         setMonitoringTask(pomodoro);
     }
 
-    private Runnable pomodoro =()->{
+    private Runnable pomodoro = () -> {
+        if (minutes == 0) {
+            appendToConsole("Мониторинг запущен в режиме Pomodoro!\n");
+            while (isMonitoringActive) {
+                try {
+                    // Рабочая фаза (25 минут)
+                    appendToConsole("Рабочая фаза (25 минут)\n");
+                    long workEndTime = System.currentTimeMillis() + pomodoroWorkTime * 1000;
 
+                    while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
+                        closeProcess(processList); // Закрываем процессы каждую секунду
+                        Thread.sleep(1000);
+                        long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
+                        //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
+                    }
+
+                    if (!isMonitoringActive) break;
+
+                    // Фаза отдыха (5 минут)
+                    appendToConsole("\nФаза отдыха (5 минут)\n");
+                    long chillEndTime = System.currentTimeMillis() + pomodoroChillTime * 1000;
+
+                    while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
+                        Thread.sleep(1000);
+                        long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
+                        //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
+                    }
+
+                    if (!isMonitoringActive) break;
+                    appendToConsole("\nЦикл завершен, начинаем новый...\n");
+
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    appendToConsole("Мониторинг прерван!\n");
+                    break;
+                }
+            }
+        } else {
+            appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Pomodoro!\n");
+            long totalEndTime = System.currentTimeMillis() + minutes * 60 * 1000;
+
+            try {
+                while (isMonitoringActive && System.currentTimeMillis() < totalEndTime) {
+                    // Рабочая фаза (25 минут или оставшееся время)
+                    int workTime = Math.min(pomodoroWorkTime, (int)((totalEndTime - System.currentTimeMillis()) / 1000));
+                    if (workTime <= 0) break;
+
+                    appendToConsole("Рабочая фаза (" + (workTime/60) + " минут)\n");
+                    long workEndTime = System.currentTimeMillis() + workTime * 1000;
+
+                    while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
+                        closeProcess(processList); // Закрываем процессы каждую секунду
+                        Thread.sleep(1000);
+                        long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
+                        //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
+                    }
+
+                    if (!isMonitoringActive) break;
+
+                    // Фаза отдыха (5 минут или оставшееся время)
+                    int chillTime = Math.min(pomodoroChillTime,
+                            (int)((totalEndTime - System.currentTimeMillis()) / 1000));
+                    if (chillTime <= 0) break;
+
+                    appendToConsole("\nФаза отдыха (" + (chillTime/60) + " минут)\n");
+                    long chillEndTime = System.currentTimeMillis() + chillTime * 1000;
+
+                    while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
+                        Thread.sleep(1000);
+                        long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
+                        //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
+                    }
+
+                    if (!isMonitoringActive) break;
+                    appendToConsole("\n");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                appendToConsole("Мониторинг прерван!\n");
+            }
+
+            stopMonitoring();
+            appendToConsole("Время вышло!\n");
+        }
+        appendToConsole("Мониторинг окончен!\n");
     };
 
     // Начать мониторинг
