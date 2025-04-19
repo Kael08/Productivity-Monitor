@@ -28,6 +28,9 @@ v. 0.32
 v. 0.33
 - Доработан Sailor's Knot
 
+v. 0.34
+- Доработан Delay Gratification
+
 Планы:
 - Доработать Mindfulness
 - Добавить в Mindfulness работу с браузером

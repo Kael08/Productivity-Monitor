@@ -247,6 +247,40 @@ public class MainController {
         }
     }
 
+    private Stage delayGratificationStage=null;
+    // Создаёт окно с таймером, по истичении которого заблокированные приложения станут доступны
+    public void createDelayGratificationWindow() throws IOException{
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/delayGratificationWindowView.fxml"));
+
+            Parent root =fxmlLoader.load();
+
+            DelayGratificationWindowController delayGratificationWindowController=fxmlLoader.getController();
+
+            delayGratificationStage=new Stage();
+
+            delayGratificationWindowController.setThisStage(delayGratificationStage);
+
+            delayGratificationStage.setTitle("Delay Timer");
+            delayGratificationStage.setScene(new Scene(root));
+            delayGratificationStage.initOwner(mainStage);
+            delayGratificationStage.initModality(Modality.WINDOW_MODAL);
+
+            delayGratificationStage.setOnHidden(event->{
+                isDelayRunning=false;
+            });
+
+            delayGratificationStage.show();
+        }catch (IOException e){
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Не удалось открыть окно задачи");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
     // Конфигурация мониторинга
     @FXML
     private Button monitoringSettingsButton;

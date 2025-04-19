@@ -225,7 +225,13 @@ public class FocusMode {
                             closeProcess(processList);
                             if(!isDelayRunning){
                                 isDelayRunning=true;
-                                runDelay();
+                                Platform.runLater(()->{
+                                    try {
+                                        mainController.createDelayGratificationWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
                             }
                         }
                         Thread.sleep(2000);
@@ -246,7 +252,13 @@ public class FocusMode {
                             closeProcess(processList);
                             if(!isDelayRunning){
                                 isDelayRunning=true;
-                                runDelay();
+                                Platform.runLater(()->{
+                                    try {
+                                        mainController.createDelayGratificationWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
                             }
                         }
                         Thread.sleep(2000);
@@ -261,10 +273,6 @@ public class FocusMode {
             appendToConsole("Время вышло!");
         }
     };
-
-    private void runDelay(){
-        // Метод, который запускает задержку и по окончании разрешает доступ к запрещенным процессам
-    }
 
     // Режим, который пытается отговорить пользователя
     // от запуска нежелательного приложения или домена
