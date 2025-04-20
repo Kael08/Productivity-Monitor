@@ -51,7 +51,10 @@ public class FocusMode {
     private FocusWebSocketServer webSocketServer;
 
     // Пауза
-    public static Object pauseLock = new Object();
+    //public static Object pauseLock = new Object();
+
+    // Флаг для паузы
+    public static volatile boolean isPaused=false;
 
     public FocusMode(TextArea consoleTextArea, MainController mainController) {
         this.consoleTextArea = consoleTextArea;
@@ -293,7 +296,14 @@ public class FocusMode {
             while (isMonitoringActive) {
                 try {
                     if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
-                        Platform.runLater(()-> {
+                        closeProcess(processList);
+                        if(!isPaused){
+                            isPaused=true;
+                            Platform.runLater(()->{
+                                mainController.createAlertWindow(motivationMessagesList);
+                            });
+                        }
+                        /*Platform.runLater(()-> {
                             mainController.createAlertWindow(motivationMessagesList);
                         });
                         isPaused=true;
@@ -307,7 +317,8 @@ public class FocusMode {
                                     return;
                                 }
                             }
-                        }
+                        }*/
+
                     }
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -322,7 +333,7 @@ public class FocusMode {
             while (isMonitoringActive&&System.currentTimeMillis()<endTime){
                 try {
                     if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
-                        Platform.runLater(()-> {
+                        /*Platform.runLater(()-> {
                             mainController.createAlertWindow(motivationMessagesList);
                         });
                         isPaused=true;
@@ -336,6 +347,13 @@ public class FocusMode {
                                     return;
                                 }
                             }
+                        }*/
+                        closeProcess(processList);
+                        if(!isPaused){
+                            isPaused=true;
+                            Platform.runLater(()->{
+                                mainController.createAlertWindow(motivationMessagesList);
+                            });
                         }
                     }
                     Thread.sleep(2000);

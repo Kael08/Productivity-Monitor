@@ -199,7 +199,7 @@ public class MainController {
 
         Optional<ButtonType> result = confirmationAlert.showAndWait();
 
-        synchronized (pauseLock) {
+        /*synchronized (pauseLock) {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 pauseLock.notify();
                 isPaused = false;
@@ -208,6 +208,13 @@ public class MainController {
                 pauseLock.notify();
                 isPaused = false;
             }
+        }*/
+
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            isPaused=false;
+        } else{
+            countAlertWindow++;
+            isPaused=false;
         }
     }
 

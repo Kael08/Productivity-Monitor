@@ -34,9 +34,6 @@ public class SharedData {
     // Список с мотивирующими сообщениями для Mindfulness-режима мониторинга
     public static List<String> motivationMessagesList = new ArrayList<>();
 
-    // Флаг для паузы
-    public static volatile boolean isPaused=false;
-
     // Функция для чтения файла с мотивирующими сообщениями
     public static void readMotivationMessages() {
         Type messageListType = new TypeToken<List<String>>() {}.getType();
