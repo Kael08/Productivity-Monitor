@@ -184,62 +184,86 @@ public class FocusMode {
     }
 
     private Runnable sailorsKnot=()->{
-        if(minutes==0){
-            appendToConsole("Мониторинг запущен в режиме Sailor`s Knot!\n");
-            while(isMonitoringActive){
-                try{
-                    if(!isTaskCompleted){
-                        if(isProcessesActive(processList)){
-                            closeProcess(processList);
-                            if(!isTaskRunning){
-                                isTaskRunning=true;
-                                Platform.runLater(()->{
-                                    try {
-                                        mainController.createSailorsKnotWindow();
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
-                            }
-                        }
-                        Thread.sleep(2000);
-                    }
-                }catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг остановлен!\n");
-                    break;
-                }
-            }
-        }else{
-            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Sailor`s Knot!\n");
-            long endTime=System.currentTimeMillis()+(minutes*60*1000);
-            while(isMonitoringActive&&System.currentTimeMillis()<endTime){
-                try{
-                    if(!isTaskCompleted){
-                        if(isProcessesActive(processList)){
-                            closeProcess(processList);
-                            if(!isTaskRunning){
-                                isTaskRunning=true;
-                                Platform.runLater(()->{
-                                    try {
-                                        mainController.createSailorsKnotWindow();
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
-                            }
-                        }
-                        Thread.sleep(2000);
-                    }
-                }catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг прерван!\n");
-                    break;
-                }
-            }
-            stopMonitoring();
+        // Запуск WebSocket-сервера
+        if (isWebSocketServerActive && webSocketServer == null) {
+            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer.start();
+            appendToConsole("WebSocket-сервер запущен\n");
+        }
 
-            appendToConsole("Время вышло!\n");
+        try {
+            if (minutes == 0) {
+                appendToConsole("Мониторинг запущен в режиме Sailor`s Knot!\n");
+                while (isMonitoringActive) {
+                    try {
+                        if (!isTaskCompleted) {
+                            if (isProcessesActive(processList)) {
+                                closeProcess(processList);
+                                if (!isTaskRunning) {
+                                    isTaskRunning = true;
+                                    Platform.runLater(() -> {
+                                        try {
+                                            mainController.createSailorsKnotWindow();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                }
+                            }
+                            Thread.sleep(2000);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг остановлен!\n");
+                        break;
+                    }
+                }
+            } else {
+                appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Sailor`s Knot!\n");
+                long endTime = System.currentTimeMillis() + (minutes * 60 * 1000);
+                while (isMonitoringActive && System.currentTimeMillis() < endTime) {
+                    try {
+                        if (!isTaskCompleted) {
+                            if (isProcessesActive(processList)) {
+                                closeProcess(processList);
+                                if (!isTaskRunning) {
+                                    isTaskRunning = true;
+                                    Platform.runLater(() -> {
+                                        try {
+                                            mainController.createSailorsKnotWindow();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                }
+                            }
+                            Thread.sleep(2000);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг прерван!\n");
+                        break;
+                    }
+                }
+                stopMonitoring();
+
+                appendToConsole("Время вышло!\n");
+            }
+        }finally {
+            if (isWebSocketServerActive && webSocketServer != null) {
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                try {
+                    webSocketServer.stop();
+                } catch (Exception e) {
+                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                } finally {
+                    if (wasInterrupted) {
+                        Thread.currentThread().interrupt(); // Восстановить флаг
+                    }
+                    webSocketServer = null;
+                    appendToConsole("WebSocket-сервер остановлен\n");
+                }
+            }
         }
     };
 
@@ -250,61 +274,84 @@ public class FocusMode {
     }
 
     private Runnable delayGratification=()->{
-        if(minutes==0){
-            appendToConsole("Мониторинг запущен в режиме Delay Gratification!\n");
-            while(isMonitoringActive){
+        // Запуск WebSocket-сервера
+        if (isWebSocketServerActive && webSocketServer == null) {
+            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer.start();
+            appendToConsole("WebSocket-сервер запущен\n");
+        }
+        try{
+            if (minutes == 0) {
+                appendToConsole("Мониторинг запущен в режиме Delay Gratification!\n");
+                while (isMonitoringActive) {
+                    try {
+                        if (!isDelayOver) {
+                            if (isProcessesActive(processList)) {
+                                closeProcess(processList);
+                                if (!isDelayRunning) {
+                                    isDelayRunning = true;
+                                    Platform.runLater(() -> {
+                                        try {
+                                            mainController.createDelayGratificationWindow();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                }
+                            }
+                            Thread.sleep(2000);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг остановлен!\n");
+                        break;
+                    }
+                }
+            } else {
+                appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Delay Gratification!\n");
+                long endTime = System.currentTimeMillis() + (60 * 1000 * minutes);
+                while (System.currentTimeMillis() < endTime) {
+                    try {
+                        if (!isDelayOver) {
+                            if (isProcessesActive(processList)) {
+                                closeProcess(processList);
+                                if (!isDelayRunning) {
+                                    isDelayRunning = true;
+                                    Platform.runLater(() -> {
+                                        try {
+                                            mainController.createDelayGratificationWindow();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                }
+                            }
+                            Thread.sleep(2000);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг прерван!\n");
+                        break;
+                    }
+                }
+                stopMonitoring();
+                appendToConsole("Время вышло!");
+            }
+        }finally {
+            if (isWebSocketServerActive && webSocketServer != null) {
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
                 try {
-                    if(!isDelayOver){
-                        if(isProcessesActive(processList)){
-                            closeProcess(processList);
-                            if(!isDelayRunning){
-                                isDelayRunning=true;
-                                Platform.runLater(()->{
-                                    try {
-                                        mainController.createDelayGratificationWindow();
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
-                            }
-                        }
-                        Thread.sleep(2000);
+                    webSocketServer.stop();
+                } catch (Exception e) {
+                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                } finally {
+                    if (wasInterrupted) {
+                        Thread.currentThread().interrupt(); // Восстановить флаг
                     }
-                }catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг остановлен!\n");
-                    break;
+                    webSocketServer = null;
+                    appendToConsole("WebSocket-сервер остановлен\n");
                 }
             }
-        }else{
-            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Delay Gratification!\n");
-            long endTime=System.currentTimeMillis()+(60*1000*minutes);
-            while (System.currentTimeMillis()<endTime){
-                try{
-                    if(!isDelayOver){
-                        if(isProcessesActive(processList)){
-                            closeProcess(processList);
-                            if(!isDelayRunning){
-                                isDelayRunning=true;
-                                Platform.runLater(()->{
-                                    try {
-                                        mainController.createDelayGratificationWindow();
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                });
-                            }
-                        }
-                        Thread.sleep(2000);
-                    }
-                }catch (InterruptedException e){
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг прерван!\n");
-                    break;
-                }
-            }
-            stopMonitoring();
-            appendToConsole("Время вышло!");
         }
     };
 
@@ -315,18 +362,25 @@ public class FocusMode {
     }
 
     private Runnable mindfulness = () ->{
-        if(minutes==0){
-            appendToConsole("Мониторинг запущен в режиме Mindfulness!\n");
-            while (isMonitoringActive) {
-                try {
-                    if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
-                        closeProcess(processList);
-                        if(!isPaused){
-                            isPaused=true;
-                            Platform.runLater(()->{
-                                mainController.createAlertWindow(motivationMessagesList);
-                            });
-                        }
+        // Запуск WebSocket-сервера
+        if (isWebSocketServerActive && webSocketServer == null) {
+            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer.start();
+            appendToConsole("WebSocket-сервер запущен\n");
+        }
+        try{
+            if (minutes == 0) {
+                appendToConsole("Мониторинг запущен в режиме Mindfulness!\n");
+                while (isMonitoringActive) {
+                    try {
+                        if (countAlertWindow < maxAlertWindow && isProcessesActive(processList)) {
+                            closeProcess(processList);
+                            if (!isPaused) {
+                                isPaused = true;
+                                Platform.runLater(() -> {
+                                    mainController.createAlertWindow(motivationMessagesList);
+                                });
+                            }
                         /*Platform.runLater(()-> {
                             mainController.createAlertWindow(motivationMessagesList);
                         });
@@ -343,20 +397,20 @@ public class FocusMode {
                             }
                         }*/
 
+                        }
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг остановлен!\n");
+                        break;
                     }
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг остановлен!\n");
-                    break;
                 }
-            }
-        } else {
-            appendToConsole("Мониторинг запущен на "+minutes+" минут в режиме Mindfulness!\n");
-            long endTime=System.currentTimeMillis()+(minutes*60*1000);
-            while (isMonitoringActive&&System.currentTimeMillis()<endTime){
-                try {
-                    if (countAlertWindow<maxAlertWindow&&isProcessesActive(processList)) {
+            } else {
+                appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Mindfulness!\n");
+                long endTime = System.currentTimeMillis() + (minutes * 60 * 1000);
+                while (isMonitoringActive && System.currentTimeMillis() < endTime) {
+                    try {
+                        if (countAlertWindow < maxAlertWindow && isProcessesActive(processList)) {
                         /*Platform.runLater(()-> {
                             mainController.createAlertWindow(motivationMessagesList);
                         });
@@ -372,23 +426,39 @@ public class FocusMode {
                                 }
                             }
                         }*/
-                        closeProcess(processList);
-                        if(!isPaused){
-                            isPaused=true;
-                            Platform.runLater(()->{
-                                mainController.createAlertWindow(motivationMessagesList);
-                            });
+                            closeProcess(processList);
+                            if (!isPaused) {
+                                isPaused = true;
+                                Platform.runLater(() -> {
+                                    mainController.createAlertWindow(motivationMessagesList);
+                                });
+                            }
                         }
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг прерван!\n");
+                        break;
                     }
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    appendToConsole("Мониторинг прерван!\n");
-                    break;
+                }
+                stopMonitoring();
+                appendToConsole("Время вышло!\n");
+            }
+        }finally {
+            if (isWebSocketServerActive && webSocketServer != null) {
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                try {
+                    webSocketServer.stop();
+                } catch (Exception e) {
+                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                } finally {
+                    if (wasInterrupted) {
+                        Thread.currentThread().interrupt(); // Восстановить флаг
+                    }
+                    webSocketServer = null;
+                    appendToConsole("WebSocket-сервер остановлен\n");
                 }
             }
-            stopMonitoring();
-            appendToConsole("Время вышло!\n");
         }
         appendToConsole("Мониторинг окончен!\n");
         countAlertWindow=0;
@@ -439,88 +509,111 @@ public class FocusMode {
     }
 
     private Runnable pomodoro = () -> {
-        if (minutes == 0) {
-            appendToConsole("Мониторинг запущен в режиме Pomodoro!\n");
-            while (isMonitoringActive) {
+        // Запуск WebSocket-сервера
+        if (isWebSocketServerActive && webSocketServer == null) {
+            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer.start();
+            appendToConsole("WebSocket-сервер запущен\n");
+        }
+        try{
+            if (minutes == 0) {
+                appendToConsole("Мониторинг запущен в режиме Pomodoro!\n");
+                while (isMonitoringActive) {
+                    try {
+                        // Рабочая фаза (25 минут)
+                        appendToConsole("Рабочая фаза (25 минут)\n");
+                        long workEndTime = System.currentTimeMillis() + pomodoroWorkTime * 1000;
+
+                        while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
+                            closeProcess(processList); // Закрываем процессы каждую секунду
+                            Thread.sleep(1000);
+                            long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
+                            //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
+                        }
+
+                        if (!isMonitoringActive) break;
+
+                        // Фаза отдыха (5 минут)
+                        appendToConsole("\nФаза отдыха (5 минут)\n");
+                        long chillEndTime = System.currentTimeMillis() + pomodoroChillTime * 1000;
+
+                        while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
+                            Thread.sleep(1000);
+                            long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
+                            //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
+                        }
+
+                        if (!isMonitoringActive) break;
+                        appendToConsole("\nЦикл завершен, начинаем новый...\n");
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        appendToConsole("Мониторинг прерван!\n");
+                        break;
+                    }
+                }
+            } else {
+                appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Pomodoro!\n");
+                long totalEndTime = System.currentTimeMillis() + minutes * 60 * 1000;
+
                 try {
-                    // Рабочая фаза (25 минут)
-                    appendToConsole("Рабочая фаза (25 минут)\n");
-                    long workEndTime = System.currentTimeMillis() + pomodoroWorkTime * 1000;
+                    while (isMonitoringActive && System.currentTimeMillis() < totalEndTime) {
+                        // Рабочая фаза (25 минут или оставшееся время)
+                        int workTime = Math.min(pomodoroWorkTime, (int) ((totalEndTime - System.currentTimeMillis()) / 1000));
+                        if (workTime <= 0) break;
 
-                    while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
-                        closeProcess(processList); // Закрываем процессы каждую секунду
-                        Thread.sleep(1000);
-                        long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
-                        //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
+                        appendToConsole("Рабочая фаза (" + (workTime / 60) + " минут)\n");
+                        long workEndTime = System.currentTimeMillis() + workTime * 1000;
+
+                        while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
+                            closeProcess(processList); // Закрываем процессы каждую секунду
+                            Thread.sleep(1000);
+                            long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
+                            //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
+                        }
+
+                        if (!isMonitoringActive) break;
+
+                        // Фаза отдыха (5 минут или оставшееся время)
+                        int chillTime = Math.min(pomodoroChillTime,
+                                (int) ((totalEndTime - System.currentTimeMillis()) / 1000));
+                        if (chillTime <= 0) break;
+
+                        appendToConsole("\nФаза отдыха (" + (chillTime / 60) + " минут)\n");
+                        long chillEndTime = System.currentTimeMillis() + chillTime * 1000;
+
+                        while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
+                            Thread.sleep(1000);
+                            long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
+                            //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
+                        }
+
+                        if (!isMonitoringActive) break;
+                        appendToConsole("\n");
                     }
-
-                    if (!isMonitoringActive) break;
-
-                    // Фаза отдыха (5 минут)
-                    appendToConsole("\nФаза отдыха (5 минут)\n");
-                    long chillEndTime = System.currentTimeMillis() + pomodoroChillTime * 1000;
-
-                    while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
-                        Thread.sleep(1000);
-                        long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
-                        //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
-                    }
-
-                    if (!isMonitoringActive) break;
-                    appendToConsole("\nЦикл завершен, начинаем новый...\n");
-
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     appendToConsole("Мониторинг прерван!\n");
-                    break;
+                }
+
+                stopMonitoring();
+                appendToConsole("Время вышло!\n");
+            }
+        }finally {
+            if (isWebSocketServerActive && webSocketServer != null) {
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                try {
+                    webSocketServer.stop();
+                } catch (Exception e) {
+                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                } finally {
+                    if (wasInterrupted) {
+                        Thread.currentThread().interrupt(); // Восстановить флаг
+                    }
+                    webSocketServer = null;
+                    appendToConsole("WebSocket-сервер остановлен\n");
                 }
             }
-        } else {
-            appendToConsole("Мониторинг запущен на " + minutes + " минут в режиме Pomodoro!\n");
-            long totalEndTime = System.currentTimeMillis() + minutes * 60 * 1000;
-
-            try {
-                while (isMonitoringActive && System.currentTimeMillis() < totalEndTime) {
-                    // Рабочая фаза (25 минут или оставшееся время)
-                    int workTime = Math.min(pomodoroWorkTime, (int)((totalEndTime - System.currentTimeMillis()) / 1000));
-                    if (workTime <= 0) break;
-
-                    appendToConsole("Рабочая фаза (" + (workTime/60) + " минут)\n");
-                    long workEndTime = System.currentTimeMillis() + workTime * 1000;
-
-                    while (isMonitoringActive && System.currentTimeMillis() < workEndTime) {
-                        closeProcess(processList); // Закрываем процессы каждую секунду
-                        Thread.sleep(1000);
-                        long remaining = (workEndTime - System.currentTimeMillis()) / 1000;
-                        //appendToConsole("Осталось работать: " + calcTime((int) remaining) + "\r");
-                    }
-
-                    if (!isMonitoringActive) break;
-
-                    // Фаза отдыха (5 минут или оставшееся время)
-                    int chillTime = Math.min(pomodoroChillTime,
-                            (int)((totalEndTime - System.currentTimeMillis()) / 1000));
-                    if (chillTime <= 0) break;
-
-                    appendToConsole("\nФаза отдыха (" + (chillTime/60) + " минут)\n");
-                    long chillEndTime = System.currentTimeMillis() + chillTime * 1000;
-
-                    while (isMonitoringActive && System.currentTimeMillis() < chillEndTime) {
-                        Thread.sleep(1000);
-                        long remaining = (chillEndTime - System.currentTimeMillis()) / 1000;
-                        //appendToConsole("Осталось отдыхать: " + calcTime((int) remaining) + "\r");
-                    }
-
-                    if (!isMonitoringActive) break;
-                    appendToConsole("\n");
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                appendToConsole("Мониторинг прерван!\n");
-            }
-
-            stopMonitoring();
-            appendToConsole("Время вышло!\n");
         }
         appendToConsole("Мониторинг окончен!\n");
     };
