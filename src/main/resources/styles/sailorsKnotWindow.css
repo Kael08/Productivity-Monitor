@@ -1,0 +1,44 @@
+#taskTextArea{
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #6A5CDA;
+}
+
+#answerTextArea{
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #6A5CDA;
+    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-faint-focus-color: transparent; /* Убирает вторичный цвет фокуса */
+}
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+#enterButton{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5 15 5 15; /* Увеличил отступы внутри кнопок */
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+    -fx-effect: null;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-text-fill: green;
+    -fx-border-color: green;
+}
+
+#enterTextLabel{
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #6A5CDA;
+}

@@ -13,8 +13,8 @@
             prefHeight="400.0" prefWidth="300.0"
             stylesheets="@../styles/sailorsKnotWindow.css">
     <top>
-        <HBox>
-            <Label fx:id="enterTextLabel" text="Enter the Text"/>
+        <HBox alignment="CENTER">
+            <Label fx:id="enterTextLabel" text="Enter the Text" />
             <HBox.margin>
                 <Insets top="10"/>
                 <Insets bottom="10"/>
@@ -24,10 +24,11 @@
 
     <center>
         <VBox>
-            <TextArea fx:id="taskTextArea" editable="false">
+            <TextArea fx:id="taskTextArea" editable="false" wrapText="true" mouseTransparent="true" focusTraversable="false"
+            VBox.vgrow="ALWAYS">
 
             </TextArea>
-            <TextArea fx:id="answerTextArea">
+            <TextArea fx:id="answerTextArea" wrapText="true" VBox.vgrow="ALWAYS">
 
             </TextArea>
             <VBox.margin>
@@ -37,8 +38,8 @@
     </center>
 
     <bottom>
-        <HBox>
-            <Button fx:id="enterButton" text="Enter" onAction="#handleEnter" HBox.hgrow="NEVER" prefWidth="50"/>
+        <HBox alignment="CENTER">
+            <Button fx:id="enterButton" text="Enter" onAction="#handleEnter" HBox.hgrow="NEVER" prefWidth="150"/>
         </HBox>
     </bottom>
 </BorderPane>

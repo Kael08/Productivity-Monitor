@@ -237,6 +237,8 @@ public class MainController {
             mindfulnessStage.setScene(new Scene(root));
             mindfulnessStage.initOwner(mainStage);
             mindfulnessStage.initModality(Modality.WINDOW_MODAL);
+            mindfulnessStage.setMinHeight(200);
+            mindfulnessStage.setMinWidth(400);
 
             mindfulnessStage.setOnHidden(event->{
                 countAlertWindow++;
@@ -270,10 +272,12 @@ public class MainController {
             sailorsKnotWindowController.setThisStage(sailorsKnotStage);
 
             // Настраиваем Stage
-            sailorsKnotStage.setTitle("Task");
+            sailorsKnotStage.setTitle("Sailor's Knot Task");
             sailorsKnotStage.setScene(new Scene(root));
             sailorsKnotStage.initOwner(mainStage);
             sailorsKnotStage.initModality(Modality.WINDOW_MODAL);
+            sailorsKnotStage.setMinWidth(300);
+            sailorsKnotStage.setMinHeight(400);
 
             sailorsKnotStage.setOnHidden(event -> {
                 isTaskRunning = false;
@@ -409,12 +413,6 @@ public class MainController {
 
         // Чтение и сохранение текстов для Sailor's Knot
         readSailorsKnotText();
-
-        try {
-            createMindfulnessWindow();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     // Функция для обновления времени
