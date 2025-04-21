@@ -312,6 +312,8 @@ public class MainController {
             delayGratificationStage.setScene(new Scene(root));
             delayGratificationStage.initOwner(mainStage);
             delayGratificationStage.initModality(Modality.WINDOW_MODAL);
+            delayGratificationStage.setMinHeight(200);
+            delayGratificationStage.setMinWidth(420);
 
             delayGratificationStage.setOnHidden(event->{
                 isDelayRunning=false;

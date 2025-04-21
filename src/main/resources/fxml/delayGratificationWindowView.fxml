@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.DelayGratificationWindowController"
-            prefHeight="400.0" prefWidth="600.0" >
-    <top>
-        <HBox>
-            <Label fx:id="infoLabel" text="After the time has elapsed, access to the applications will be open!"/>
-            <HBox.margin>
-                <Insets top="10"/>
-                <Insets bottom="10"/>
-            </HBox.margin>
-        </HBox>
-    </top>
+            prefHeight="200.0" prefWidth="420.0"
+            stylesheets="@../styles/delayGratificationWindow.css"
+            fx:id="borderPane">
 
-    <bottom>
-        <HBox>
-            <Label fx:id="timerLabel"/>
-            <HBox.margin>
-                <Insets bottom="10"/>
-            </HBox.margin>
-        </HBox>
-    </bottom>
+    <center>
+        <VBox alignment="CENTER" spacing="10">
+            <!-- Информационный текст -->
+            <Label fx:id="infoLabel"
+                   text="After the time has elapsed, access to the applications will be open!"
+                   wrapText="true"
+                   VBox.vgrow="ALWAYS"/>
+
+            <!-- Таймер -->
+            <Label fx:id="timerLabel"
+                   text="00:00:00"
+                   VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
 </BorderPane>

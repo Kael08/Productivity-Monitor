@@ -8,7 +8,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.MindfulnessWindowController"
             prefHeight="200" prefWidth="400"
-            stylesheets="@../styles/mindfulness.css"
+            stylesheets="@../styles/mindfulnessWindow.css"
             fx:id="borderPane">
 
     <top>

@@ -1,0 +1,32 @@
+/* Основные стили */
+#borderPane {
+    -fx-background-color: white;
+    -fx-padding: 20px; /* Общие отступы */
+}
+
+/* Стиль для информационного текста */
+#infoLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-padding: 0 15 0 15;
+    -fx-text-fill: green;
+}
+
+/* Стиль для таймера */
+#timerLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 25px;
+    -fx-text-alignment: center;
+    -fx-padding: 10 15 0 15; /* Добавил отступ сверху */
+    -fx-text-fill: red;
+}
+
+/* Загрузка шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}

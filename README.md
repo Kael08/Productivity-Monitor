@@ -51,8 +51,11 @@ v. 0.40
 - Установлены минимальные размеры окна mindfulness
 - Переименован runSettings.css в monitoringSettings.css
 
+v. 0.41
+- Стилизовано окно для delay gratification!
+- Переименован mindfulness.css в mindfulnessWindow.css
+
 Планы:
 - Связать работу расширения с режимами мониторинга
 - Уборка
-- Стилизовать окна режимов
 - Решить проблему с блокировкой доменов
