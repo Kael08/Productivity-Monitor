@@ -378,7 +378,12 @@ public class FocusMode {
                             if (!isPaused) {
                                 isPaused = true;
                                 Platform.runLater(() -> {
-                                    mainController.createAlertWindow(motivationMessagesList);
+                                    try {
+                                        System.out.println(1);
+                                        mainController.createMindfulnessWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
                             }
                         /*Platform.runLater(()-> {
@@ -430,7 +435,11 @@ public class FocusMode {
                             if (!isPaused) {
                                 isPaused = true;
                                 Platform.runLater(() -> {
-                                    mainController.createAlertWindow(motivationMessagesList);
+                                    try {
+                                        mainController.createMindfulnessWindow();
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
                             }
                         }

@@ -188,7 +188,7 @@ public class MainController {
     public static int countAlertWindow = 0;
 
     // Создания Alert-окон, которые пытаются отговорить пользователя от запуска нежелательных приложений
-    public void createAlertWindow(List<String> messagesList){
+    /*public void createAlertWindow(List<String> messagesList){
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
         Random random = new Random();
         String message = motivationMessagesList.get(random.nextInt(motivationMessagesList.size()));
@@ -199,7 +199,7 @@ public class MainController {
 
         Optional<ButtonType> result = confirmationAlert.showAndWait();
 
-        /*synchronized (pauseLock) {
+        *//*synchronized (pauseLock) {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 pauseLock.notify();
                 isPaused = false;
@@ -208,13 +208,49 @@ public class MainController {
                 pauseLock.notify();
                 isPaused = false;
             }
-        }*/
+        }*//*
 
         if (result.isPresent() && result.get() == ButtonType.OK){
             isPaused=false;
         } else{
             countAlertWindow++;
             isPaused=false;
+        }
+    }*/
+
+    private Stage mindfulnessStage = null;
+
+    // Создание окна-предупреждения для режима Mindfulness
+    public void createMindfulnessWindow() throws IOException{
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/mindfulnessWindowView.fxml"));
+
+            Parent root = fxmlLoader.load();
+
+            MindfulnessWindowController mindfulnessWindowController=fxmlLoader.getController();
+
+            mindfulnessStage=new Stage();
+
+            mindfulnessWindowController.setThisStage(mindfulnessStage);
+
+            mindfulnessStage.setTitle("Warning!");
+            mindfulnessStage.setScene(new Scene(root));
+            mindfulnessStage.initOwner(mainStage);
+            mindfulnessStage.initModality(Modality.WINDOW_MODAL);
+
+            mindfulnessStage.setOnHidden(event->{
+                countAlertWindow++;
+                isPaused=false;
+            });
+
+            mindfulnessStage.show();
+        }catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка");
+            alert.setHeaderText("Не удалось открыть окно задачи");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -373,6 +409,12 @@ public class MainController {
 
         // Чтение и сохранение текстов для Sailor's Knot
         readSailorsKnotText();
+
+        try {
+            createMindfulnessWindow();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Функция для обновления времени
