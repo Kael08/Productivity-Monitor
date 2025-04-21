@@ -23,7 +23,7 @@ public class SharedData {
     public static ObservableList<String> urlList = FXCollections.observableArrayList();
 
     // Список режимов
-    public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown","Mindfulless","Sailors's Knot","Delay Gratification", "Pomodoro");
+    public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown","Mindfulness","Sailor's Knot","Delay Gratification", "Pomodoro");
 
     // Флаг для запуска веб-сервера
     public static boolean isWebSocketServerActive = true;
@@ -65,4 +65,6 @@ public class SharedData {
             e.printStackTrace();
         }
     }
+
+    public static String currentMode="FullLockdown";
 }

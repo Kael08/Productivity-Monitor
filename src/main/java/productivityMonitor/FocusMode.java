@@ -83,7 +83,7 @@ public class FocusMode {
     private Runnable fullLockdown = () -> {
         // Запуск WebSocket-сервера
         if (isWebSocketServerActive && webSocketServer == null) {
-            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer = new FocusWebSocketServer(8081,consoleTextArea,mainController);
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }
@@ -186,7 +186,7 @@ public class FocusMode {
     private Runnable sailorsKnot=()->{
         // Запуск WebSocket-сервера
         if (isWebSocketServerActive && webSocketServer == null) {
-            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer = new FocusWebSocketServer(8081,consoleTextArea,mainController);
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }
@@ -210,8 +210,23 @@ public class FocusMode {
                                     });
                                 }
                             }
-                            Thread.sleep(2000);
+                        } else {
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
+                            }
                         }
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         appendToConsole("Мониторинг остановлен!\n");
@@ -237,8 +252,23 @@ public class FocusMode {
                                     });
                                 }
                             }
-                            Thread.sleep(2000);
+                        } else {
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
+                            }
                         }
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         appendToConsole("Мониторинг прерван!\n");
@@ -276,7 +306,7 @@ public class FocusMode {
     private Runnable delayGratification=()->{
         // Запуск WebSocket-сервера
         if (isWebSocketServerActive && webSocketServer == null) {
-            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer = new FocusWebSocketServer(8081,consoleTextArea,mainController);
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }
@@ -299,8 +329,23 @@ public class FocusMode {
                                     });
                                 }
                             }
-                            Thread.sleep(2000);
+                        } else{
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
+                            }
                         }
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         appendToConsole("Мониторинг остановлен!\n");
@@ -326,8 +371,23 @@ public class FocusMode {
                                     });
                                 }
                             }
-                            Thread.sleep(2000);
+                        } else{
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
+                            }
                         }
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         appendToConsole("Мониторинг прерван!\n");
@@ -364,7 +424,7 @@ public class FocusMode {
     private Runnable mindfulness = () ->{
         // Запуск WebSocket-сервера
         if (isWebSocketServerActive && webSocketServer == null) {
-            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer = new FocusWebSocketServer(8081,consoleTextArea,mainController);
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }
@@ -379,7 +439,6 @@ public class FocusMode {
                                 isPaused = true;
                                 Platform.runLater(() -> {
                                     try {
-                                        System.out.println(1);
                                         mainController.createMindfulnessWindow();
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
@@ -401,7 +460,22 @@ public class FocusMode {
                                 }
                             }
                         }*/
-
+                        // Если число закрытий окон превзошло лимит, то нужно преждевременно выключить WebSocketServer
+                        } else if(countAlertWindow==maxAlertWindow){
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
+                            }
                         }
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
@@ -441,6 +515,22 @@ public class FocusMode {
                                         throw new RuntimeException(e);
                                     }
                                 });
+                            }
+                            // Если число закрытий окон превзошло лимит, то нужно преждевременно выключить WebSocketServer
+                        } else if(countAlertWindow==maxAlertWindow){
+                            if (isWebSocketServerActive && webSocketServer != null) {
+                                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                                try {
+                                    webSocketServer.stop();
+                                } catch (Exception e) {
+                                    appendToConsole("Ошибка при остановке WebSocket: " + e.getMessage() + "\n");
+                                } finally {
+                                    if (wasInterrupted) {
+                                        Thread.currentThread().interrupt(); // Восстановить флаг
+                                    }
+                                    webSocketServer = null;
+                                    appendToConsole("WebSocket-сервер остановлен\n");
+                                }
                             }
                         }
                         Thread.sleep(2000);
@@ -520,7 +610,7 @@ public class FocusMode {
     private Runnable pomodoro = () -> {
         // Запуск WebSocket-сервера
         if (isWebSocketServerActive && webSocketServer == null) {
-            webSocketServer = new FocusWebSocketServer(8081);
+            webSocketServer = new FocusWebSocketServer(8081,consoleTextArea,mainController);
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }

@@ -113,7 +113,7 @@ public class MonitoringSettingsController {
         processListComboBox.setItems(processList);
         urlListComboBox.setItems(urlList);
         modeListComboBox.setItems(modeList);
-        modeListComboBox.setValue("FullLockdown");
+        modeListComboBox.setValue(currentMode);
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
         blockDomainCheckBox.setSelected(isDomainBlockerActive);
@@ -133,26 +133,31 @@ public class MonitoringSettingsController {
             switch (modeListComboBox.getValue()){
                 case "FullLockdown":
                     Platform.runLater(()->{
+                        currentMode="FullLockdown";
                         focusMode.setFullLockdownMode();
                     });
                     break;
-                case "Mindfulless":
+                case "Mindfulness":
                     Platform.runLater(()->{
+                        currentMode="Mindfulness";
                         focusMode.setMindfulness();
                     });
                     break;
-                case "Sailors's Knot":
+                case "Sailor's Knot":
                     Platform.runLater(()->{
+                        currentMode="Sailor's Knot";
                         focusMode.setSailorsKnot();
                     });
                     break;
                 case "Delay Gratification":
                     Platform.runLater(()->{
+                        currentMode="Delay Gratification";
                         focusMode.setDelayGratification();
                     });
                     break;
                 case "Pomodoro":
                     Platform.runLater(()->{
+                        currentMode="Pomodoro";
                         focusMode.setPomodoro();
                     });
                     break;

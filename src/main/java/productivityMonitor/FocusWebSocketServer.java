@@ -1,21 +1,41 @@
 package productivityMonitor;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
+import productivityMonitor.controllers.MainController;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static productivityMonitor.utils.SharedData.urlList;
+import static productivityMonitor.FocusMode.*;
+import static productivityMonitor.controllers.MainController.countAlertWindow;
+import static productivityMonitor.controllers.MainController.maxAlertWindow;
+import static productivityMonitor.utils.SharedData.*;
 
 public class FocusWebSocketServer extends WebSocketServer {
 
     private final Gson gson = new Gson();
 
-    public FocusWebSocketServer(int port) {
+    private TextArea consoleTextArea;
+
+    private MainController mainController;
+
+    public FocusWebSocketServer(int port, TextArea consoleTextArea,MainController mainController) {
         super(new InetSocketAddress(port));
+        this.consoleTextArea=consoleTextArea;
+        this.mainController=mainController;
+    }
+
+    private void appendToConsole(String text) {
+        if (consoleTextArea != null) {
+            // Специальный метод в javaFX для выполнения кода в потоке javaFX Application Thread
+            Platform.runLater(() -> consoleTextArea.appendText(text));
+        }
     }
 
     @Override
@@ -27,6 +47,66 @@ public class FocusWebSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println("Получено сообщение: " + message);
+        if(message.startsWith("CT:")){
+            handleTabClosed(message.substring(3));
+        }
+    }
+
+    // Обработка закрытия вкладки для разных режимов
+    public void handleTabClosed(String url) {
+        switch (currentMode) {
+            case "Mindfulness":
+                handleMindfulnessTabClosed(url);
+                break;
+            case "Sailor's Knot":
+                handleSailorsKnotTabClosed(url);
+                break;
+            case "Delay Gratification":
+                handleDelayGratificationTabClosed(url);
+                break;
+        }
+    }
+
+    private void handleMindfulnessTabClosed(String url) {
+        if (countAlertWindow < maxAlertWindow && !isPaused) {
+            isPaused = true;
+            Platform.runLater(() -> {
+                try {
+                    mainController.createMindfulnessWindow();
+                } catch (IOException e) {
+                    appendToConsole("Ошибка при создании окна Mindfulness: " + e.getMessage() + "\n");
+                }
+            });
+        }
+        appendToConsole("Mindfulness: заблокирована вкладка " + url + "\n");
+    }
+
+    private void handleSailorsKnotTabClosed(String url) {
+        if (!isTaskCompleted && !isTaskRunning) {
+            isTaskRunning = true;
+            Platform.runLater(() -> {
+                try {
+                    mainController.createSailorsKnotWindow();
+                } catch (IOException e) {
+                    appendToConsole("Ошибка при создании окна Sailor's Knot: " + e.getMessage() + "\n");
+                }
+            });
+        }
+        appendToConsole("Sailor's Knot: заблокирована вкладка " + url + "\n");
+    }
+
+    private void handleDelayGratificationTabClosed(String url) {
+        if (!isDelayOver && !isDelayRunning) {
+            isDelayRunning = true;
+            Platform.runLater(() -> {
+                try {
+                    mainController.createDelayGratificationWindow();
+                } catch (IOException e) {
+                    appendToConsole("Ошибка при создании окна Delay Gratification: " + e.getMessage() + "\n");
+                }
+            });
+        }
+        appendToConsole("Delay Gratification: заблокирована вкладка " + url + "\n");
     }
 
     public void sendBlacklist(WebSocket conn) {
