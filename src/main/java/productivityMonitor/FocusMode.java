@@ -13,6 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static productivityMonitor.WindowsFirewallDomainBlocker.startBlocker;
+import static productivityMonitor.WindowsFirewallDomainBlocker.stopBlocker;
 import static productivityMonitor.controllers.MainController.countAlertWindow;
 import static productivityMonitor.controllers.MainController.maxAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
@@ -50,6 +52,9 @@ public class FocusMode {
     // Сервер для браузера
     private FocusWebSocketServer webSocketServer;
 
+    // Блокировка доменов через брэндмауэр Windows
+    private WindowsFirewallDomainBlocker windowsFirewallDomainBlocker=new WindowsFirewallDomainBlocker();
+
     // Пауза
     //public static Object pauseLock = new Object();
 
@@ -82,6 +87,12 @@ public class FocusMode {
             webSocketServer.start();
             appendToConsole("WebSocket-сервер запущен\n");
         }
+        // Запуск блокировщика доменов
+        /*if(isDomainBlockerActive){
+            startBlocker();
+            appendToConsole("Блокировщик доменов запущен!\n");
+        }*/
+
 
         try {
             if(minutes==0) {
@@ -128,6 +139,19 @@ public class FocusMode {
                     appendToConsole("WebSocket-сервер остановлен\n");
                 }
             }
+            /*if(isDomainBlockerActive){
+                boolean wasInterrupted = Thread.interrupted(); // Сбросить флаг
+                try{
+                    stopBlocker();
+                } catch (Exception e){
+                    appendToConsole("Ошибка при остановке блокировщика доменов\n"+e.getMessage()+"\n");
+                } finally {
+                    if(wasInterrupted){
+                        Thread.currentThread().interrupt(); // Восстановить флаг
+                    }
+                    appendToConsole("Блокировщик доменов остановлен!\n");
+                }
+            }*/
         }
 
         appendToConsole("Мониторинг завершен\n");

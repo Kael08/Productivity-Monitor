@@ -28,6 +28,9 @@ public class SharedData {
     // Флаг для запуска веб-сервера
     public static boolean isWebSocketServerActive = true;
 
+    // Флаг для запуска блокировщика доменов
+    public static boolean isDomainBlockerActive=true;
+
     // Флаг для обозначения запуска мониторинга
     public static volatile boolean isMonitoringActive = false;
 

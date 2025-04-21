@@ -116,11 +116,17 @@ public class MonitoringSettingsController {
         modeListComboBox.setValue("FullLockdown");
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
+        blockDomainCheckBox.setSelected(isDomainBlockerActive);
 
         blockDomainCheckBox.setOnAction(event->{
-            if(blockDomainCheckBox.isSelected())
-                isWebSocketServerActive=true;
-            else isWebSocketServerActive=false;
+            if(blockDomainCheckBox.isSelected()) {
+                isWebSocketServerActive = true;
+                isDomainBlockerActive=true;
+            }
+            else {
+                isWebSocketServerActive = false;
+                isDomainBlockerActive=false;
+            }
         });
 
         modeListComboBox.setOnAction(actionEvent -> {
