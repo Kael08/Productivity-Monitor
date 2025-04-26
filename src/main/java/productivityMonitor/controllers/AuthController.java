@@ -1,5 +1,7 @@
 package productivityMonitor.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +14,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+
+import static productivityMonitor.utils.SharedData.ACCESS_TOKEN;
 
 public class AuthController {
     private Stage thisStage;
@@ -28,27 +35,81 @@ public class AuthController {
     private final HttpClient client = HttpClient.newHttpClient();
 
     // Функция для POST-запросов на авторизацию
-    private int sendAuthRequest(String email,String password){
-        /*try{
-            String json = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
+    private int sendAuthRequest(String login,String password){
+        try{
+            String json = String.format("{\"login\": \"%s\", \"password\": \"%s\"}",login,password);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:3000/auth"))
-                    .header("Content-Type", "application/json")
+                    .header("Content-Type","application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
             HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("Response code: " + response.statusCode());
-            System.out.println("Response body: " + response.body());
+            System.out.println("Response code: "+response.statusCode());
+            System.out.println("Response body: "+response.body());
+
+            saveTokens(response.body());
+
             return response.statusCode();
-        } catch (Exception e){
+        }catch(Exception e){
             e.printStackTrace();
         }
 
-        return 0;*/
-        return 200;
+        return 0;
+    }
+
+    private void refreshAccessToken(){
+        try(FileReader fileReader = new FileReader("src/main/resources/json_files/REFRESH_TOKEN.json")){
+            String refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/json_files/REFRESH_TOKEN.json"));
+            refreshToken = "{\"refreshToken\":" + refreshToken + "}";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:3000/auth/refresh"))
+                    .header("Content-Type","application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(refreshToken))
+                    .build();
+
+            HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Статус обновления access-token'а: "+ response.statusCode());
+
+            saveAccessToken(response.body());
+        }catch (Exception e){
+            System.out.println("ОШИБКА: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void saveAccessToken(String responseBody){
+        try {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
+
+            ACCESS_TOKEN = jsonObject.get("accessToken").getAsString();
+        } catch (Exception e) {
+            System.out.println("ОШИБКА: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    private void saveTokens(String responseBody){
+        try(FileWriter fileWriter=new FileWriter("src/main/resources/json_files/REFRESH_TOKEN.json")){
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
+            saveAccessToken(responseBody);
+            String refreshToken = jsonObject.get("refreshToken").getAsString();
+
+            JsonObject tokenToSave = new JsonObject();
+            tokenToSave.addProperty("refreshToken",refreshToken);
+
+            fileWriter.write(gson.toJson(tokenToSave.get("refreshToken")));
+        }catch (Exception e){
+            System.out.println("ОШИБКА:" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private Stage mainStage;
@@ -61,7 +122,7 @@ public class AuthController {
     private ImageView iconImageView;
 
     @FXML
-    private TextField emailTextField;
+    private TextField loginTextField;
 
     @FXML
     private TextField passwordTextField;
@@ -70,16 +131,18 @@ public class AuthController {
     private Button authButton;
     @FXML
     private void handleAuthButton(ActionEvent event){
-        String email = emailTextField.getText();
+        String login = loginTextField.getText();
         String password = passwordTextField.getText();
 
-        if(email.isEmpty()||password.isEmpty())
+        if(login.isEmpty()||password.isEmpty())
         {
-            System.out.println("Email и Password не должны быть пустыми!");
+            System.out.println("Все поля должны быть заполнены!");
             return;
         }
 
-        int status = sendAuthRequest(email,password);
+        int status = sendAuthRequest(login,password);
+
+        System.out.println("ACCESS TOKEN: "+ACCESS_TOKEN);
 
         if(status==200){
             try {
@@ -119,5 +182,6 @@ public class AuthController {
 
     public void initialize(){
         iconImageView.setImage(iconImage);
+        refreshAccessToken();
     }
 }

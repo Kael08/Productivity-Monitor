@@ -1,5 +1,7 @@
 package productivityMonitor.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.sun.tools.javac.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -9,19 +11,33 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import productivityMonitor.MainApp;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+import static productivityMonitor.utils.SharedData.ACCESS_TOKEN;
+import static productivityMonitor.utils.SharedData.isUserLogged;
+import static productivityMonitor.utils.SharedData.username;
 
 public class ProfileController {
+    private final HttpClient client = HttpClient.newHttpClient();
+
     @FXML
     private ImageView mainImageView;
 
     @FXML
     private ImageView avatarImageView;
+
+    @FXML
+    private Label usernameLabel;
 
     @FXML
     private Button profileButton;
@@ -44,6 +60,44 @@ public class ProfileController {
 
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void getUser(){
+        try{
+            System.out.println(ACCESS_TOKEN);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:3000/users/me"))
+                    .header("Authorization", "Bearer " + ACCESS_TOKEN)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response code: "+response.statusCode());
+            System.out.println("Response body: "+response.body());
+
+            if(response.statusCode()==200) {
+                isUserLogged=true;
+                saveUsername(response.body());
+            }
+        }catch (Exception e){
+            System.out.println("ОШИБКА:" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void saveUsername(String responseBody){
+        try{
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(responseBody,JsonObject.class);
+
+            String usernameJson=jsonObject.get("username").getAsString();
+
+            username=usernameJson.substring(1,usernameJson.length()-1);
+        }catch (Exception e){
+            System.out.println("ОШИБКА: "+e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -88,5 +142,10 @@ public class ProfileController {
     public void initialize(){
         mainImageView.setImage(iconImg);
         avatarImageView.setImage(avatarImg);
+
+        getUser();
+        if(isUserLogged){
+            usernameLabel.setText(username);
+        }
     }
 }

@@ -19,7 +19,7 @@
                 <Insets top="10" bottom="30"/>
             </VBox.margin>
         </ImageView>
-        <TextField fx:id="emailTextField" promptText="email..." >
+        <TextField fx:id="loginTextField" promptText="login..." >
             <VBox.margin>
                 <Insets left="10" right="10"/>
             </VBox.margin>

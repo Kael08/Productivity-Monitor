@@ -34,9 +34,9 @@ public class RegController {
     private final HttpClient client = HttpClient.newHttpClient();
 
     // Функция для POST-запросов на авторизацию
-    private int sendRegRequest(String email,String password, String username){
+    private int sendRegRequest(String login,String password, String username){
         try{
-            String json = String.format("{\"email\": \"%s\", \"password\": \"%s\", \"username\": \"%s\"}", email, password,username);
+            String json = String.format("{\"login\": \"%s\", \"password\": \"%s\", \"username\": \"%s\"}", login, password,username);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:3000/reg"))
@@ -62,7 +62,7 @@ public class RegController {
     private ImageView iconImageView;
 
     @FXML
-    private TextField emailTextField;
+    private TextField loginTextField;
 
     @FXML
     private TextField passwordTextField;
@@ -92,28 +92,32 @@ public class RegController {
     private Button regButton;
     @FXML
     private void handleRegButton(ActionEvent event){
-        String email = emailTextField.getText();
+        String login = loginTextField.getText();
         String password = passwordTextField.getText();
         String username = usernameTextField.getText();
 
-        if(email.isEmpty()||password.isEmpty())
+        if(login.isEmpty()||password.isEmpty()||username.isEmpty())
         {
-            System.out.println("Email и Password не должны быть пустыми!");
+            System.out.println("Все поля должны быть заполнены!");
             return;
         }
 
-        int status = sendRegRequest(email,password,username);
+        int status = sendRegRequest(login,password,username);
 
         if(status==201){
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/profileView.fxml"));
-                Parent root = loader.load();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
+                Parent authentificationRoot = fxmlLoader.load();
 
-                // Устанавливаем новую сцену в главное окно
-                mainStage.setScene(new Scene(root));
-                mainStage.setTitle("Profile");
-                mainStage.show();
-                thisStage.close();
+                AuthController authController = fxmlLoader.getController();
+                authController.setMainStage(mainStage);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(authentificationRoot));
+                authController.setThisStage(stage);
+                stage.setTitle("Authentification");
+                stage.setResizable(false);
+                stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

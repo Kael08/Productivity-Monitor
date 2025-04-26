@@ -187,37 +187,6 @@ public class MainController {
     public static int maxAlertWindow = 5;
     public static int countAlertWindow = 0;
 
-    // Создания Alert-окон, которые пытаются отговорить пользователя от запуска нежелательных приложений
-    /*public void createAlertWindow(List<String> messagesList){
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        Random random = new Random();
-        String message = motivationMessagesList.get(random.nextInt(motivationMessagesList.size()));
-        confirmationAlert.setContentText(message);
-
-        Stage stage = (Stage) confirmationAlert.getDialogPane().getScene().getWindow();
-        stage.setAlwaysOnTop(true);
-
-        Optional<ButtonType> result = confirmationAlert.showAndWait();
-
-        *//*synchronized (pauseLock) {
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                pauseLock.notify();
-                isPaused = false;
-            } else {
-                countAlertWindow++;
-                pauseLock.notify();
-                isPaused = false;
-            }
-        }*//*
-
-        if (result.isPresent() && result.get() == ButtonType.OK){
-            isPaused=false;
-        } else{
-            countAlertWindow++;
-            isPaused=false;
-        }
-    }*/
-
     private Stage mindfulnessStage = null;
 
     // Создание окна-предупреждения для режима Mindfulness

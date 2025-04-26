@@ -67,4 +67,10 @@ public class SharedData {
     }
 
     public static String currentMode="FullLockdown";
+
+    public static String ACCESS_TOKEN= "";
+
+    public static boolean isUserLogged=false;
+
+    public static String username="";
 }
