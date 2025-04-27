@@ -20,6 +20,8 @@ import java.util.*;
 
 import static productivityMonitor.FocusMode.*;
 import static productivityMonitor.utils.SharedData.*;
+import static productivityMonitor.utils.TokenManager.*;
+import static productivityMonitor.utils.User.getUser;
 
 public class MainController {
 
@@ -37,6 +39,22 @@ public class MainController {
     private Button profileButton;
     @FXML
     private void handleProfileButton(ActionEvent event) throws IOException {
+        // Проверяем валидность токена и активность пользователя
+        if (isAccessTokenValid() && getUser().isUserActive) {
+            loadProfileStage(event);
+        } else {
+            // Пробуем обновить токен, если access-токен невалиден
+            if (refreshAccessToken()) {
+                updateUser(); // Обновляем данные пользователя
+                loadProfileStage(event);
+            } else {
+                // Если refresh тоже не сработал - показываем окно авторизации
+                loadAuthStage(event);
+            }
+        }
+    }
+
+    private void loadAuthStage(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
         Parent root = fxmlLoader.load();
 
@@ -50,6 +68,17 @@ public class MainController {
         authStage.setResizable(false);
         authStage.show();
     }
+
+    private void loadProfileStage(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/profileView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // <-- вот ключ
+        stage.setScene(new Scene(root));
+        stage.setTitle("Profile");
+        stage.show();
+    }
+
 
     // Настройки
     @FXML
@@ -384,6 +413,11 @@ public class MainController {
 
         // Чтение и сохранение текстов для Sailor's Knot
         readSailorsKnotText();
+
+        // Обновляем access-токен и, в случае успеха, загружает данные пользователя
+        if(refreshAccessToken()){
+            updateUser();
+        }
     }
 
     // Функция для обновления времени

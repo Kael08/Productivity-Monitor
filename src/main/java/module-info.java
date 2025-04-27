@@ -11,4 +11,6 @@ module eneev.monitor1 {
     exports productivityMonitor;
     exports productivityMonitor.controllers;
     opens productivityMonitor.controllers to javafx.fxml;
+    exports productivityMonitor.utils;
+    opens productivityMonitor.utils to javafx.fxml;
 }

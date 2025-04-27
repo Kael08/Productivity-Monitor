@@ -23,12 +23,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static productivityMonitor.utils.SharedData.ACCESS_TOKEN;
-import static productivityMonitor.utils.SharedData.isUserLogged;
 import static productivityMonitor.utils.SharedData.username;
+import static productivityMonitor.utils.User.getUser;
 
 public class ProfileController {
-    private final HttpClient client = HttpClient.newHttpClient();
+    //private final HttpClient client = HttpClient.newHttpClient();
 
     @FXML
     private ImageView mainImageView;
@@ -62,42 +61,8 @@ public class ProfileController {
         stage.show();
     }
 
-    private void getUser(){
-        try{
-            System.out.println(ACCESS_TOKEN);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:3000/users/me"))
-                    .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
-
-            System.out.println("Response code: "+response.statusCode());
-            System.out.println("Response body: "+response.body());
-
-            if(response.statusCode()==200) {
-                isUserLogged=true;
-                saveUsername(response.body());
-            }
-        }catch (Exception e){
-            System.out.println("ОШИБКА:" + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void saveUsername(String responseBody){
-        try{
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(responseBody,JsonObject.class);
-
-            String usernameJson=jsonObject.get("username").getAsString();
-
-            username=usernameJson.substring(1,usernameJson.length()-1);
-        }catch (Exception e){
-            System.out.println("ОШИБКА: "+e.getMessage());
-            e.printStackTrace();
-        }
+    private void loadUserData(){
+        usernameLabel.setText(getUser().getUsername());
     }
 
     @FXML
@@ -143,9 +108,6 @@ public class ProfileController {
         mainImageView.setImage(iconImg);
         avatarImageView.setImage(avatarImg);
 
-        getUser();
-        if(isUserLogged){
-            usernameLabel.setText(username);
-        }
+        loadUserData();
     }
 }

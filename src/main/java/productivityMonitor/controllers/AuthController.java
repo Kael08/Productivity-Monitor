@@ -23,7 +23,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 
-import static productivityMonitor.utils.SharedData.ACCESS_TOKEN;
+import static productivityMonitor.utils.TokenManager.setTokens;
+import static productivityMonitor.utils.TokenManager.updateUser;
+
 
 public class AuthController {
     private Stage thisStage;
@@ -60,52 +62,12 @@ public class AuthController {
         return 0;
     }
 
-    private void refreshAccessToken(){
-        try(FileReader fileReader = new FileReader("src/main/resources/json_files/REFRESH_TOKEN.json")){
-            String refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/json_files/REFRESH_TOKEN.json"));
-            refreshToken = "{\"refreshToken\":" + refreshToken + "}";
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:3000/auth/refresh"))
-                    .header("Content-Type","application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(refreshToken))
-                    .build();
-
-            HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
-
-            System.out.println("Статус обновления access-token'а: "+ response.statusCode());
-
-            saveAccessToken(response.body());
-        }catch (Exception e){
-            System.out.println("ОШИБКА: "+e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void saveAccessToken(String responseBody){
-        try {
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
-
-            ACCESS_TOKEN = jsonObject.get("accessToken").getAsString();
-        } catch (Exception e) {
-            System.out.println("ОШИБКА: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-
     private void saveTokens(String responseBody){
         try(FileWriter fileWriter=new FileWriter("src/main/resources/json_files/REFRESH_TOKEN.json")){
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
-            saveAccessToken(responseBody);
-            String refreshToken = jsonObject.get("refreshToken").getAsString();
-
-            JsonObject tokenToSave = new JsonObject();
-            tokenToSave.addProperty("refreshToken",refreshToken);
-
-            fileWriter.write(gson.toJson(tokenToSave.get("refreshToken")));
+            setTokens(jsonObject.get("accessToken").getAsString(),jsonObject.get("refreshToken").getAsString());
+            updateUser();
         }catch (Exception e){
             System.out.println("ОШИБКА:" + e.getMessage());
             e.printStackTrace();
@@ -141,8 +103,6 @@ public class AuthController {
         }
 
         int status = sendAuthRequest(login,password);
-
-        System.out.println("ACCESS TOKEN: "+ACCESS_TOKEN);
 
         if(status==200){
             try {
@@ -182,6 +142,5 @@ public class AuthController {
 
     public void initialize(){
         iconImageView.setImage(iconImage);
-        refreshAccessToken();
     }
 }
