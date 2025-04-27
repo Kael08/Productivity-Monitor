@@ -45,7 +45,7 @@ public class TokenManager {
                 JsonObject jsonObject = gson.fromJson(response.body(),JsonObject.class);
 
                 accessToken=jsonObject.get("accessToken").getAsString();
-                accessTokenExpirationTime=System.currentTimeMillis()*1000*55*60;
+                accessTokenExpirationTime=System.currentTimeMillis()+1000*55*60;
                 return true;
             } else{
                 return false;
@@ -62,8 +62,10 @@ public class TokenManager {
         try(FileWriter fileWriter=new FileWriter("src/main/resources/json_files/REFRESH_TOKEN.json")){
             accessToken=access;
             refreshToken=refresh;
-            accessTokenExpirationTime=System.currentTimeMillis()*1000*55*60;
-            fileWriter.write("\""+refreshToken+"\"");
+            accessTokenExpirationTime=System.currentTimeMillis()+1000*55*60;
+
+            String encryptedRefresh = CryptoUtils.encrypt(refresh);
+            fileWriter.write("\"" + encryptedRefresh + "\"");
         } catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());
             e.printStackTrace();
@@ -76,8 +78,10 @@ public class TokenManager {
 
     public static boolean loadRefreshToken(){
         try{
-            refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/json_files/REFRESH_TOKEN.json"));
-            refreshToken = refreshToken.trim().replace("\"", "");
+            refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/json_files/REFRESH_TOKEN.json")).trim().replace("\"", "");
+            refreshToken = CryptoUtils.decrypt(refreshToken);
+            if(refreshToken.isEmpty())
+                return false;
             return true;
         }catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());

@@ -24,6 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import static productivityMonitor.utils.SharedData.username;
+import static productivityMonitor.utils.TokenManager.clearTokens;
 import static productivityMonitor.utils.User.getUser;
 
 public class ProfileController {
@@ -37,6 +38,32 @@ public class ProfileController {
 
     @FXML
     private Label usernameLabel;
+
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private void handleLogoutButton(ActionEvent event) throws IOException{
+        clearTokens();
+        getUser().deactivateUser();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
+        stage.setTitle("Productivity Monitor");
+        stage.setMinWidth(850);
+        stage.setMinHeight(500);
+
+        stage.setOnCloseRequest(e-> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        stage.setScene(scene);
+        stage.show();
+    }
 
     @FXML
     private Button profileButton;
