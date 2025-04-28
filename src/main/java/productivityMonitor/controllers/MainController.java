@@ -389,6 +389,18 @@ public class MainController {
         timerStage.show();
     }
 
+
+    // Функция для обновления времени
+    private void updateTime(Label label) {
+        Date now = new Date();
+        // Форматируем время в нужный формат
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.LL.yyyy");
+
+        String currentTime = sdf.format(now);
+
+        label.setText(currentTime);
+    }
+
     @FXML
     public void initialize(){
         runImageView.setImage(runImg);
@@ -418,16 +430,5 @@ public class MainController {
         if(refreshAccessToken()){
             updateUser();
         }
-    }
-
-    // Функция для обновления времени
-    private void updateTime(Label label) {
-        Date now = new Date();
-        // Форматируем время в нужный формат
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.LL.yyyy");
-
-        String currentTime = sdf.format(now);
-
-        label.setText(currentTime);
     }
 }

@@ -25,6 +25,9 @@ public class SharedData {
     // Список режимов
     public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown","Mindfulness","Sailor's Knot","Delay Gratification", "Pomodoro");
 
+    // Список кастомных режимов
+    public static ObservableList<String> customModeList=FXCollections.observableArrayList();
+
     // Флаг для запуска веб-сервера
     public static boolean isWebSocketServerActive = true;
 

@@ -59,6 +59,17 @@
     -fx-faint-focus-color: transparent;
 }
 
+#selectCustomModeLabel {
+    -fx-font-family:'Jomhuria-Regular';
+    -fx-font-size:20px;
+    -fx-font-weight:bold;
+}
+
+#customModeListComboBox {
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
 #selectModeLabel {
     -fx-font-family:'Jomhuria-Regular';
     -fx-font-size:20px;
@@ -74,4 +85,65 @@
     -fx-font-family:'Jomhuria-Regular';
     -fx-font-size:15px;
     -fx-font-weight:bold;
+}
+
+#openButton, #createButton, #editButton{
+    -fx-border-color:black;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-border-width:1px;
+    -fx-border-radius:1px;
+    -fx-background-radius:1px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+#cancelButton{
+    -fx-border-color:black;
+    -fx-background-color:red;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-border-width:1px;
+    -fx-border-radius:1px;
+    -fx-background-radius:1px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+#saveButton{
+    -fx-background-color:green;
+    -fx-border-color:black;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+    -fx-border-width:1px;
+    -fx-border-radius:1px;
+    -fx-background-radius:1px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+#customModeNameTextField {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent black transparent; /* Только нижняя граница */
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 2 0; /* Немного отступа снизу */
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 15px;
+}
+
+#customModeNameTextField:focused {
+    -fx-border-color: transparent transparent #3498db transparent; /* Синяя линия при фокусе */
 }

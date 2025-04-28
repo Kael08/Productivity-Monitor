@@ -53,7 +53,7 @@ public class TokenManager {
 
         } catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     }
@@ -85,7 +85,7 @@ public class TokenManager {
             return true;
         }catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     }

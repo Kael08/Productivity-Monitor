@@ -1,10 +1,15 @@
 package productivityMonitor.controllers;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import productivityMonitor.FocusMode;
+import productivityMonitor.utils.CustomMode;
+import productivityMonitor.utils.JsonUtils;
+
+import java.io.FileWriter;
 
 import static productivityMonitor.utils.SharedData.*;
 
@@ -38,6 +43,90 @@ public class MonitoringSettingsController {
 
     private FocusMode focusMode;
 
+    @FXML
+    private Button openButton;
+
+    @FXML
+    private Button createButton;
+
+    @FXML
+    private Button editButton;
+
+    @FXML
+    private Button saveButton;
+
+    @FXML
+    private Button cancelButton;
+
+    private boolean isEditing=false;
+
+    @FXML
+    private void handleOpenButton(ActionEvent event){
+
+    }
+
+    @FXML
+    private void handleCreateButton(ActionEvent event){
+        if(!isEditing){
+            isEditing=true;
+            saveButton.setVisible(true);
+            cancelButton.setVisible(true);
+            customModeNameTextField.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void handleEditButton(ActionEvent event){
+
+    }
+
+    @FXML
+    private void handleSaveButton(ActionEvent event){
+        String fileName="newCustomMode";
+        if(!customModeNameTextField.getText().isEmpty())
+            fileName=customModeNameTextField.getText();
+
+        String filePath = "src/main/resources/json_files/" + fileName + ".json";
+
+        try{
+            // Создаем объект с данными
+            CustomMode customMode = new CustomMode(fileName,currentMode,processList,urlList,isDomainBlockerActive);
+
+            JsonUtils.saveCustomModeToFile(customMode,filePath);
+
+            // TODO: Дописать добавление кастомного режима в customModeList
+
+            // Выход из режима редактирования
+            isEditing=false;
+            saveButton.setVisible(false);
+            cancelButton.setVisible(false);
+            customModeNameTextField.setVisible(false);
+            customModeNameTextField.setText("Новый режим");
+        }catch (Exception e){
+            System.out.println("ОШИБКА: "+e.getMessage());
+            consoleTextArea.appendText("ОШИБКА СОХРАНЕНИЯ ФАЙЛА: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleCancelButton(ActionEvent event){
+        if(isEditing){
+            isEditing=false;
+            saveButton.setVisible(false);
+            cancelButton.setVisible(false);
+            customModeNameTextField.setVisible(false);
+        }
+    }
+
+    @FXML
+    private TextField customModeNameTextField;
+
+    @FXML
+    private Label selectCustomModeLabel;
+
+    @FXML
+    private ComboBox<String> customModeListComboBox;
 
     public void setFocusMode(FocusMode focusMode){
         this.focusMode=focusMode;
@@ -75,6 +164,7 @@ public class MonitoringSettingsController {
             processName+=".exe";
         }
 
+        inputTextField.clear();
         consoleTextArea.appendText("Процесс "+processName+" добавлен\n");
         processList.add(processName);
     }
@@ -105,6 +195,7 @@ public class MonitoringSettingsController {
             return;
         }
 
+        inputUrlTextField.clear();
         consoleTextArea.appendText("Домен "+urlName+" добавлен\n");
         urlList.add(urlName);
     }
@@ -114,6 +205,7 @@ public class MonitoringSettingsController {
         urlListComboBox.setItems(urlList);
         modeListComboBox.setItems(modeList);
         modeListComboBox.setValue(currentMode);
+        customModeListComboBox.setItems(customModeList);
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
         blockDomainCheckBox.setSelected(isDomainBlockerActive);

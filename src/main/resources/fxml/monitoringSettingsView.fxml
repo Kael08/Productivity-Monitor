@@ -16,13 +16,29 @@
             stylesheets="@../styles/monitoringSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="productivityMonitor.controllers.MonitoringSettingsController">
    <top>
-      <VBox fx:id="topPane">
-         <Label fx:id="selectModeLabel" text="Select mode"/>
-         <ComboBox fx:id="modeListComboBox" prefWidth="150.0" minWidth="150.0" maxWidth="150.0">
-            <VBox.margin>
-               <Insets bottom="10"/>
-            </VBox.margin>
-         </ComboBox>
+      <VBox fx:id="topPane" spacing="10">
+         <VBox.margin>
+            <Insets bottom="10"/>
+         </VBox.margin>
+         <HBox fx:id="toolsPane">
+            <Button fx:id="openButton" text="Open" VBox.vgrow="NEVER" onAction="#handleOpenButton" prefWidth="100"/>
+            <Button fx:id="createButton" text="Create" VBox.vgrow="NEVER" onAction="#handleCreateButton" prefWidth="100"/>
+            <Button fx:id="editButton" text="Edit" VBox.vgrow="NEVER" onAction="#handleEditButton" prefWidth="100"/>
+            <Button fx:id="saveButton" text="Save" VBox.vgrow="NEVER" onAction="#handleSaveButton" prefWidth="100" visible="false"/>
+            <Button fx:id="cancelButton" text="Cancel" VBox.vgrow="NEVER" onAction="#handleCancelButton" prefWidth="100" visible="false"/>
+         </HBox>
+         <VBox fx:id="modePane" spacing="5">
+            <TextField fx:id="customModeNameTextField" visible="false"
+                       text="Новый режим" promptText="Название кастомного режима"/>
+            <Label fx:id="selectCustomModeLabel" text="Select custom mode"/>
+            <ComboBox fx:id="customModeListComboBox" prefWidth="150.0" minWidth="150.0" maxWidth="150.0">
+
+            </ComboBox>
+            <Label fx:id="selectModeLabel" text="Select mode"/>
+            <ComboBox fx:id="modeListComboBox" prefWidth="150.0" minWidth="150.0" maxWidth="150.0">
+
+            </ComboBox>
+         </VBox>
       </VBox>
    </top>
 
