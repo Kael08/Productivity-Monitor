@@ -8,7 +8,9 @@ import javafx.collections.ObservableList;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SharedData {
     // Volatile - модификатор переменных, который обеспечивает видимость изменений переменной другими потоками
@@ -27,6 +29,9 @@ public class SharedData {
 
     // Список кастомных режимов
     public static ObservableList<String> customModeList=FXCollections.observableArrayList();
+
+    // Список, содержащий экземпляры кастомныъ режимов
+    public static Map<String,CustomMode> customModeListOb=new HashMap<>();
 
     // Флаг для запуска веб-сервера
     public static boolean isWebSocketServerActive = true;

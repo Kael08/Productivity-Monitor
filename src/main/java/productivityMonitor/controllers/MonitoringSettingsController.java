@@ -5,10 +5,13 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import productivityMonitor.FocusMode;
 import productivityMonitor.utils.CustomMode;
 import productivityMonitor.utils.JsonUtils;
 
+import java.io.File;
 import java.io.FileWriter;
 
 import static productivityMonitor.utils.SharedData.*;
@@ -81,33 +84,57 @@ public class MonitoringSettingsController {
     }
 
     @FXML
-    private void handleSaveButton(ActionEvent event){
-        String fileName="newCustomMode";
-        if(!customModeNameTextField.getText().isEmpty())
-            fileName=customModeNameTextField.getText();
+    private void handleSaveButton(ActionEvent event) {
+        String fileName = "newCustomMode";
+        if (!customModeNameTextField.getText().isEmpty()) {
+            fileName = customModeNameTextField.getText();
+        }
 
-        String filePath = "src/main/resources/json_files/" + fileName + ".json";
+        // Открываем окно выбора папки
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Выберите папку для сохранения");
 
-        try{
-            // Создаем объект с данными
-            CustomMode customMode = new CustomMode(fileName,currentMode,processList,urlList,isDomainBlockerActive);
+        // Можно поставить папку по умолчанию
+        File defaultDirectory = new File("C:\\Users\\mingi\\Documents");
+        if (defaultDirectory.exists()) {
+            directoryChooser.setInitialDirectory(defaultDirectory);
+        }
 
-            JsonUtils.saveCustomModeToFile(customMode,filePath);
+        Stage stage = (Stage) saveButton.getScene().getWindow(); // Получаем текущее окно
+        File selectedDirectory = directoryChooser.showDialog(stage);
 
-            // TODO: Дописать добавление кастомного режима в customModeList
+        if (selectedDirectory != null) {
+            String filePath = selectedDirectory.getAbsolutePath() + File.separator + fileName + ".json";
 
-            // Выход из режима редактирования
-            isEditing=false;
-            saveButton.setVisible(false);
-            cancelButton.setVisible(false);
-            customModeNameTextField.setVisible(false);
-            customModeNameTextField.setText("Новый режим");
-        }catch (Exception e){
-            System.out.println("ОШИБКА: "+e.getMessage());
-            consoleTextArea.appendText("ОШИБКА СОХРАНЕНИЯ ФАЙЛА: "+e.getMessage());
-            e.printStackTrace();
+            try {
+                // Создаем объект с данными
+                CustomMode customMode = new CustomMode(fileName, currentMode, processList, urlList, isDomainBlockerActive);
+
+                JsonUtils.saveCustomModeToFile(customMode, filePath);
+
+                // TODO: Дописать добавление кастомного режима в customModeList
+                customModeList.add(fileName);
+                customModeListComboBox.setValue(fileName);
+                customModeListOb.put(fileName,customMode);
+
+                // Выход из режима редактирования
+                isEditing = false;
+                saveButton.setVisible(false);
+                cancelButton.setVisible(false);
+                customModeNameTextField.setVisible(false);
+                customModeNameTextField.setText("Новый режим");
+
+                consoleTextArea.appendText("Файл успешно сохранен: " + filePath + "\n");
+            } catch (Exception e) {
+                System.out.println("ОШИБКА: " + e.getMessage());
+                consoleTextArea.appendText("ОШИБКА СОХРАНЕНИЯ ФАЙЛА: " + e.getMessage() + "\n");
+                e.printStackTrace();
+            }
+        } else {
+            consoleTextArea.appendText("Сохранение отменено пользователем\n");
         }
     }
+
 
     @FXML
     private void handleCancelButton(ActionEvent event){
@@ -219,6 +246,26 @@ public class MonitoringSettingsController {
                 isWebSocketServerActive = false;
                 isDomainBlockerActive=false;
             }
+        });
+
+        customModeListComboBox.setOnAction(actionEvent->{
+            // TODO: Добавить запрет редактирования режима при выборе кастомного режима (под вопросом)
+            // Получение экземпляра кастомного режима
+            CustomMode customMode=customModeListOb.get(customModeListComboBox.getValue());
+
+            // Установка режима
+            modeListComboBox.setValue(customMode.modeName);
+
+            // Установка процессов
+            processList.clear();
+            processList.setAll(customMode.getProcessList());
+
+            // Установка флага для блокировки доменов
+            isDomainBlockerActive=customMode.isDomainBlockerActive();
+
+            // Установка списка доменов
+            urlList.clear();
+            urlList.setAll(customMode.getUrlList());
         });
 
         modeListComboBox.setOnAction(actionEvent -> {
