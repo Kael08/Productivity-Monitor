@@ -144,28 +144,16 @@ public class MainController {
     // Класс для взаимодействия с мониторингом
     private FocusMode focusMode;
 
-    // Заблокировать все кнопки
-    private void disableAllButtons(){
-        profileButton.setDisable(true);
-        settingsButton.setDisable(true);
-        statisticsButton.setDisable(true);
-        achievementsButton.setDisable(true);
-        notesButton.setDisable(true);
-        plansButton.setDisable(true);
-        monitoringSettingsButton.setDisable(true);
-        timerButton.setDisable(true);
-    }
-
-    // Разблокировать все кнопки
-    public void enableAllButtons(){
-        profileButton.setDisable(false);
-        settingsButton.setDisable(false);
-        statisticsButton.setDisable(false);
-        achievementsButton.setDisable(false);
-        notesButton.setDisable(false);
-        plansButton.setDisable(false);
-        monitoringSettingsButton.setDisable(false);
-        timerButton.setDisable(false);
+    // Отключение и включение элементов
+    public void setDisableAllButtons(boolean val){
+        profileButton.setDisable(val);
+        settingsButton.setDisable(val);
+        statisticsButton.setDisable(val);
+        achievementsButton.setDisable(val);
+        notesButton.setDisable(val);
+        plansButton.setDisable(val);
+        monitoringSettingsButton.setDisable(val);
+        timerButton.setDisable(val);
     }
 
     // Закрытие всех побочных окон
@@ -202,12 +190,12 @@ public class MainController {
         System.out.println("Кнопка Run нажата!");
 
         if (!isMonitoringActive) {
-            disableAllButtons();
+            setDisableAllButtons(true); // Отключение элементов
             closeSideStages();
             runImageView.setImage(pauseImg);
             focusMode.startMonitoring();
         } else {
-            enableAllButtons();
+            setDisableAllButtons(false); // Включение элементов
             runImageView.setImage(runImg);
             focusMode.stopMonitoring();
         }

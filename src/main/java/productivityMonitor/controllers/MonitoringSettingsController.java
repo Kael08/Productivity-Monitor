@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import productivityMonitor.FocusMode;
 import productivityMonitor.utils.CustomMode;
@@ -14,6 +15,7 @@ import productivityMonitor.utils.JsonUtils;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static productivityMonitor.utils.SharedData.*;
@@ -73,7 +75,68 @@ public class MonitoringSettingsController {
 
     @FXML
     private void handleOpenButton(ActionEvent event){
+        // Создание окна выбора файла
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите файл с кастомным режимом");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON Files","*.json")
+        );
 
+        // Указание пути по умолчанию
+        File defaultDirectory = new File("C:\\Users\\mingi\\Documents");
+        if(defaultDirectory.exists()){
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
+
+        Stage stage = (Stage) openButton.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if(selectedFile!=null){
+            try{
+                // Проверка, что файл соответствует структуре CustomMode
+                if(!isCustomModeFile(selectedFile)){
+                    consoleTextArea.appendText("ОШИБКА: файл не является валидным CustomMode\n");
+                    return;
+                }
+
+                try {
+                    CustomMode customMode=JsonUtils.loadCustomModeFromFile(selectedFile.getAbsolutePath());
+
+                    // Добавляем режим в оба хранилища
+                    if(!customModeListOb.containsKey(customMode.getName())){
+                        customModeListOb.put(customMode.getName(),customMode);
+                        customModeList.add(customMode.getName());
+                    } else {
+                        consoleTextArea.appendText("Режим с таким именем уже существует!\n");
+                        // TODO: Добавить обработку для случая, когда режимы одинакового имени
+                    }
+                } catch (IOException e) {
+                    System.out.println("ОШИБКА ПРИ ОТКРЫТИИ ФАЙЛА CustomMode: "+e.getMessage());
+                    consoleTextArea.appendText("ОШИБКА ПРИ ОТКРЫТИИ ФАЙЛА CustomMode: "+e.getMessage());
+                    e.printStackTrace();
+                }
+            } catch (Exception e){
+                System.out.println("Ошибка загрузки файла: " + e.getMessage());
+                consoleTextArea.appendText("Ошибка загрузки файла: " + e.getMessage() + "\n");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Проверка, что файл соответствует Классу
+    private boolean isCustomModeFile(File file){
+        try{
+            // Пробуем загрузить файл как CustomMode
+            CustomMode temp = JsonUtils.loadCustomModeFromFile(file.getAbsolutePath());
+
+            return temp!=null
+                    &&temp.getName()!=null
+                    && temp.getModeName() != null
+                    && temp.getProcessList() != null
+                    && temp.getUrlList() != null;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     @FXML
@@ -300,7 +363,6 @@ public class MonitoringSettingsController {
 
         customModeListComboBox.setOnAction(actionEvent->{
             // Получение экземпляра кастомного режима
-            //System.out.println(1+"\t"+customModeListComboBox.getValue());
             String selectedMode = customModeListComboBox.getValue();
             if (selectedMode == null) {
                 consoleTextArea.appendText("Ошибка: не выбран режим\n");
@@ -313,7 +375,6 @@ public class MonitoringSettingsController {
                 return;
             }
 
-            //System.out.println(customMode.modeName+customMode.name+customMode.isDomainBlockerActive+customMode.processList+customMode.urlList);
             // Установка режима
             modeListComboBox.setValue(customMode.modeName);
 

@@ -740,7 +740,7 @@ public class FocusMode {
 
         Platform.runLater(()->{
             if(mainController!=null)
-                mainController.enableAllButtons();
+                mainController.setDisableAllButtons(false); // Включение элементов
                 mainController.setRunImageView();
         });
     }
