@@ -73,6 +73,7 @@ public class MonitoringSettingsController {
 
     private boolean isEditing=false;
 
+    //TODO: Решить проблему с блокировкой кнопок и режимом редактирования(open,create,edit)
     @FXML
     private void handleOpenButton(ActionEvent event){
         // Создание окна выбора файла
@@ -106,6 +107,7 @@ public class MonitoringSettingsController {
                     if(!customModeListOb.containsKey(customMode.getName())){
                         customModeListOb.put(customMode.getName(),customMode);
                         customModeList.add(customMode.getName());
+                        consoleTextArea.appendText("\""+customMode.getName()+"\" Добавлен!\n");
                     } else {
                         consoleTextArea.appendText("Режим с таким именем уже существует!\n");
                         // TODO: Добавить обработку для случая, когда режимы одинакового имени
@@ -143,6 +145,9 @@ public class MonitoringSettingsController {
     private void handleCreateButton(ActionEvent event){
         if(!isEditing){
             isEditing=true;
+            createButton.setDisable(true);
+            openButton.setDisable(true);
+            editButton.setDisable(true);
             saveButton.setVisible(true);
             cancelButton.setVisible(true);
             customModeNameTextField.setVisible(true);
@@ -150,9 +155,97 @@ public class MonitoringSettingsController {
     }
 
     @FXML
-    private void handleEditButton(ActionEvent event){
+    private void handleEditButton(ActionEvent event) {
+        String selectedMode = customModeListComboBox.getValue();
 
+        if(selectedMode == null || selectedMode.equals("<НЕТ>")) {
+            consoleTextArea.appendText("Не выбран кастомный режим для редактирования!\n");
+            return;
+        }
+
+        // Включаем режим редактирования
+        isEditing = true;
+
+        // Блокируем только нужные элементы
+        openButton.setDisable(true);
+        createButton.setDisable(true);
+        editButton.setDisable(true);
+        customModeListComboBox.setDisable(true);
+
+        // Разблокируем элементы для редактирования
+        modeListComboBox.setDisable(false);
+        processListComboBox.setDisable(false);
+        deleteButton.setDisable(false);
+        inputTextField.setDisable(false);
+        addButton.setDisable(false);
+        blockDomainCheckBox.setDisable(false);
+        urlListComboBox.setDisable(false);
+        deleteUrlButton.setDisable(false);
+        inputUrlTextField.setDisable(false);
+        addUrlButton.setDisable(false);
+
+        // Показываем кнопки сохранения/отмены
+        saveButton.setVisible(true);
+        cancelButton.setVisible(true);
+
+        consoleTextArea.appendText("Редактирование режима: " + selectedMode + "\n");
     }
+    // Настройка интерфейса для режима редактирования
+    private void setEditMode(boolean val){
+        isEditing=val;
+        createButton.setDisable(val);
+        openButton.setDisable(val);
+        editButton.setDisable(val);
+        saveButton.setVisible(val);
+        cancelButton.setVisible(val);
+        customModeNameTextField.setVisible(val);
+        customModeListComboBox.setDisable(val);
+    }
+
+    // Выйти из режима редактирования
+    private void exitEditMode() {
+        isEditing = false;
+
+        // Разблокируем основные кнопки
+        openButton.setDisable(false);
+        createButton.setDisable(false);
+        editButton.setDisable(false);
+        customModeListComboBox.setDisable(false);
+
+        // Скрываем кнопки сохранения/отмены
+        saveButton.setVisible(false);
+        cancelButton.setVisible(false);
+
+        // Блокируем/разблокируем элементы в зависимости от выбранного режима
+        String selectedMode = customModeListComboBox.getValue();
+        if(selectedMode != null && !selectedMode.equals("<НЕТ>")) {
+            // Если выбран кастомный режим - блокируем элементы
+            modeListComboBox.setDisable(true);
+            processListComboBox.setDisable(true);
+            deleteButton.setDisable(true);
+            inputTextField.setDisable(true);
+            addButton.setDisable(true);
+            blockDomainCheckBox.setDisable(true);
+            urlListComboBox.setDisable(true);
+            deleteUrlButton.setDisable(true);
+            inputUrlTextField.setDisable(true);
+            addUrlButton.setDisable(true);
+        } else {
+            // Если выбран "<НЕТ>" - разблокируем элементы
+            modeListComboBox.setDisable(false);
+            processListComboBox.setDisable(false);
+            deleteButton.setDisable(false);
+            inputTextField.setDisable(false);
+            addButton.setDisable(false);
+            blockDomainCheckBox.setDisable(false);
+            urlListComboBox.setDisable(false);
+            deleteUrlButton.setDisable(false);
+            inputUrlTextField.setDisable(false);
+            addUrlButton.setDisable(false);
+        }
+    }
+
+
 
     @FXML
     private void handleSaveButton(ActionEvent event) {
@@ -204,6 +297,20 @@ public class MonitoringSettingsController {
                 cancelButton.setVisible(false);
                 customModeNameTextField.setVisible(false);
                 customModeNameTextField.setText("Новый режим");
+                openButton.setDisable(false);
+                createButton.setDisable(false);
+                editButton.setDisable(false);
+                customModeListComboBox.setValue("<НЕТ>");
+                customModeListComboBox.setDisable(false);
+                processListComboBox.setDisable(false);
+                deleteUrlButton.setDisable(false);
+                addUrlButton.setDisable(false);
+                inputTextField.setDisable(false);
+                deleteButton.setDisable(false);
+                addButton.setDisable(false);
+                urlListComboBox.setDisable(false);
+                inputUrlTextField.setDisable(false);
+                blockDomainCheckBox.setDisable(false);
 
                 consoleTextArea.appendText("Файл успешно сохранен: " + filePath + "\n");
             } catch (Exception e) {
@@ -220,9 +327,15 @@ public class MonitoringSettingsController {
     private void handleCancelButton(ActionEvent event){
         if(isEditing){
             isEditing=false;
+            createButton.setDisable(false);
+            openButton.setDisable(false);
+            editButton.setDisable(false);
             saveButton.setVisible(false);
             cancelButton.setVisible(false);
             customModeNameTextField.setVisible(false);
+            if(customModeListComboBox.getValue().equals("<НЕТ>")) {
+                exitEditMode(); // Выход из режима редактирования
+            }
         }
     }
 
@@ -312,9 +425,9 @@ public class MonitoringSettingsController {
         openButton.setDisable(val);
         createButton.setDisable(val);
         editButton.setDisable(val);
-        saveButton.setDisable(val);
-        cancelButton.setDisable(val);
-        customModeNameTextField.setDisable(val);
+        //saveButton.setDisable(val);
+        //cancelButton.setDisable(val);
+        //customModeNameTextField.setDisable(val);
         //customModeListComboBox.setDisable(val);
         modeListComboBox.setDisable(val);
         //processListComboBox.setDisable(val);
@@ -361,8 +474,7 @@ public class MonitoringSettingsController {
             customModeListComboBox.setValue("<НЕТ>");
         }
 
-        customModeListComboBox.setOnAction(actionEvent->{
-            // Получение экземпляра кастомного режима
+        customModeListComboBox.setOnAction(actionEvent -> {
             String selectedMode = customModeListComboBox.getValue();
             if (selectedMode == null) {
                 consoleTextArea.appendText("Ошибка: не выбран режим\n");
@@ -375,24 +487,46 @@ public class MonitoringSettingsController {
                 return;
             }
 
-            // Установка режима
+            // Установка значений
             modeListComboBox.setValue(customMode.modeName);
-
-            // Установка процессов
             processList.clear();
             processList.setAll(customMode.getProcessList());
-
-            // Установка флага для блокировки доменов
-            isDomainBlockerActive=customMode.isDomainBlockerActive();
-
-            // Установка списка доменов
+            isDomainBlockerActive = customMode.isDomainBlockerActive();
+            blockDomainCheckBox.setSelected(isDomainBlockerActive);
             urlList.clear();
             urlList.setAll(customMode.getUrlList());
 
-            if(!customModeListComboBox.getValue().equals("<НЕТ>")){
-                setDisableAllElementsCM(true);
-            }else{
-                setDisableAllElementsCM(false);
+            // Управление блокировкой элементов
+            if(!selectedMode.equals("<НЕТ>")) {
+                // Блокируем элементы для кастомного режима
+                modeListComboBox.setDisable(true);
+                processListComboBox.setDisable(true);
+                deleteButton.setDisable(true);
+                inputTextField.setDisable(true);
+                addButton.setDisable(true);
+                blockDomainCheckBox.setDisable(true);
+                urlListComboBox.setDisable(true);
+                deleteUrlButton.setDisable(true);
+                inputUrlTextField.setDisable(true);
+                addUrlButton.setDisable(true);
+
+                // Разблокируем кнопку редактирования
+                editButton.setDisable(false);
+            } else {
+                // Разблокируем элементы для режима "<НЕТ>"
+                modeListComboBox.setDisable(false);
+                processListComboBox.setDisable(false);
+                deleteButton.setDisable(false);
+                inputTextField.setDisable(false);
+                addButton.setDisable(false);
+                blockDomainCheckBox.setDisable(false);
+                urlListComboBox.setDisable(false);
+                deleteUrlButton.setDisable(false);
+                inputUrlTextField.setDisable(false);
+                addUrlButton.setDisable(false);
+
+                // Блокируем кнопку редактирования
+                editButton.setDisable(true);
             }
         });
 
