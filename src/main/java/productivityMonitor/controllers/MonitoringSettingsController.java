@@ -71,7 +71,7 @@ public class MonitoringSettingsController {
     @FXML
     private Button addUrlButton;
 
-    private boolean isEditing=false;
+    //TODO: Решить проблему с таймером в кастомных режимах
 
     //TODO: Решить проблему с блокировкой кнопок и режимом редактирования(open,create,edit)
     @FXML

@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import productivityMonitor.FocusMode;
@@ -132,6 +133,12 @@ public class MainController {
     @FXML
     private Label clockLabel;
 
+    // Таймеры мониторинга
+    @FXML
+    private Label timerLabel;
+    @FXML
+    private Label pomodoroTimerLabel;
+
 
     // Иконки
     private final Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
@@ -190,14 +197,136 @@ public class MainController {
         System.out.println("Кнопка Run нажата!");
 
         if (!isMonitoringActive) {
+            if(minutes>0){
+                startMonitoringTimer(); // Включение динамического таймера
+            }
+            if(currentMode.equals("Pomodoro")){
+                startMonitoringTimerPomodoro(); // Включение динамического таймера режима Pomodoro
+            }
+
             setDisableAllButtons(true); // Отключение элементов
             closeSideStages();
             runImageView.setImage(pauseImg);
             focusMode.startMonitoring();
         } else {
+            stopMonitoringTimer(); // Отключение динамических таймеров
+
             setDisableAllButtons(false); // Включение элементов
             runImageView.setImage(runImg);
             focusMode.stopMonitoring();
+        }
+    }
+
+    // Таймеры для работы динамических таймеров мониторинга в главном экране
+    Timer monitoringTimer;
+    Timer monitoringTimerPomodoro;
+    private int pomodoroTimerSeconds=0;
+    private boolean workPhase=true; // Флаг для обозначения фазы работы у режима Pomodoro
+    private final int WORK_PHASE_DURATION = 25*60; // 25 минут в секундах
+    private final int BREAK_PHASE_DURATION = 5*60; // 5 минут в секундах
+
+    private int timerSeconds=0;
+
+    // Запустить таймер мониторинга
+    private void startMonitoringTimer(){
+        timerLabel.setVisible(true);
+        timerSeconds=minutes*60;
+
+        if (monitoringTimer == null) { // Пересоздаём, если таймер был отменён
+            monitoringTimer = new Timer();
+        }
+
+        monitoringTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(()->updateMonitoringTimer());
+            }
+        },0,1000);
+
+    }
+
+    private void updateMonitoringTimer(){
+        if(timerSeconds>0) {
+            timerSeconds--;
+
+            // Обновляем текст с оставшимся временем в формате MM:SS
+            int minutes = timerSeconds / 60;
+            int seconds = timerSeconds % 60;
+            String timeText = String.format("%02d:%02d", minutes, seconds);
+
+            timerLabel.setText(timeText);
+        }else{
+            stopMonitoringTimer();
+        }
+    }
+
+    // Остановить все таймеры мониторинга
+    public void stopMonitoringTimer(){
+        timerLabel.setVisible(false);
+        pomodoroTimerLabel.setVisible(false);
+
+        if (monitoringTimer != null) {
+            monitoringTimer.cancel();
+            monitoringTimer = null; // Обнуляем для пересоздания
+        }
+        if (monitoringTimerPomodoro != null) {
+            monitoringTimerPomodoro.cancel();
+            monitoringTimerPomodoro = null; // Обнуляем для пересоздания
+        }
+
+        pomodoroTimerSeconds=0;
+        timerSeconds=0;
+        timerLabel.setText("");
+        pomodoroTimerLabel.setText("");
+    }
+
+    // Запустить таймер режима Pomodoro
+    private void startMonitoringTimerPomodoro(){
+        pomodoroTimerLabel.setVisible(true);
+        workPhase=true;
+        pomodoroTimerSeconds=WORK_PHASE_DURATION;
+
+        if (monitoringTimerPomodoro == null) { // Пересоздаём, если таймер был отменён
+            monitoringTimerPomodoro = new Timer();
+        }
+
+        monitoringTimerPomodoro.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(()->updateMonitoringTimerPomodoro());
+            }
+        },0,1000);
+    }
+
+    private  void updateMonitoringTimerPomodoro(){
+        if (pomodoroTimerSeconds > 0) {
+            pomodoroTimerSeconds--;
+
+            // Обновляем текст с оставшимся временем в формате MM:SS
+            int minutes = pomodoroTimerSeconds / 60;
+            int seconds = pomodoroTimerSeconds % 60;
+            String timeText = String.format("%02d:%02d", minutes, seconds);
+
+            if (workPhase) {
+                pomodoroTimerLabel.setText(timeText);
+                pomodoroTimerLabel.setStyle("-fx-text-fill: red;"); // Красный для работы
+            } else {
+                pomodoroTimerLabel.setText(timeText);
+                pomodoroTimerLabel.setStyle("-fx-text-fill: green;"); // Зеленый для отдыха
+            }
+        } else {
+            // Переключаем фазы, когда время истекло
+            workPhase = !workPhase;
+
+            if (workPhase) {
+                // Начинаем рабочую фазу (25 минут)
+                pomodoroTimerSeconds = WORK_PHASE_DURATION;
+                pomodoroTimerLabel.setStyle("-fx-text-fill: red;");
+            } else {
+                // Начинаем фазу отдыха (5 минут)
+                pomodoroTimerSeconds = BREAK_PHASE_DURATION;
+                pomodoroTimerLabel.setStyle("-fx-text-fill: green;");
+            }
         }
     }
 

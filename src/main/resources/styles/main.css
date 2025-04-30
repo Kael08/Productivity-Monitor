@@ -56,5 +56,25 @@
     -fx-faint-focus-color: transparent;
 }
 
+#timerLabel{
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-text-fill: #6A5CDA;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+    -fx-background-radius:15px;
+}
 
-
+#pomodoroTimerLabel{
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+    -fx-background-radius:15px;
+}

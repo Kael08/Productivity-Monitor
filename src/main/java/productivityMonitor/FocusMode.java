@@ -742,6 +742,7 @@ public class FocusMode {
             if(mainController!=null)
                 mainController.setDisableAllButtons(false); // Включение элементов
                 mainController.setRunImageView();
+                mainController.stopMonitoringTimer();
         });
     }
 

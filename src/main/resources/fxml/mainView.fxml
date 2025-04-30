@@ -46,6 +46,12 @@
       <VBox fx:id="rightSide" alignment="CENTER" spacing="50">
          <Label fx:id="clockLabel" maxHeight="110.0" maxWidth="500.0" minHeight="110.0"
                 minWidth="500.0" prefHeight="110.0" prefWidth="500.0" text="00:00 01.01.2000" />
+
+         <VBox fx:id="timerBox" maxWidth="500" maxHeight="70" spacing="10" alignment="CENTER">
+            <Label fx:id="timerLabel" visible="false"/>
+            <Label fx:id="pomodoroTimerLabel" visible="false"/>
+         </VBox>
+
          <HBox fx:id="startPane" maxHeight="110.0" maxWidth="500.0"
                prefHeight="110.0" prefWidth="500.0" alignment="CENTER" spacing="60">
             <children>
