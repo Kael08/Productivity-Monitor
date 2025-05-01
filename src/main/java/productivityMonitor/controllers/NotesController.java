@@ -91,6 +91,7 @@ public class NotesController {
     @FXML
     public void initialize() {
         mainImageView.setImage(iconImg);
+        notesButton.setDisable(true);
         updateAuthStatus();
         loadNotes();
         updateNoteListUI();
@@ -131,7 +132,7 @@ public class NotesController {
                             json.getString("title"),
                             json.getString("content"),
                             json.getString("created_at"),
-                            json.getString("update_at"),
+                            json.getString("updated_at"),
                             false
                     ));
                 }
@@ -155,7 +156,7 @@ public class NotesController {
                             json.getString("title"),
                             json.getString("content"),
                             json.getString("created_at"),
-                            json.getString("update_at"),
+                            json.getString("updated_at"),
                             true
                     ));
                 }
@@ -175,7 +176,7 @@ public class NotesController {
                     json.put("title", note.title);
                     json.put("content", note.content);
                     json.put("created_at", note.createdAt);
-                    json.put("update_at", note.updateAt);
+                    json.put("updated_at", note.updateAt);
                     jsonArray.put(json);
                 }
             }
@@ -243,7 +244,7 @@ public class NotesController {
                         newNote.getString("title"),
                         newNote.getString("content"),
                         newNote.getString("created_at"),
-                        newNote.getString("update_at"),
+                        newNote.getString("updated_at"),
                         false
                 ));
                 updateNoteListUI();
@@ -302,7 +303,7 @@ public class NotesController {
                 JSONObject updateNote = new JSONObject(response.body()).getJSONObject("note");
                 selectedNote.title = updateNote.getString("title");
                 selectedNote.content = updateNote.getString("content");
-                selectedNote.updateAt = updateNote.getString("update_at");
+                selectedNote.updateAt = updateNote.getString("updated_at");
                 updateNoteListUI();
             } else {
                 showError("Ошибка обновления заметки: " + response.body());
@@ -475,6 +476,20 @@ public class NotesController {
     @FXML private void handleStatisticsButton(ActionEvent event) {}
     @FXML private void handleSettingsButton(ActionEvent event) {}
     @FXML private void handleAchievementsButton(ActionEvent event) {}
+
     @FXML private void handleNotesButton(ActionEvent event) {}
-    @FXML private void handlePlansButton(ActionEvent event) {}
+
+    private void loadPlansStage(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/plansView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // <-- вот ключ
+        stage.setScene(new Scene(root));
+        stage.setTitle("Plans");
+        stage.show();
+    }
+
+    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
+        loadPlansStage(event);
+    }
 }

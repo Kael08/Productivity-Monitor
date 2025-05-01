@@ -125,9 +125,19 @@ public class MainController {
     // Планы
     @FXML
     private Button plansButton;
-    @FXML
-    private void handlePlansButton(ActionEvent action){
 
+    private void loadPlansStage(ActionEvent event) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/plansView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // <-- вот ключ
+        stage.setScene(new Scene(root));
+        stage.setTitle("Plans");
+        stage.show();
+    }
+
+    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
+        loadPlansStage(event);
     }
 
     // Иконка приложения
