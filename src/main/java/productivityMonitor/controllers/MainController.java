@@ -80,7 +80,6 @@ public class MainController {
         stage.show();
     }
 
-
     // Настройки
     @FXML
     private Button settingsButton;
@@ -109,8 +108,18 @@ public class MainController {
     @FXML
     private Button notesButton;
     @FXML
-    private void handleNotesButton(ActionEvent action){
+    private void handleNotesButton(ActionEvent action) throws IOException {
+        loadNotesStage(action);
+    }
 
+    private void loadNotesStage(ActionEvent event) throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/notesView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Notes");
+        stage.show();
     }
 
     // Планы

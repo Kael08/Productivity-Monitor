@@ -5,6 +5,7 @@ module eneev.monitor1 {
     requires jdk.compiler;
     requires Java.WebSocket;
     requires com.google.gson;
+    requires org.json;
 
 
     opens productivityMonitor to javafx.fxml;

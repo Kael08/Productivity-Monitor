@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import productivityMonitor.MainApp;
 
@@ -24,7 +25,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import static productivityMonitor.utils.SharedData.username;
-import static productivityMonitor.utils.TokenManager.clearTokens;
+import static productivityMonitor.utils.TokenManager.*;
 import static productivityMonitor.utils.User.getUser;
 
 public class ProfileController {
@@ -32,6 +33,27 @@ public class ProfileController {
 
     @FXML
     private ImageView mainImageView;
+
+    @FXML
+    private void handleMainImageClick(MouseEvent event) throws IOException {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
+        stage.setTitle("Productivity Monitor");
+        stage.setMinWidth(850);
+        stage.setMinHeight(500);
+
+        stage.setOnCloseRequest(e-> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        stage.setScene(scene);
+        stage.show();
+    }
 
     @FXML
     private ImageView avatarImageView;
@@ -65,28 +87,14 @@ public class ProfileController {
         stage.show();
     }
 
+
     @FXML
     private Button profileButton;
     @FXML
     private void handleProfileButton(ActionEvent event) throws IOException {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
-        stage.setTitle("Productivity Monitor");
-        stage.setMinWidth(850);
-        stage.setMinHeight(500);
-
-        stage.setOnCloseRequest(e-> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        stage.setScene(scene);
-        stage.show();
     }
+
 
     private void loadUserData(){
         usernameLabel.setText(getUser().getUsername());
@@ -113,11 +121,22 @@ public class ProfileController {
 
     }
 
+    // Заметки
     @FXML
     private Button notesButton;
     @FXML
-    private void handleNotesButton(ActionEvent action){
+    private void handleNotesButton(ActionEvent action) throws IOException {
+        loadNotesStage(action);
+    }
 
+    private void loadNotesStage(ActionEvent event) throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/notesView.fxml"));
+        Parent root = fxmlLoader.load();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Notes");
+        stage.show();
     }
 
     @FXML
@@ -134,6 +153,8 @@ public class ProfileController {
     public void initialize(){
         mainImageView.setImage(iconImg);
         avatarImageView.setImage(avatarImg);
+
+        profileButton.setDisable(true);
 
         loadUserData();
     }

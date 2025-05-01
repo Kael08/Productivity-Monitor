@@ -1,0 +1,134 @@
+#navbarPane {
+    -fx-background-color: #6A5CDA;
+}
+
+#navbarPane .button {
+    -fx-text-fill: #6A5CDA;
+    -fx-background-radius: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+#clockLabel {
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 58px;
+    -fx-text-fill: #6A5CDA;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+    -fx-background-radius: 15px;
+}
+
+#startPane {
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 15px;
+    -fx-border-width: 5px;
+}
+
+#startPane .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: null;
+}
+
+#consolePane {
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 15px;
+    -fx-border-width: 5px;
+    -fx-padding: 5px;
+}
+
+#consoleTextArea {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+#timerLabel {
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-text-fill: #6A5CDA;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+    -fx-background-radius: 15px;
+}
+
+#pomodoroTimerLabel {
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-border-width: 5px;
+    -fx-alignment: center;
+    -fx-background-radius: 15px;
+}
+
+.notes-title {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 30px;
+    -fx-text-fill: #6A5CDA;
+    -fx-alignment: center;
+}
+
+.auth-status {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 18px;
+    -fx-text-fill: #6A5CDA;
+    -fx-alignment: center;
+}
+
+.note-field {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-padding: 5px;
+}
+
+.action-button {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #6A5CDA;
+    -fx-background-color: white;
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 15px;
+}
+
+.note-card {
+    -fx-background-color: white;
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #6A5CDA;
+    -fx-cursor: hand;
+}
+
+.note-card:hover {
+    -fx-background-color: #F0F0FF;
+}
