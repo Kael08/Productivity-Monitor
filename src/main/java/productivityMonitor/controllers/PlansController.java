@@ -1,12 +1,10 @@
 package productivityMonitor.controllers;
 
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,12 +15,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import productivityMonitor.MainApp;
-import productivityMonitor.utils.User;
+import productivityMonitor.models.User;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,7 +31,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static productivityMonitor.utils.TokenManager.*;
+import static productivityMonitor.services.StageService.createScene;
+import static productivityMonitor.services.TokenManager.*;
+import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class PlansController {
 
@@ -68,7 +66,7 @@ public class PlansController {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String API_BASE_URL = "http://localhost:3000";
-    private final Path LOCAL_LISTS_PATH = Path.of("src/main/resources/json_files/local_todo_lists.json");
+    private final Path LOCAL_LISTS_PATH = Path.of("src/main/resources/data/local_todo_lists.json");
     private List<TodoList> todoLists = new ArrayList<>();
     private TodoList selectedList = null;
     private TodoItem selectedItem = null;
@@ -755,68 +753,37 @@ public class PlansController {
     }
 
     @FXML
-    private void handleMainImageClick(MouseEvent event) throws IOException {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
-        stage.setTitle("Productivity Monitor");
-        stage.setMinWidth(850);
-        stage.setMinHeight(500);
-        stage.setOnCloseRequest(e -> {
-            Platform.exit();
-            System.exit(0);
-        });
-        stage.setScene(scene);
-        stage.show();
+    private void handleMainImageClick(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");
     }
 
     @FXML
     private void handleProfileButton(ActionEvent event) throws IOException {
         if (isAccessTokenValid() && User.getUser().isUserActive) {
-            loadProfileStage(event);
+            replaceMainScene("/fxml/profileView.fxml","Profile");
         } else {
             if (refreshAccessToken()) {
                 updateUser();
-                loadProfileStage(event);
+                replaceMainScene("/fxml/profileView.fxml","Profile");
             } else {
-                loadAuthStage(event);
+                if(authStage!=null||authStage.isShowing()) {
+                    authStage=new Stage();
+                    return;
+                }
+                authStage=new Stage();
+                createScene("/fxml/authView.fxml","Authentification",authStage,false);
             }
         }
     }
 
-    private void loadAuthStage(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        AuthController authController = fxmlLoader.getController();
-        authStage = new Stage();
-        authController.setMainStage((Stage) ((Node) event.getSource()).getScene().getWindow());
-        authController.setThisStage(authStage);
-        authStage.setTitle("Authentication");
-        authStage.setScene(scene);
-        authStage.setResizable(false);
-        authStage.show();
-    }
-
-    private void loadProfileStage(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/profileView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Profile");
-        stage.show();
-    }
 
     @FXML private void handleStatisticsButton(ActionEvent event) {}
     @FXML private void handleSettingsButton(ActionEvent event) {}
     @FXML private void handleAchievementsButton(ActionEvent event) {}
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/notesView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Notes");
-        stage.show();
+        replaceMainScene("/fxml/notesView.fxml","Notes");
     }
-    @FXML private void handlePlansButton(ActionEvent event) {}
+    @FXML private void handlePlansButton(ActionEvent event) {
+        // Кнопка заблокирована
+    }
 }

@@ -1,4 +1,4 @@
-package productivityMonitor.utils;
+package productivityMonitor.models;
 
 public class User {
     private static User user;

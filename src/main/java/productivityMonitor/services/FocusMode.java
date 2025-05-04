@@ -1,7 +1,8 @@
-package productivityMonitor;
+package productivityMonitor.services;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 import productivityMonitor.controllers.MainController;
 
 import java.io.BufferedReader;
@@ -9,14 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static productivityMonitor.WindowsFirewallDomainBlocker.startBlocker;
-import static productivityMonitor.WindowsFirewallDomainBlocker.stopBlocker;
-import static productivityMonitor.controllers.MainController.countAlertWindow;
-import static productivityMonitor.controllers.MainController.maxAlertWindow;
+import static productivityMonitor.services.StageService.createModeAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusMode {
@@ -60,6 +56,8 @@ public class FocusMode {
 
     // Флаг для паузы
     public static volatile boolean isPaused=false;
+
+    private Stage modeStage=null;
 
     public FocusMode(TextArea consoleTextArea, MainController mainController) {
         this.consoleTextArea = consoleTextArea;
@@ -203,7 +201,11 @@ public class FocusMode {
                                     isTaskRunning = true;
                                     Platform.runLater(() -> {
                                         try {
-                                            mainController.createSailorsKnotWindow();
+                                            modeStage=new Stage();
+                                            modeStage.setOnHidden(event->{
+                                                isTaskRunning=false;
+                                            });
+                                            createModeAlertWindow("/fxml/sailorsKnotWindowView.fxml","Sailor's Knot Task",modeStage,false);
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -245,7 +247,11 @@ public class FocusMode {
                                     isTaskRunning = true;
                                     Platform.runLater(() -> {
                                         try {
-                                            mainController.createSailorsKnotWindow();
+                                            modeStage=new Stage();
+                                            modeStage.setOnHidden(event->{
+                                                isTaskRunning=false;
+                                            });
+                                            createModeAlertWindow("/fxml/sailorsKnotWindowView.fxml","Sailor's Knot Task",modeStage,false);
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -322,7 +328,11 @@ public class FocusMode {
                                     isDelayRunning = true;
                                     Platform.runLater(() -> {
                                         try {
-                                            mainController.createDelayGratificationWindow();
+                                            modeStage=new Stage();
+                                            modeStage.setOnHidden(event->{
+                                                isDelayRunning=false;
+                                            });
+                                            createModeAlertWindow("/fxml/delayGratificationWindowView.fxml","Delay Timer",modeStage,false);
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -364,7 +374,11 @@ public class FocusMode {
                                     isDelayRunning = true;
                                     Platform.runLater(() -> {
                                         try {
-                                            mainController.createDelayGratificationWindow();
+                                            modeStage=new Stage();
+                                            modeStage.setOnHidden(event->{
+                                                isDelayRunning=false;
+                                            });
+                                            createModeAlertWindow("/fxml/delayGratificationWindowView.fxml","Delay Timer",modeStage,false);
                                         } catch (IOException e) {
                                             throw new RuntimeException(e);
                                         }
@@ -415,11 +429,16 @@ public class FocusMode {
         }
     };
 
+    public static int maxAlertWindow = 5;
+    public static int countAlertWindow = 0;
+
     // Режим, который пытается отговорить пользователя
     // от запуска нежелательного приложения или домена
     public void setMindfulness(){
         setMonitoringTask(mindfulness);
     }
+
+
 
     private Runnable mindfulness = () ->{
         // Запуск WebSocket-сервера
@@ -439,27 +458,17 @@ public class FocusMode {
                                 isPaused = true;
                                 Platform.runLater(() -> {
                                     try {
-                                        mainController.createMindfulnessWindow();
+                                        modeStage=new Stage();
+                                        modeStage.setOnHidden(event->{
+                                            countAlertWindow++;
+                                            isPaused=false;
+                                        });
+                                        createModeAlertWindow("/fxml/mindfulnessWindowView.fxml","Warning!",modeStage,false);
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
                                 });
                             }
-                        /*Platform.runLater(()-> {
-                            mainController.createAlertWindow(motivationMessagesList);
-                        });
-                        isPaused=true;
-                        synchronized (pauseLock){
-                            while (isPaused){
-                                try{
-                                    pauseLock.wait();
-                                } catch (InterruptedException e){
-                                    Thread.currentThread().interrupt();
-                                    System.out.println("Ошибка во время паузы");
-                                    return;
-                                }
-                            }
-                        }*/
                         // Если число закрытий окон превзошло лимит, то нужно преждевременно выключить WebSocketServer
                         } else if(countAlertWindow==maxAlertWindow){
                             if (isWebSocketServerActive && webSocketServer != null) {
@@ -490,27 +499,17 @@ public class FocusMode {
                 while (isMonitoringActive && System.currentTimeMillis() < endTime) {
                     try {
                         if (countAlertWindow < maxAlertWindow && isProcessesActive(processList)) {
-                        /*Platform.runLater(()-> {
-                            mainController.createAlertWindow(motivationMessagesList);
-                        });
-                        isPaused=true;
-                        synchronized (pauseLock){
-                            while (isPaused){
-                                try{
-                                    pauseLock.wait();
-                                } catch (InterruptedException e){
-                                    Thread.currentThread().interrupt();
-                                    System.out.println("Ошибка во время паузы");
-                                    return;
-                                }
-                            }
-                        }*/
                             closeProcess(processList);
                             if (!isPaused) {
                                 isPaused = true;
                                 Platform.runLater(() -> {
                                     try {
-                                        mainController.createMindfulnessWindow();
+                                        modeStage=new Stage();
+                                        modeStage.setOnHidden(event->{
+                                            countAlertWindow++;
+                                            isPaused=false;
+                                        });
+                                        createModeAlertWindow("/fxml/mindfulnessWindowView.fxml","Warning!",modeStage,false);
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }

@@ -2,10 +2,7 @@ package productivityMonitor.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -18,20 +15,32 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static productivityMonitor.services.StageService.replaceScene;
+
 public class RegController {
-    private Stage mainStage;
+    // ImageView
+    @FXML
+    private ImageView iconImageView;
 
-    public void setMainStage(Stage mainStage){
-        this.mainStage=mainStage;
-    }
+    // Image
+    private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
-    private Stage thisStage;
+    // TextField
+    @FXML
+    private TextField loginTextField;
+    @FXML
+    private TextField passwordTextField;
+    @FXML
+    private TextField usernameTextField;
 
-    public void setThisStage(Stage thisStage){
-        this.thisStage=thisStage;
-    }
+    // Button
+    @FXML
+    private Button authButton;
+    @FXML
+    private Button regButton;
 
     private final HttpClient client = HttpClient.newHttpClient();
+    private Stage currentStage;
 
     // Функция для POST-запросов на авторизацию
     private int sendRegRequest(String login,String password, String username){
@@ -59,37 +68,13 @@ public class RegController {
     }
 
     @FXML
-    private ImageView iconImageView;
-
-    @FXML
-    private TextField loginTextField;
-
-    @FXML
-    private TextField passwordTextField;
-
-    @FXML
-    private TextField usernameTextField;
-
-    @FXML
-    private Button authButton;
-    @FXML
     private void handleAuthButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
-        Parent authentificationRoot = fxmlLoader.load();
-
-        AuthController authController = fxmlLoader.getController();
-        authController.setMainStage(mainStage);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(authentificationRoot));
-        authController.setThisStage(stage);
-        stage.setTitle("Authentification");
-        stage.setResizable(false);
-        stage.show();
+        if(currentStage==null) {
+            currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();// Получаем ссылку на текущую сцену
+        }
+        replaceScene("/fxml/authView.fxml","Authentification",currentStage,false);// Заменяем текущее окно на окно авторизации
     }
 
-    @FXML
-    private Button regButton;
     @FXML
     private void handleRegButton(ActionEvent event){
         String login = loginTextField.getText();
@@ -106,27 +91,17 @@ public class RegController {
 
         if(status==201){
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/authView.fxml"));
-                Parent authentificationRoot = fxmlLoader.load();
-
-                AuthController authController = fxmlLoader.getController();
-                authController.setMainStage(mainStage);
-
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(authentificationRoot));
-                authController.setThisStage(stage);
-                stage.setTitle("Authentification");
-                stage.setResizable(false);
-                stage.show();
+                if(currentStage==null) {
+                    currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();// Получаем ссылку на текущую сцену
+                }
+                replaceScene("/fxml/authView.fxml","Authentification",currentStage,false);// Заменяем текущее окно на окно авторизации
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());
-
     public void initialize(){
-        iconImageView.setImage(iconImage);
+        iconImageView.setImage(iconImage);// Установка картинки для иконки
     }
 }

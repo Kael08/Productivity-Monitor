@@ -1,50 +1,50 @@
-package productivityMonitor.controllers;
+package productivityMonitor.controllers.modeWindowControllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import productivityMonitor.interfaces.ModeWindowInterface;
 
 import java.util.Random;
 
-import static productivityMonitor.FocusMode.isPaused;
+import static productivityMonitor.services.FocusMode.isPaused;
 import static productivityMonitor.utils.SharedData.motivationMessagesList;
-import static productivityMonitor.controllers.MainController.countAlertWindow;
+import static productivityMonitor.services.FocusMode.countAlertWindow;
 
 
-public class MindfulnessWindowController {
-    private Stage thisStage;
-
-    public MindfulnessWindowController(){}
-
-    public void setThisStage(Stage thisStage) {
-        this.thisStage = thisStage;
-    }
-
+public class MindfulnessWindowController implements ModeWindowInterface {
+    // Label
     @FXML
     private Label quoteLabel;
-
     @FXML
     private Label messageLabel;
 
+    // Button
     @FXML
     private Button agreeButton;
+    @FXML
+    private Button refuseButton;
+
+    private Stage currentStage;
+
+    @Override
+    public void setStage(Stage currentStage){
+        this.currentStage=currentStage;
+    }
 
     @FXML
     private void handleAgree(){
         countAlertWindow--;
         isPaused=false;
-        thisStage.close();
+        currentStage.close();
     }
-
-    @FXML
-    private Button refuseButton;
 
     @FXML
     private void handleRefuse(){
         //countAlertWindow++;
         isPaused=false;
-        thisStage.close();
+        currentStage.close();
     }
 
     @FXML

@@ -1,7 +1,8 @@
-package productivityMonitor;
+package productivityMonitor.services;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.WebSocket;
@@ -12,9 +13,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static productivityMonitor.FocusMode.*;
-import static productivityMonitor.controllers.MainController.countAlertWindow;
-import static productivityMonitor.controllers.MainController.maxAlertWindow;
+import static productivityMonitor.services.FocusMode.*;
+import static productivityMonitor.services.StageService.createModeAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusWebSocketServer extends WebSocketServer {
@@ -67,12 +67,19 @@ public class FocusWebSocketServer extends WebSocketServer {
         }
     }
 
+    Stage modeStage=null;
+
     private void handleMindfulnessTabClosed(String url) {
         if (countAlertWindow < maxAlertWindow && !isPaused) {
             isPaused = true;
             Platform.runLater(() -> {
                 try {
-                    mainController.createMindfulnessWindow();
+                    modeStage=new Stage();
+                    modeStage.setOnHidden(event->{
+                        countAlertWindow++;
+                        isPaused=false;
+                    });
+                    createModeAlertWindow("/fxml/mindfulnessWindowView.fxml","Warning!",modeStage,false);
                 } catch (IOException e) {
                     appendToConsole("Ошибка при создании окна Mindfulness: " + e.getMessage() + "\n");
                 }
@@ -86,7 +93,11 @@ public class FocusWebSocketServer extends WebSocketServer {
             isTaskRunning = true;
             Platform.runLater(() -> {
                 try {
-                    mainController.createSailorsKnotWindow();
+                    modeStage=new Stage();
+                    modeStage.setOnHidden(event->{
+                        isTaskRunning=false;
+                    });
+                    createModeAlertWindow("/fxml/sailorsKnotWindowView.fxml","Sailor's Knot Task",modeStage,false);
                 } catch (IOException e) {
                     appendToConsole("Ошибка при создании окна Sailor's Knot: " + e.getMessage() + "\n");
                 }
@@ -100,7 +111,11 @@ public class FocusWebSocketServer extends WebSocketServer {
             isDelayRunning = true;
             Platform.runLater(() -> {
                 try {
-                    mainController.createDelayGratificationWindow();
+                    modeStage=new Stage();
+                    modeStage.setOnHidden(event->{
+                        isDelayRunning=false;
+                    });
+                    createModeAlertWindow("/fxml/delayGratificationWindowView.fxml","Delay Timer",modeStage,false);
                 } catch (IOException e) {
                     appendToConsole("Ошибка при создании окна Delay Gratification: " + e.getMessage() + "\n");
                 }

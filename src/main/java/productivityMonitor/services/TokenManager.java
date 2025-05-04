@@ -1,9 +1,9 @@
-package productivityMonitor.utils;
+package productivityMonitor.services;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import productivityMonitor.utils.CryptoUtils;
 
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 
-import static productivityMonitor.utils.User.getUser;
+import static productivityMonitor.models.User.getUser;
 
 public class TokenManager {
     private static String accessToken;
@@ -59,7 +59,7 @@ public class TokenManager {
     }
 
     public static void setTokens(String access,String refresh){
-        try(FileWriter fileWriter=new FileWriter("src/main/resources/json_files/REFRESH_TOKEN.json")){
+        try(FileWriter fileWriter=new FileWriter("src/main/resources/data/REFRESH_TOKEN.json")){
             accessToken=access;
             refreshToken=refresh;
             accessTokenExpirationTime=System.currentTimeMillis()+1000*55*60;
@@ -78,7 +78,7 @@ public class TokenManager {
 
     public static boolean loadRefreshToken(){
         try{
-            refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/json_files/REFRESH_TOKEN.json")).trim().replace("\"", "");
+            refreshToken = Files.readString(java.nio.file.Path.of("src/main/resources/data/REFRESH_TOKEN.json")).trim().replace("\"", "");
             refreshToken = CryptoUtils.decrypt(refreshToken);
             if(refreshToken.isEmpty())
                 return false;
@@ -122,7 +122,7 @@ public class TokenManager {
         refreshToken = null;
         accessTokenExpirationTime = 0;
 
-        try(FileWriter fileWriter = new FileWriter("src/main/resources/json_files/REFRESH_TOKEN.json")){
+        try(FileWriter fileWriter = new FileWriter("src/main/resources/data/REFRESH_TOKEN.json")){
             fileWriter.write("");
         }catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());

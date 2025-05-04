@@ -1,33 +1,31 @@
-package productivityMonitor.controllers;
+package productivityMonitor.controllers.modeWindowControllers;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import productivityMonitor.interfaces.ModeWindowInterface;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static productivityMonitor.FocusMode.isDelayOver;
-import static productivityMonitor.FocusMode.isDelayRunning;
+import static productivityMonitor.services.FocusMode.isDelayOver;
+import static productivityMonitor.services.FocusMode.isDelayRunning;
 
-public class DelayGratificationWindowController {
-    private Stage thisStage;
-
-    public DelayGratificationWindowController(){}
-
-    private int seconds = 300; // 5 минут
-
-    public void setThisStage(Stage thisStage){
-        this.thisStage=thisStage;
-    }
-
+public class DelayGratificationWindowController implements ModeWindowInterface {
+    // Label
     @FXML
     private Label infoLabel;
-
     @FXML
     private Label timerLabel;
+
+    private int seconds = 300; // 5 минут
+    private Stage currentStage;
+
+    @Override
+    public void setStage(Stage currentStage){
+        this.currentStage=currentStage;
+    }
 
     @FXML
     private void initialize(){
@@ -48,7 +46,7 @@ public class DelayGratificationWindowController {
         if(seconds<1){
             isDelayOver=true;
             isDelayRunning=false;
-            thisStage.close();
+            currentStage.close();
         } else {
             timerLabel.setText(calcTime(seconds));
         }

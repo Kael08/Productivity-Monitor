@@ -19,7 +19,7 @@
    <left>
       <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="20">
          <children>
-            <ImageView fx:id="mainImageView" fitWidth="64" fitHeight="64" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="mainImageView" fitWidth="64" fitHeight="64" pickOnBounds="true" preserveRatio="true" onMouseClicked="#handleMainImageClick">
                <VBox.margin>
                   <Insets top="20"/>
                </VBox.margin>

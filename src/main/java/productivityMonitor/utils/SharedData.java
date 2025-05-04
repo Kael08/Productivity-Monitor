@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import productivityMonitor.models.CustomMode;
 
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -31,7 +32,7 @@ public class SharedData {
     public static ObservableList<String> customModeList=FXCollections.observableArrayList();
 
     // Список, содержащий экземпляры кастомныъ режимов
-    public static Map<String,CustomMode> customModeListOb=new HashMap<>();
+    public static Map<String, CustomMode> customModeListOb=new HashMap<>();
 
     // Флаг для запуска веб-сервера
     public static boolean isWebSocketServerActive = true;
@@ -50,7 +51,7 @@ public class SharedData {
         Type messageListType = new TypeToken<List<String>>() {}.getType();
         Gson gson = new Gson();
 
-        try (FileReader reader = new FileReader("src/main/resources/json_files/motivation_messages.json")) {
+        try (FileReader reader = new FileReader("src/main/resources/data/motivation_messages.json")) {
             motivationMessagesList = gson.fromJson(reader, messageListType);
         } catch (Exception e) {
             System.out.println("Ошибка: " + e.getMessage());
@@ -66,7 +67,7 @@ public class SharedData {
         Type sailorsKnotTextListType = new TypeToken<List<String>>() {}.getType();
         Gson gson = new Gson();
 
-        try(FileReader reader = new FileReader("src/main/resources/json_files/sailorsKnotText.json")){
+        try(FileReader reader = new FileReader("src/main/resources/data/sailorsKnotText.json")){
             sailorsKnotTextList=gson.fromJson(reader,sailorsKnotTextListType);
         } catch (Exception e){
             System.out.println("Ошибка: "+e.getMessage());

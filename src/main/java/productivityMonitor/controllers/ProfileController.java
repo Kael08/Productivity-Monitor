@@ -1,32 +1,18 @@
 package productivityMonitor.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.sun.tools.javac.Main;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import productivityMonitor.MainApp;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
-import static productivityMonitor.utils.SharedData.username;
-import static productivityMonitor.utils.TokenManager.*;
-import static productivityMonitor.utils.User.getUser;
+import static productivityMonitor.services.TokenManager.*;
+import static productivityMonitor.models.User.getUser;
+import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class ProfileController {
     //private final HttpClient client = HttpClient.newHttpClient();
@@ -34,25 +20,33 @@ public class ProfileController {
     @FXML
     private ImageView mainImageView;
 
+    // Нажатие кнопок навигационной области
     @FXML
     private void handleMainImageClick(MouseEvent event) throws IOException {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor"); // Замена текущей сцены на главную сцену
+    }
+    @FXML
+    private void handleProfileButton(ActionEvent event) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+    }// Кнопка заблокирована
+    @FXML
+    private void handleStatisticsButton(ActionEvent action){
 
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
-        stage.setTitle("Productivity Monitor");
-        stage.setMinWidth(850);
-        stage.setMinHeight(500);
+    }
+    @FXML
+    private void handleSettingsButton(ActionEvent action){
 
-        stage.setOnCloseRequest(e-> {
-            Platform.exit();
-            System.exit(0);
-        });
+    }
+    @FXML
+    private void handleAchievementsButton(ActionEvent event){
 
-        stage.setScene(scene);
-        stage.show();
+    }
+    @FXML
+    private void handleNotesButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/notesView.fxml","Notes");// Замена текущей сцены на сцену заметок
+    }
+    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/plansView.fxml","Plans");// Замена текущей сцены на сцену планов
     }
 
     @FXML
@@ -65,36 +59,14 @@ public class ProfileController {
     private Button logoutButton;
     @FXML
     private void handleLogoutButton(ActionEvent event) throws IOException{
-        clearTokens();
-        getUser().deactivateUser();
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
-        stage.setTitle("Productivity Monitor");
-        stage.setMinWidth(850);
-        stage.setMinHeight(500);
-
-        stage.setOnCloseRequest(e-> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        stage.setScene(scene);
-        stage.show();
+        clearTokens();// Очистка токенов
+        getUser().deactivateUser();// Деактивация пользователя
+        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");// Замена текущей сцены на главную
     }
 
 
     @FXML
     private Button profileButton;
-    @FXML
-    private void handleProfileButton(ActionEvent event) throws IOException {
-
-    }
-
 
     private void loadUserData(){
         usernameLabel.setText(getUser().getUsername());
@@ -102,59 +74,25 @@ public class ProfileController {
 
     @FXML
     private Button settingsButton;
-    @FXML
-    private void handleSettingsButton(ActionEvent action){
 
-    }
 
     @FXML
     private Button statisticsButton;
-    @FXML
-    private void handleStatisticsButton(ActionEvent action){
 
-    }
 
     @FXML
     private Button achievementsButton;
-    @FXML
-    private void handleAchievementsButton(ActionEvent event){
 
-    }
 
     // Заметки
     @FXML
     private Button notesButton;
-    @FXML
-    private void handleNotesButton(ActionEvent action) throws IOException {
-        loadNotesStage(action);
-    }
 
-    private void loadNotesStage(ActionEvent event) throws IOException{
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/notesView.fxml"));
-        Parent root = fxmlLoader.load();
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Notes");
-        stage.show();
-    }
 
     @FXML
     private Button plansButton;
 
-    private void loadPlansStage(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/plansView.fxml"));
-        Parent root = fxmlLoader.load();
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow(); // <-- вот ключ
-        stage.setScene(new Scene(root));
-        stage.setTitle("Plans");
-        stage.show();
-    }
-
-    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
-        loadPlansStage(event);
-    }
 
     // Иконки
     private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),

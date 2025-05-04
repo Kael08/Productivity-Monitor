@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="productivityMonitor.controllers.DelayGratificationWindowController"
+            fx:controller="productivityMonitor.controllers.modeWindowControllers.DelayGratificationWindowController"
             prefHeight="200.0" prefWidth="420.0"
             stylesheets="@../styles/delayGratificationWindow.css"
             fx:id="borderPane">

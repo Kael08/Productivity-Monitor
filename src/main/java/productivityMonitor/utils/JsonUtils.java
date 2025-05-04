@@ -1,6 +1,7 @@
 package productivityMonitor.utils;
 
 import com.google.gson.Gson;
+import productivityMonitor.models.CustomMode;
 
 import java.io.FileReader;
 import java.io.FileWriter;

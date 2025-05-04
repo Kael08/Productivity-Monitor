@@ -1,6 +1,5 @@
 package productivityMonitor.controllers;
 
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -9,12 +8,11 @@ import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import productivityMonitor.FocusMode;
-import productivityMonitor.utils.CustomMode;
+import productivityMonitor.services.FocusMode;
+import productivityMonitor.models.CustomMode;
 import productivityMonitor.utils.JsonUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 

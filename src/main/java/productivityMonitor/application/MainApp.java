@@ -1,4 +1,4 @@
-package productivityMonitor;
+package productivityMonitor.application;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -12,16 +12,15 @@ import productivityMonitor.controllers.MainController;
 import java.io.IOException;
 
 public class MainApp extends Application {
+    public static Stage MainStage;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/fxml/mainView.fxml"));
 
         Parent root = fxmlLoader.load();
 
-        MainController mainController=fxmlLoader.getController();
-
-        mainController.setMainStage(stage);
-
+        MainStage = stage;
         Scene scene = new Scene(root);
 
         stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
