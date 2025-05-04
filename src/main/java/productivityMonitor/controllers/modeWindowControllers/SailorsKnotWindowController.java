@@ -6,13 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import productivityMonitor.interfaces.ModeWindowInterface;
+import productivityMonitor.interfaces.ModeWindow;
 import java.util.Random;
 
-import static productivityMonitor.services.FocusMode.isTaskCompleted;
+import static productivityMonitor.services.MonitoringManager.isTaskCompleted;
 import static productivityMonitor.utils.SharedData.sailorsKnotTextList;
 
-public class SailorsKnotWindowController implements ModeWindowInterface {
+public class SailorsKnotWindowController implements ModeWindow {
     // Label
     @FXML private Label enterTextLabel;
 

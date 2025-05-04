@@ -8,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import productivityMonitor.services.FocusMode;
+import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.models.CustomMode;
 import productivityMonitor.utils.JsonUtils;
 
@@ -46,7 +46,7 @@ public class MonitoringSettingsController {
     @FXML
     private ComboBox<String> urlListComboBox;
 
-    private FocusMode focusMode;
+    private MonitoringManager monitoringManager;
 
     @FXML
     private Button openButton;
@@ -322,8 +322,8 @@ public class MonitoringSettingsController {
     @FXML
     private ComboBox<String> customModeListComboBox;
 
-    public void setFocusMode(FocusMode focusMode){
-        this.focusMode=focusMode;
+    public void setFocusMode(MonitoringManager monitoringManager){
+        this.monitoringManager = monitoringManager;
     }
 
     @FXML
@@ -462,31 +462,31 @@ public class MonitoringSettingsController {
                 case "FullLockdown":
                     Platform.runLater(()->{
                         currentMode="FullLockdown";
-                        focusMode.setFullLockdownMode();
+                        monitoringManager.setMode("FullLockdown");
                     });
                     break;
                 case "Mindfulness":
                     Platform.runLater(()->{
                         currentMode="Mindfulness";
-                        focusMode.setMindfulness();
+                        monitoringManager.setMode("Mindfulness");
                     });
                     break;
                 case "Sailor's Knot":
                     Platform.runLater(()->{
                         currentMode="Sailor's Knot";
-                        focusMode.setSailorsKnot();
+                        monitoringManager.setMode("Sailor's Knot");
                     });
                     break;
                 case "Delay Gratification":
                     Platform.runLater(()->{
                         currentMode="Delay Gratification";
-                        focusMode.setDelayGratification();
+                        monitoringManager.setMode("Delay Gratification");
                     });
                     break;
                 case "Pomodoro":
                     Platform.runLater(()->{
                         currentMode="Pomodoro";
-                        focusMode.setPomodoro();
+                        monitoringManager.setMode("Pomodoro");
                     });
                     break;
             }

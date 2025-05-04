@@ -5,7 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import productivityMonitor.interfaces.ModeWindowInterface;
+import productivityMonitor.interfaces.ModeWindow;
 import java.io.IOException;
 import static productivityMonitor.application.MainApp.MainStage;
 
@@ -86,8 +86,8 @@ public class StageService {
         stage.setResizable(isResizable);
 
         Object controller = loader.getController();
-        if (controller instanceof ModeWindowInterface) { // Проверяет, что интерфейс действительно реализован
-            ((ModeWindowInterface) controller).setStage(stage);
+        if (controller instanceof ModeWindow) { // Проверяет, что интерфейс действительно реализован
+            ((ModeWindow) controller).setStage(stage);
         }
 
         stage.show();

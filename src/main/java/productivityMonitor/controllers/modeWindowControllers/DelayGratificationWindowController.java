@@ -4,14 +4,14 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import productivityMonitor.interfaces.ModeWindowInterface;
+import productivityMonitor.interfaces.ModeWindow;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static productivityMonitor.services.FocusMode.isDelayOver;
-import static productivityMonitor.services.FocusMode.isDelayRunning;
+import static productivityMonitor.services.MonitoringManager.isDelayOver;
+import static productivityMonitor.services.MonitoringManager.isDelayRunning;
 
-public class DelayGratificationWindowController implements ModeWindowInterface {
+public class DelayGratificationWindowController implements ModeWindow {
     // Label
     @FXML private Label infoLabel;
     @FXML private Label timerLabel;

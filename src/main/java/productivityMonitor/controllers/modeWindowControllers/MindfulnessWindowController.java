@@ -4,15 +4,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import productivityMonitor.interfaces.ModeWindowInterface;
+import productivityMonitor.interfaces.ModeWindow;
 import java.util.Random;
 
-import static productivityMonitor.services.FocusMode.isPaused;
+import static productivityMonitor.services.MonitoringManager.isPaused;
 import static productivityMonitor.utils.SharedData.motivationMessagesList;
-import static productivityMonitor.services.FocusMode.countAlertWindow;
+import static productivityMonitor.services.MonitoringManager.countAlertWindow;
 
 
-public class MindfulnessWindowController implements ModeWindowInterface {
+public class MindfulnessWindowController implements ModeWindow {
     // Label
     @FXML private Label quoteLabel;
     @FXML private Label messageLabel;

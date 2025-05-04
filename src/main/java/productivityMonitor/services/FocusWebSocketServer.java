@@ -1,41 +1,28 @@
 package productivityMonitor.services;
 
 import javafx.application.Platform;
-import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.WebSocket;
 import com.google.gson.Gson;
-import productivityMonitor.controllers.MainController;
+import productivityMonitor.utils.ConsoleLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-import static productivityMonitor.services.FocusMode.*;
+import static productivityMonitor.services.MonitoringManager.*;
 import static productivityMonitor.services.StageService.createModeAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
 
 public class FocusWebSocketServer extends WebSocketServer {
-
     private final Gson gson = new Gson();
+    private final ConsoleLogger logger;
 
-    private TextArea consoleTextArea;
-
-    private MainController mainController;
-
-    public FocusWebSocketServer(int port, TextArea consoleTextArea,MainController mainController) {
+    public FocusWebSocketServer(int port, ConsoleLogger logger) {
         super(new InetSocketAddress(port));
-        this.consoleTextArea=consoleTextArea;
-        this.mainController=mainController;
-    }
-
-    private void appendToConsole(String text) {
-        if (consoleTextArea != null) {
-            // Специальный метод в javaFX для выполнения кода в потоке javaFX Application Thread
-            Platform.runLater(() -> consoleTextArea.appendText(text));
-        }
+        this.logger=logger;
     }
 
     @Override
@@ -64,28 +51,32 @@ public class FocusWebSocketServer extends WebSocketServer {
             case "Delay Gratification":
                 handleDelayGratificationTabClosed(url);
                 break;
+            case "Pomodoro":
+                logger.log("Pomodoro: заблокирована вкладка "+url+"\n");
+                break;
+            case "FullLockdown":
+                logger.log("FullLockdown: заблокирована вкладка "+url+"\n");
+                break;
         }
     }
-
-    Stage modeStage=null;
 
     private void handleMindfulnessTabClosed(String url) {
         if (countAlertWindow < maxAlertWindow && !isPaused) {
             isPaused = true;
             Platform.runLater(() -> {
                 try {
-                    modeStage=new Stage();
-                    modeStage.setOnHidden(event->{
+                    Stage stage=new Stage();
+                    stage.setOnHidden(event->{
                         countAlertWindow++;
                         isPaused=false;
                     });
-                    createModeAlertWindow("/fxml/mindfulnessWindowView.fxml","Warning!",modeStage,false);
+                    createModeAlertWindow("/fxml/mindfulnessWindowView.fxml","Warning!",stage,false);
                 } catch (IOException e) {
-                    appendToConsole("Ошибка при создании окна Mindfulness: " + e.getMessage() + "\n");
+                    logger.log("Ошибка при создании окна Mindfulness: " + e.getMessage() + "\n");
                 }
             });
         }
-        appendToConsole("Mindfulness: заблокирована вкладка " + url + "\n");
+        logger.log("Mindfulness: заблокирована вкладка " + url + "\n");
     }
 
     private void handleSailorsKnotTabClosed(String url) {
@@ -93,17 +84,17 @@ public class FocusWebSocketServer extends WebSocketServer {
             isTaskRunning = true;
             Platform.runLater(() -> {
                 try {
-                    modeStage=new Stage();
-                    modeStage.setOnHidden(event->{
+                    Stage stage=new Stage();
+                    stage.setOnHidden(event->{
                         isTaskRunning=false;
                     });
-                    createModeAlertWindow("/fxml/sailorsKnotWindowView.fxml","Sailor's Knot Task",modeStage,false);
+                    createModeAlertWindow("/fxml/sailorsKnotWindowView.fxml","Sailor's Knot Task",stage,false);
                 } catch (IOException e) {
-                    appendToConsole("Ошибка при создании окна Sailor's Knot: " + e.getMessage() + "\n");
+                    logger.log("Ошибка при создании окна Sailor's Knot: " + e.getMessage() + "\n");
                 }
             });
         }
-        appendToConsole("Sailor's Knot: заблокирована вкладка " + url + "\n");
+        logger.log("Sailor's Knot: заблокирована вкладка " + url + "\n");
     }
 
     private void handleDelayGratificationTabClosed(String url) {
@@ -111,17 +102,17 @@ public class FocusWebSocketServer extends WebSocketServer {
             isDelayRunning = true;
             Platform.runLater(() -> {
                 try {
-                    modeStage=new Stage();
-                    modeStage.setOnHidden(event->{
+                    Stage stage=new Stage();
+                    stage.setOnHidden(event->{
                         isDelayRunning=false;
                     });
-                    createModeAlertWindow("/fxml/delayGratificationWindowView.fxml","Delay Timer",modeStage,false);
+                    createModeAlertWindow("/fxml/delayGratificationWindowView.fxml","Delay Timer",stage,false);
                 } catch (IOException e) {
-                    appendToConsole("Ошибка при создании окна Delay Gratification: " + e.getMessage() + "\n");
+                    logger.log("Ошибка при создании окна Delay Gratification: " + e.getMessage() + "\n");
                 }
             });
         }
-        appendToConsole("Delay Gratification: заблокирована вкладка " + url + "\n");
+        logger.log("Delay Gratification: заблокирована вкладка " + url + "\n");
     }
 
     public void sendBlacklist(WebSocket conn) {
@@ -162,4 +153,3 @@ public class FocusWebSocketServer extends WebSocketServer {
         System.out.println("Сервер WebSocket запущен успешно!");
     }
 }
-

@@ -7,7 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import productivityMonitor.services.FocusMode;
+import productivityMonitor.services.MonitoringManager;
+import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
 
@@ -103,7 +104,7 @@ public class MainController {
 
         monitoringSettingsStage=new Stage();
         MonitoringSettingsController controller=createSceneAndGetController("/fxml/monitoringSettingsView.fxml","Process Settings",monitoringSettingsStage,false);
-        controller.setFocusMode(focusMode);
+        controller.setFocusMode(monitoringManager);
     }// Нажатие кнопки настройки мониторинга
     @FXML private void handleTimerButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Timer нажата!");
@@ -124,18 +125,20 @@ public class MainController {
             setDisableAllButtons(true); // Отключение элементов
             closeSideStages();
             runImageView.setImage(pauseImg);
-            focusMode.startMonitoring();
+            monitoringManager.startMonitoring();
         } else {
             timerUtils.deactivateMonitoringTimer(); // остановка мониторинг-таймера
 
             setDisableAllButtons(false); // Включение элементов
             runImageView.setImage(runImg);
-            focusMode.stopMonitoring();
+            monitoringManager.stopMonitoring();
         }
     }// Нажатие кнопки запуска мониторинга
 
     // Класс для взаимодействия с мониторингом
-    private FocusMode focusMode;
+    private MonitoringManager monitoringManager;
+    // Логгер для записи текста в основную консоль
+    ConsoleLogger logger;
     // Класс для работы с таймерами
     public TimerUtils timerUtils=new TimerUtils();
     // Отключение и включение элементов(кроме кнопки запуска мониторинга)
@@ -177,8 +180,9 @@ public class MainController {
         timerImageView.setImage(timerImg);
         mainImageView.setImage(iconImg);
 
-        focusMode = new FocusMode(consoleTextArea,this);
-        focusMode.setFullLockdownMode();
+        logger=new ConsoleLogger(consoleTextArea);
+        monitoringManager = new MonitoringManager(logger,this);
+        monitoringManager.setMode("FullLockdown");
 
         timerUtils.setTimerLabel(timerLabel);
         timerUtils.setPomodoroTimerLabel(pomodoroTimerLabel);
