@@ -4,10 +4,10 @@ import productivityMonitor.interfaces.MonitoringMode;
 import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.ProcessUtils;
 
+import static productivityMonitor.controllers.MonitoringSettingsController.processList;
+import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
 import static productivityMonitor.services.MonitoringManager.pomodoroChillTime;
 import static productivityMonitor.services.MonitoringManager.pomodoroWorkTime;
-import static productivityMonitor.utils.SharedData.isMonitoringActive;
-import static productivityMonitor.utils.SharedData.processList;
 import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class PomodoroMode implements MonitoringMode {

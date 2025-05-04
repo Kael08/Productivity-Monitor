@@ -2,6 +2,7 @@ package productivityMonitor.controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,70 +11,66 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.models.CustomMode;
+import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import static productivityMonitor.utils.SharedData.*;
+import static productivityMonitor.services.MonitoringManager.currentMode;
+import static productivityMonitor.services.MonitoringManager.isWebSocketServerActive;
 
 public class MonitoringSettingsController {
-    @FXML
-    private ComboBox<String> processListComboBox;
+    // ComboBox
+    @FXML private ComboBox<String> processListComboBox;
+    @FXML private ComboBox<String> modeListComboBox;
+    @FXML private ComboBox<String> urlListComboBox;
+    @FXML private ComboBox<String> customModeListComboBox;
 
-    @FXML
-    private Button addButton;
+    // Button
+    @FXML private Button addButton;
+    @FXML private Button deleteButton;
+    @FXML private Button openButton;
+    @FXML private Button createButton;
+    @FXML private Button editButton;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
+    @FXML private Button deleteUrlButton;
+    @FXML private Button addUrlButton;
 
-    @FXML
-    private Button deleteButton;
+    // TextField
+    @FXML private TextField inputTextField;
+    @FXML private TextField inputUrlTextField;
+    @FXML TextField customModeNameTextField;
 
-    @FXML
-    private TextArea consoleTextArea;
+    // TextArea
+    @FXML private TextArea consoleTextArea;// Консоль именно окна настройки мониторинга
 
-    @FXML
-    private TextField inputTextField;
+    // CheckBox
+    @FXML private CheckBox blockDomainCheckBox;
 
-    @FXML
-    private TextField inputUrlTextField;
+    // Label
+    @FXML private Label selectCustomModeLabel;
 
-    @FXML
-    private CheckBox blockDomainCheckBox;
+    // Списки для мониторинга
+    public static ObservableList<String> processList = FXCollections.observableArrayList();// Список запрещенных процессов
+    public static ObservableList<String> urlList = FXCollections.observableArrayList();// Список запрещенных доменов
+    public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown","Mindfulness","Sailor's Knot","Delay Gratification", "Pomodoro");// Список режимов
+    public static ObservableList<String> customModeList=FXCollections.observableArrayList();// Список кастомных режимов
+    public static Map<String, CustomMode> customModeListOb=new HashMap<>();// Список, содержащий экземпляры кастомныe режимов
 
-    @FXML
-    private ComboBox<String> modeListComboBox;
+    private MonitoringManager monitoringManager;// Класс для работы с режимами
 
-    @FXML
-    private ComboBox<String> urlListComboBox;
-
-    private MonitoringManager monitoringManager;
-
-    @FXML
-    private Button openButton;
-
-    @FXML
-    private Button createButton;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button saveButton;
-
-    @FXML
-    private Button cancelButton;
-
-    @FXML
-    private Button deleteUrlButton;
-
-    @FXML
-    private Button addUrlButton;
+    public void setMonitoringManager(MonitoringManager monitoringManager){
+        this.monitoringManager = monitoringManager;
+    }
 
     //TODO: Решить проблему с таймером в кастомных режимах
-
     //TODO: Решить проблему с блокировкой кнопок и режимом редактирования(open,create,edit)
-    @FXML
-    private void handleOpenButton(ActionEvent event){
+    @FXML private void handleOpenButton(ActionEvent event){
         // Создание окна выбора файла
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Выберите файл с кастомным режимом");
@@ -97,7 +94,6 @@ public class MonitoringSettingsController {
                     consoleTextArea.appendText("ОШИБКА: файл не является валидным CustomMode\n");
                     return;
                 }
-
                 try {
                     CustomMode customMode=JsonUtils.loadCustomModeFromFile(selectedFile.getAbsolutePath());
 
@@ -121,31 +117,11 @@ public class MonitoringSettingsController {
                 e.printStackTrace();
             }
         }
-    }
-
-    // Проверка, что файл соответствует Классу
-    private boolean isCustomModeFile(File file){
-        try{
-            // Пробуем загрузить файл как CustomMode
-            CustomMode temp = JsonUtils.loadCustomModeFromFile(file.getAbsolutePath());
-
-            return temp!=null
-                    &&temp.getName()!=null
-                    && temp.getModeName() != null
-                    && temp.getProcessList() != null
-                    && temp.getUrlList() != null;
-        }catch (Exception e){
-            return false;
-        }
-    }
-
-    @FXML
-    private void handleCreateButton(ActionEvent event){
+    }                               // Открыть кастомный режим
+    @FXML private void handleCreateButton(ActionEvent event){
         createCustomModeInterface();
-    }
-
-    @FXML
-    private void handleEditButton(ActionEvent event) {
+    } // Создать кастомный режим
+    @FXML private void handleEditButton(ActionEvent event) {
         String selectedMode = customModeListComboBox.getValue();
 
         if(selectedMode == null || selectedMode.equals("<НЕТ>")) {
@@ -155,10 +131,8 @@ public class MonitoringSettingsController {
 
         customModeNameTextField.setText(customModeListComboBox.getValue());
         editCustomModeInterface();
-    }
-
-    @FXML
-    private void handleSaveButton(ActionEvent event) {
+    }                              // Редактировать кастомный режим
+    @FXML private void handleSaveButton(ActionEvent event) {
         //TODO: Ошибка: Что делать, если названия одинаковы
 
         String fileName = "newCustomMode";
@@ -183,10 +157,10 @@ public class MonitoringSettingsController {
                 // Создаём объект CustomMode
                 CustomMode customMode = new CustomMode(
                         fileName,
-                        currentMode,
+                        currentMode.getName(),
                         new ArrayList<>(processList),  // Копируем список, а не передаём ссылку
                         new ArrayList<>(urlList),     // Копируем список, а не передаём ссылку
-                        isDomainBlockerActive
+                        isWebSocketServerActive
                 );
 
                 JsonUtils.saveCustomModeToFile(customMode, filePath);
@@ -203,7 +177,6 @@ public class MonitoringSettingsController {
                 customModeListComboBox.setItems(FXCollections.observableArrayList(customModeList));
                 //customModeListComboBox.setValue(fileName);  // Устанавливаем выбранный режим
 
-
                 clearInterface();
 
                 consoleTextArea.appendText("Файл успешно сохранен: " + filePath + "\n");
@@ -214,16 +187,29 @@ public class MonitoringSettingsController {
         } else {
             consoleTextArea.appendText("Сохранение отменено пользователем\n");
         }
-    }
-
-
-    @FXML
-    private void handleCancelButton(ActionEvent event){
+    }                              // Сохранить изменения кастомного режима
+    @FXML private void handleCancelButton(ActionEvent event){
         clearInterface();
         customModeListComboBox.setValue("<НЕТ>");
+    }                             // Отменить редактирование кастомного режима
+
+    // Проверка, что файл соответствует Классу
+    private boolean isCustomModeFile(File file){
+        try{
+            // Пробуем загрузить файл как CustomMode
+            CustomMode temp = JsonUtils.loadCustomModeFromFile(file.getAbsolutePath());
+
+            return temp!=null
+                    &&temp.getName()!=null
+                    && temp.getModeName() != null
+                    && temp.getProcessList() != null
+                    && temp.getUrlList() != null;
+        }catch (Exception e){
+            return false;
+        }
     }
 
-    // Метод для возвращения интерфейса к исходному варианту
+
     private void clearInterface(){
         openButton.setDisable(false);
         createButton.setDisable(false);
@@ -245,9 +231,7 @@ public class MonitoringSettingsController {
         consoleTextArea.setDisable(false);
         customModeNameTextField.setText("Новый режим");
         customModeListComboBox.setValue("<НЕТ>");
-    }
-
-    // Переход к созданию кастомного режима
+    }           // Метод для возвращения интерфейса к исходному варианту
     private void createCustomModeInterface(){
         openButton.setDisable(true);
         createButton.setDisable(true);
@@ -267,9 +251,7 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(false);
         addUrlButton.setDisable(false);
         consoleTextArea.setDisable(false);
-    }
-
-    // Режим редактирования кастомного режима
+    }// Переход к созданию кастомного режима
     private void editCustomModeInterface(){
         openButton.setDisable(true);
         createButton.setDisable(true);
@@ -289,9 +271,7 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(false);
         addUrlButton.setDisable(false);
         consoleTextArea.setDisable(false);
-    }
-
-    // Интерфейс при выборе кастомного режима
+    }  // Режим редактирования кастомного режима
     private void customModeInterface(){
         openButton.setDisable(false);
         createButton.setDisable(false);
@@ -311,23 +291,9 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(true);
         addUrlButton.setDisable(true);
         consoleTextArea.setDisable(false);
-    }
+    }      // Интерфейс при выборе кастомного режима
 
-    @FXML
-    private TextField customModeNameTextField;
-
-    @FXML
-    private Label selectCustomModeLabel;
-
-    @FXML
-    private ComboBox<String> customModeListComboBox;
-
-    public void setFocusMode(MonitoringManager monitoringManager){
-        this.monitoringManager = monitoringManager;
-    }
-
-    @FXML
-    private void handleDeleteProcess(ActionEvent event){
+    @FXML private void handleDeleteProcess(ActionEvent event){
         String selectedProcess = processListComboBox.getValue();
         if(selectedProcess==null){
             consoleTextArea.appendText("Ошибка: процесс не выбран\n");
@@ -340,10 +306,8 @@ public class MonitoringSettingsController {
                 consoleTextArea.appendText("Ошибка: Процесс с именем '" + selectedProcess + "' не найден!\n");
             }
         }
-    }
-
-    @FXML
-    private void handleAddProcess(ActionEvent event){
+    }// Удаление процесса
+    @FXML private void handleAddProcess(ActionEvent event){
         String processName = inputTextField.getText();
 
         if(processName.isEmpty()) {
@@ -361,10 +325,8 @@ public class MonitoringSettingsController {
         inputTextField.clear();
         consoleTextArea.appendText("Процесс "+processName+" добавлен\n");
         processList.add(processName);
-    }
-
-    @FXML
-    private void handleDeleteUrl(ActionEvent event){
+    }   // Добавление процесса
+    @FXML private void handleDeleteUrl(ActionEvent event){
         String selectedUrl = urlListComboBox.getValue();
 
         if(selectedUrl==null){
@@ -378,10 +340,8 @@ public class MonitoringSettingsController {
                 consoleTextArea.appendText("Ошибка: домен "+selectedUrl+" не найден!\n");
             }
         }
-    }
-
-    @FXML
-    private void handleAddUrl(ActionEvent event){
+    }    // Удаление URL
+    @FXML private void handleAddUrl(ActionEvent event){
         String urlName = inputUrlTextField.getText();
 
         if(urlName.isEmpty()){
@@ -392,26 +352,23 @@ public class MonitoringSettingsController {
         inputUrlTextField.clear();
         consoleTextArea.appendText("Домен "+urlName+" добавлен\n");
         urlList.add(urlName);
-    }
+    }       // Добавление URL
 
     public void initialize(){
         processListComboBox.setItems(processList);
         urlListComboBox.setItems(urlList);
         modeListComboBox.setItems(modeList);
-        modeListComboBox.setValue(currentMode);
+        modeListComboBox.setValue(currentMode.getName());
         customModeListComboBox.setItems(customModeList);
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
-        blockDomainCheckBox.setSelected(isDomainBlockerActive);
 
         blockDomainCheckBox.setOnAction(event->{
             if(blockDomainCheckBox.isSelected()) {
                 isWebSocketServerActive = true;
-                isDomainBlockerActive=true;
             }
             else {
                 isWebSocketServerActive = false;
-                isDomainBlockerActive=false;
             }
         });
 
@@ -444,8 +401,8 @@ public class MonitoringSettingsController {
             modeListComboBox.setValue(customMode.modeName);
             processList.clear();
             processList.setAll(customMode.getProcessList());
-            isDomainBlockerActive = customMode.isDomainBlockerActive();
-            blockDomainCheckBox.setSelected(isDomainBlockerActive);
+            isWebSocketServerActive=customMode.isWebSocketServerActive();
+            blockDomainCheckBox.setSelected(isWebSocketServerActive);
             urlList.clear();
             urlList.setAll(customMode.getUrlList());
 
@@ -455,37 +412,32 @@ public class MonitoringSettingsController {
             } else {
                 clearInterface();
             }
-        });
+        });// Если кастомный режим выбран, то установка новых значений
 
         modeListComboBox.setOnAction(actionEvent -> {
             switch (modeListComboBox.getValue()){
                 case "FullLockdown":
                     Platform.runLater(()->{
-                        currentMode="FullLockdown";
                         monitoringManager.setMode("FullLockdown");
                     });
                     break;
                 case "Mindfulness":
                     Platform.runLater(()->{
-                        currentMode="Mindfulness";
                         monitoringManager.setMode("Mindfulness");
                     });
                     break;
                 case "Sailor's Knot":
                     Platform.runLater(()->{
-                        currentMode="Sailor's Knot";
                         monitoringManager.setMode("Sailor's Knot");
                     });
                     break;
                 case "Delay Gratification":
                     Platform.runLater(()->{
-                        currentMode="Delay Gratification";
                         monitoringManager.setMode("Delay Gratification");
                     });
                     break;
                 case "Pomodoro":
                     Platform.runLater(()->{
-                        currentMode="Pomodoro";
                         monitoringManager.setMode("Pomodoro");
                     });
                     break;

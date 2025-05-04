@@ -7,9 +7,7 @@ import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindow;
 import java.util.Random;
 
-import static productivityMonitor.services.MonitoringManager.isPaused;
-import static productivityMonitor.utils.SharedData.motivationMessagesList;
-import static productivityMonitor.services.MonitoringManager.countAlertWindow;
+import static productivityMonitor.services.MonitoringManager.*;
 
 
 public class MindfulnessWindowController implements ModeWindow {

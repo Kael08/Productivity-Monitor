@@ -10,7 +10,7 @@ import productivityMonitor.interfaces.ModeWindow;
 import java.util.Random;
 
 import static productivityMonitor.services.MonitoringManager.isTaskCompleted;
-import static productivityMonitor.utils.SharedData.sailorsKnotTextList;
+import static productivityMonitor.services.MonitoringManager.sailorsKnotTextList;
 
 public class SailorsKnotWindowController implements ModeWindow {
     // Label

@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+import static productivityMonitor.controllers.MonitoringSettingsController.urlList;
 import static productivityMonitor.services.MonitoringManager.*;
 import static productivityMonitor.services.StageService.createModeAlertWindow;
-import static productivityMonitor.utils.SharedData.*;
 
 public class FocusWebSocketServer extends WebSocketServer {
     private final Gson gson = new Gson();
@@ -41,7 +41,7 @@ public class FocusWebSocketServer extends WebSocketServer {
 
     // Обработка закрытия вкладки для разных режимов
     public void handleTabClosed(String url) {
-        switch (currentMode) {
+        switch (currentMode.getName()) {
             case "Mindfulness":
                 handleMindfulnessTabClosed(url);
                 break;

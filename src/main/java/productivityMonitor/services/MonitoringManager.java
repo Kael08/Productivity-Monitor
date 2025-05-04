@@ -1,17 +1,11 @@
 package productivityMonitor.services;
 
 import javafx.application.Platform;
-import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 import productivityMonitor.controllers.MainController;
 import productivityMonitor.interfaces.MonitoringMode;
 import productivityMonitor.services.modes.*;
 import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.ProcessUtils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +13,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static productivityMonitor.services.StageService.createModeAlertWindow;
-import static productivityMonitor.utils.SharedData.*;
 import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class MonitoringManager {
@@ -33,18 +25,20 @@ public class MonitoringManager {
     public static volatile boolean isDelayOver = false;    // Delay Gratification: Задержка завершена
     public static volatile boolean isDelayRunning = false; // Delay Gratification: Задержка запущена
     public static volatile boolean isPaused = false;       // Mindfulness: Пауза
+    public static volatile boolean isMonitoringActive = false;// Флаг для обозначения запуска мониторинга
+    public static boolean isWebSocketServerActive = true;// Флаг для запуска веб-сервера
 
     // Статические параметры
     public static final int maxAlertWindow = 5;
     public static volatile int countAlertWindow = 0;
 
     private final Map<String, MonitoringMode> modes = new HashMap<>(); // Регистрация режимов
-    private MonitoringMode currentMode; // Текущий активный режим
+    public static MonitoringMode currentMode; // Текущий активный режим
     private Thread monitorThread; // Поток мониторинга
     private FocusWebSocketServer webSocketServer; // Сервер для браузера
     private final ConsoleLogger logger; // Логгер
     private final ProcessUtils processUtils; // Утилиты для работы с процессами
-    private MainController mainController; // Контроллер UI
+    private final MainController mainController; // Контроллер UI
     private final ReentrantLock monitorLock = new ReentrantLock(); // Блокировка для синхронизации
 
     // Задача мониторинга
@@ -56,6 +50,9 @@ public class MonitoringManager {
         this.processUtils = new ProcessUtils(logger);
         initializeModes();
     }
+
+    public static List<String> sailorsKnotTextList = new ArrayList<>();// Список текстов для Sailor's Knot
+    public static List<String> motivationMessagesList = new ArrayList<>();// Список с мотивирующими сообщениями для Mindfulness-режима мониторинга
 
     private void initializeModes() {
         modes.put("FullLockdown", new FullLockdownMode(processUtils, logger));

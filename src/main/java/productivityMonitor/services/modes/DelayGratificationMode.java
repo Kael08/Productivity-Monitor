@@ -8,11 +8,11 @@ import productivityMonitor.utils.ProcessUtils;
 
 import java.io.IOException;
 
+import static productivityMonitor.controllers.MonitoringSettingsController.processList;
 import static productivityMonitor.services.MonitoringManager.isDelayOver;
 import static productivityMonitor.services.MonitoringManager.isDelayRunning;
+import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
 import static productivityMonitor.services.StageService.createModeAlertWindow;
-import static productivityMonitor.utils.SharedData.isMonitoringActive;
-import static productivityMonitor.utils.SharedData.processList;
 import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class DelayGratificationMode implements MonitoringMode {

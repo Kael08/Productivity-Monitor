@@ -13,20 +13,20 @@ public class CustomMode {
     public List<String> processList;
     @SerializedName("urlList")
     public List<String> urlList;
-    @SerializedName("isDomainBlockerActive")
-    public boolean isDomainBlockerActive;
+    @SerializedName("isWebSocketServerActive")
+    public boolean isWebSocketServerActive;
 
     public CustomMode(String name,String modeName,List<String> processList,
-                      List<String> urlList,boolean isDomainBlockerActive){
+                      List<String> urlList,boolean isWebSocketServerActive){
         this.name=name;
         this.modeName=modeName;
         this.processList=processList;
         this.urlList=urlList;
-        this.isDomainBlockerActive=isDomainBlockerActive;
+        this.isWebSocketServerActive=isWebSocketServerActive;
     }
 
-    public boolean isDomainBlockerActive() {
-        return isDomainBlockerActive;
+    public boolean isWebSocketServerActive() {
+        return isWebSocketServerActive;
     }
 
     public List<String> getProcessList() {

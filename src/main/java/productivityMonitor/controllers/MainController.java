@@ -12,8 +12,10 @@ import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
 
+import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
 import static productivityMonitor.services.StageService.*;
-import static productivityMonitor.utils.SharedData.*;
+import static productivityMonitor.utils.DataLoader.readMotivationMessages;
+import static productivityMonitor.utils.DataLoader.readSailorsKnotText;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
 
@@ -104,7 +106,7 @@ public class MainController {
 
         monitoringSettingsStage=new Stage();
         MonitoringSettingsController controller=createSceneAndGetController("/fxml/monitoringSettingsView.fxml","Process Settings",monitoringSettingsStage,false);
-        controller.setFocusMode(monitoringManager);
+        controller.setMonitoringManager(monitoringManager);
     }// Нажатие кнопки настройки мониторинга
     @FXML private void handleTimerButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Timer нажата!");

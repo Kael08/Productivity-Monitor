@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static productivityMonitor.utils.SharedData.currentMode;
+import static productivityMonitor.services.MonitoringManager.currentMode;
 
 public class TimerUtils {
     public static int minutes;// Время работы таймера мониторинга
@@ -57,7 +57,7 @@ public class TimerUtils {
         }
 
         // Активация таймера pomodoro
-        if(currentMode.equals("Pomodoro")){
+        if(currentMode.getName().equals("Pomodoro")){
             pomodoroTimerLabel.setVisible(true);
             workPhase=true;// Рабочая фаза
             pomodoroTimerSeconds=WORK_PHASE_DURATION;
