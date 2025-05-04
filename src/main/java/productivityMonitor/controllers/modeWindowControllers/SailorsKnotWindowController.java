@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindowInterface;
-
 import java.util.Random;
 
 import static productivityMonitor.services.FocusMode.isTaskCompleted;
@@ -15,19 +14,14 @@ import static productivityMonitor.utils.SharedData.sailorsKnotTextList;
 
 public class SailorsKnotWindowController implements ModeWindowInterface {
     // Label
-    @FXML
-    private Label enterTextField;
+    @FXML private Label enterTextLabel;
 
     // TextArea
-    @FXML
-    private TextArea taskTextArea;
-
-    @FXML
-    private TextArea answerTextArea;
+    @FXML private TextArea taskTextArea;
+    @FXML private TextArea answerTextArea;
 
     // Button
-    @FXML
-    private Button enterButton;
+    @FXML private Button enterButton;
 
     Stage currentStage;
 
@@ -36,8 +30,7 @@ public class SailorsKnotWindowController implements ModeWindowInterface {
         this.currentStage=currentStage;
     }
 
-    @FXML
-    private void handleEnter(ActionEvent event){
+    @FXML private void handleEnter(ActionEvent event){
         String task = taskTextArea.getText(),
         answer=answerTextArea.getText();
 
@@ -50,8 +43,7 @@ public class SailorsKnotWindowController implements ModeWindowInterface {
         }
     }
 
-    @FXML
-    private void initialize(){
+    @FXML private void initialize(){
         Random rand = new Random();
         taskTextArea.setText(sailorsKnotTextList.get(rand.nextInt(sailorsKnotTextList.size())));
     }

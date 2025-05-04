@@ -407,8 +407,8 @@ public class NotesController {
 
     // Переход на главную страницу
     @FXML
-    private void handleMainImageClick(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/mainView.fxml","Main");
+    private void handleMainImageClick(MouseEvent event) throws IOException {
+        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");
     }
 
     // Переход на профиль
@@ -424,7 +424,7 @@ public class NotesController {
                 replaceMainScene("/fxml/profileView.fxml","Profile");
             } else {
                 // Если refresh тоже не сработал - показываем окно авторизации
-                if(authStage!=null||authStage.isShowing()) {
+                if(authStage!=null&&authStage.isShowing()) {
                     authStage.toFront();
                     return;
                 }

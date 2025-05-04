@@ -6,10 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-
 import java.util.function.UnaryOperator;
 
-import static productivityMonitor.utils.SharedData.minutes;
+import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class TimerController {
     @FXML

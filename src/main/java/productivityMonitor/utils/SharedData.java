@@ -19,9 +19,6 @@ public class SharedData {
     // Список запрещенных процессов
     public static ObservableList<String> processList = FXCollections.observableArrayList();
 
-    // Установленное время работы мониторы(в минутах)
-    public static int minutes = 0;
-
     // Список запрещенных доменов
     public static ObservableList<String> urlList = FXCollections.observableArrayList();
 
@@ -76,10 +73,6 @@ public class SharedData {
     }
 
     public static String currentMode="FullLockdown";
-
-    //public static String ACCESS_TOKEN= "";
-
-    //public static boolean isUserLogged=false;
 
     public static String username="";
 }

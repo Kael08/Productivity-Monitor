@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,25 +18,19 @@ import static productivityMonitor.services.StageService.replaceScene;
 
 public class RegController {
     // ImageView
-    @FXML
-    private ImageView iconImageView;
+    @FXML private ImageView iconImageView;
 
     // Image
     private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
     // TextField
-    @FXML
-    private TextField loginTextField;
-    @FXML
-    private TextField passwordTextField;
-    @FXML
-    private TextField usernameTextField;
+    @FXML private TextField loginTextField;
+    @FXML private TextField passwordTextField;
+    @FXML private TextField usernameTextField;
 
     // Button
-    @FXML
-    private Button authButton;
-    @FXML
-    private Button regButton;
+    @FXML private Button authButton;
+    @FXML private Button regButton;
 
     private final HttpClient client = HttpClient.newHttpClient();
     private Stage currentStage;
@@ -67,16 +60,13 @@ public class RegController {
         return 0;
     }
 
-    @FXML
-    private void handleAuthButton(ActionEvent event) throws IOException {
+    @FXML private void handleAuthButton(ActionEvent event) throws IOException {
         if(currentStage==null) {
             currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();// Получаем ссылку на текущую сцену
         }
         replaceScene("/fxml/authView.fxml","Authentification",currentStage,false);// Заменяем текущее окно на окно авторизации
-    }
-
-    @FXML
-    private void handleRegButton(ActionEvent event){
+    }// Нажатие кнопки перехода на авторизацию
+    @FXML private void handleRegButton(ActionEvent event){
         String login = loginTextField.getText();
         String password = passwordTextField.getText();
         String username = usernameTextField.getText();
@@ -99,9 +89,9 @@ public class RegController {
                 e.printStackTrace();
             }
         }
-    }
+    }// Нажатие кнопки регистрации
 
-    public void initialize(){
+    @FXML public void initialize(){
         iconImageView.setImage(iconImage);// Установка картинки для иконки
     }
 }

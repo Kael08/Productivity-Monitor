@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static productivityMonitor.services.StageService.createModeAlertWindow;
 import static productivityMonitor.utils.SharedData.*;
+import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class FocusMode {
     // Минуты для работы в Помодоро
@@ -741,7 +742,7 @@ public class FocusMode {
             if(mainController!=null)
                 mainController.setDisableAllButtons(false); // Включение элементов
                 mainController.setRunImageView();
-                mainController.stopMonitoringTimer();
+                mainController.timerUtils.deactivateMonitoringTimer();
         });
     }
 

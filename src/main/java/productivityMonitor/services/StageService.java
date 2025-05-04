@@ -1,24 +1,13 @@
 package productivityMonitor.services;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import productivityMonitor.controllers.AuthController;
-import productivityMonitor.controllers.MonitoringSettingsController;
-import productivityMonitor.controllers.modeWindowControllers.DelayGratificationWindowController;
-import productivityMonitor.controllers.modeWindowControllers.MindfulnessWindowController;
-import productivityMonitor.controllers.modeWindowControllers.SailorsKnotWindowController;
 import productivityMonitor.interfaces.ModeWindowInterface;
-
 import java.io.IOException;
-
 import static productivityMonitor.application.MainApp.MainStage;
-import static productivityMonitor.services.FocusMode.*;
 
 public class StageService {
     // Заменяет основное окно
@@ -42,8 +31,10 @@ public class StageService {
         // Замена окна
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
-        stage.initOwner(MainStage);// Устанавливает владельца
-        stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
+        if(stage.getOwner()==null) {// тк мы заменяем окно, следовательно, необходимо проверить наличие окна-владельца, тк нельзя два раза устанавливать ссылку на владельца
+            stage.initOwner(MainStage);// Устанавливает владельца
+            stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
+        }
         stage.setResizable(isResizable);
         stage.show();
     }
@@ -63,6 +54,22 @@ public class StageService {
         stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
         stage.setResizable(isResizable);
         stage.show();
+    }
+    // Специальная функция с возвращением ссылки на контроллер
+    public static <T> T createSceneAndGetController(String path, String windowTitle, Stage stage, boolean isResizable) throws IOException {
+        // Загрузка верстки
+        FXMLLoader loader = new FXMLLoader(StageService.class.getResource(path));
+        Parent root = loader.load();
+
+        // Создание окна
+        stage.setScene(new Scene(root));
+        stage.setTitle(windowTitle);
+        stage.initOwner(MainStage);// Устанавливает владельца
+        stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
+        stage.setResizable(isResizable);
+        stage.show();
+
+        return loader.getController();
     }
 
     // Создание окна для режима

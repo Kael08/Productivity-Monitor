@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -26,23 +25,18 @@ import static productivityMonitor.services.StageService.replaceScene;
 
 public class AuthController {
     // ImageView
-    @FXML
-    private ImageView iconImageView;
+    @FXML private ImageView iconImageView;
 
     // Image
     private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
     // TextField
-    @FXML
-    private TextField loginTextField;
-    @FXML
-    private TextField passwordTextField;
+    @FXML private TextField loginTextField;
+    @FXML private TextField passwordTextField;
 
     // Button
-    @FXML
-    private Button authButton;
-    @FXML
-    private Button regButton;
+    @FXML private Button authButton;
+    @FXML private Button regButton;
 
     private Stage currentStage;
     private final HttpClient client = HttpClient.newHttpClient();
@@ -85,8 +79,7 @@ public class AuthController {
         }
     }
 
-    @FXML
-    private void handleAuthButton(ActionEvent event){
+    @FXML private void handleAuthButton(ActionEvent event){
         String login = loginTextField.getText();
         String password = passwordTextField.getText();
 
@@ -110,17 +103,15 @@ public class AuthController {
                 e.printStackTrace();
             }
         }
-    }
-
-    @FXML
-    private void handleRegButton(ActionEvent event) throws IOException {
+    }// Нажатие кнопки аутентификации
+    @FXML private void handleRegButton(ActionEvent event) throws IOException {
         if(currentStage==null) {
             currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();// Получаем ссылку на текущую сцену
         }
         replaceScene("/fxml/regView.fxml","Registration",currentStage,false);
-    }
+    }// Нажатие кнопки перехода на регистрацию
 
-    public void initialize(){
+    @FXML public void initialize(){
         iconImageView.setImage(iconImage);// Установка картинки для иконки
     }
 }

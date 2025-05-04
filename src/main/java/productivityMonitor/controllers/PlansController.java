@@ -753,7 +753,7 @@ public class PlansController {
     }
 
     @FXML
-    private void handleMainImageClick(ActionEvent event) throws IOException {
+    private void handleMainImageClick(MouseEvent event) throws IOException {
         replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");
     }
 
@@ -766,8 +766,8 @@ public class PlansController {
                 updateUser();
                 replaceMainScene("/fxml/profileView.fxml","Profile");
             } else {
-                if(authStage!=null||authStage.isShowing()) {
-                    authStage=new Stage();
+                if(authStage!=null&&authStage.isShowing()) {
+                    authStage.toFront();
                     return;
                 }
                 authStage=new Stage();

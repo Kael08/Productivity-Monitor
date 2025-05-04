@@ -1,27 +1,20 @@
 package productivityMonitor.controllers;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import productivityMonitor.services.FocusMode;
-
+import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
-import static productivityMonitor.services.StageService.createScene;
+import static productivityMonitor.services.StageService.*;
 import static productivityMonitor.utils.SharedData.*;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
-import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class MainController {
     // ImageView
@@ -62,12 +55,10 @@ public class MainController {
     private Stage timerStage = null;
 
     // Нажатие кнопок навигационной области
-    @FXML
-    private void handleMainImageClick(MouseEvent event) throws IOException {
+    @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
         replaceMainScene("/fxml/mainView.fxml","Productivity Monitor"); // Замена текущей сцены на главную сцену
-    }
-    @FXML
-    private void handleProfileButton(ActionEvent event) throws IOException {
+    }// Нажатие иконки приложения
+    @FXML private void handleProfileButton(ActionEvent event) throws IOException {
         // Проверяем валидность токена и активность пользователя
         if (isAccessTokenValid() && getUser().isUserActive) {
             replaceMainScene("/fxml/profileView.fxml","Profile");// Замена текущей сцены на сцену профиля
@@ -78,7 +69,7 @@ public class MainController {
                 replaceMainScene("/fxml/profileView.fxml","Profile");// Замена текущей сцены на сцену профиля
             } else {
                 // Если refresh тоже не сработал - показываем окно авторизации
-                if(authStage!=null||authStage.isShowing()) {
+                if(authStage!=null&&authStage.isShowing()) {
                     authStage.toFront();
                     return;
                 }
@@ -86,31 +77,68 @@ public class MainController {
                 createScene("/fxml/authView.fxml","Authentification",authStage,false);
             }
         }
-    }
-    @FXML
-    private void handleStatisticsButton(ActionEvent action){
+    }// Нажатие кнопки профиля
+    @FXML private void handleStatisticsButton(ActionEvent action){
 
-    }
-    @FXML
-    private void handleSettingsButton(ActionEvent action){
+    }// Нажатие кнопки статистики
+    @FXML private void handleSettingsButton(ActionEvent action){
 
-    }
-    @FXML
-    private void handleAchievementsButton(ActionEvent event){
+    }// Нажатие кнопки настроек
+    @FXML private void handleAchievementsButton(ActionEvent event){
 
-    }
-    @FXML
-    private void handleNotesButton(ActionEvent event) throws IOException {
+    }// Нажатие кнопки достижений
+    @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml","Notes"); // Замена текущей сцены на сцену заметок
-    }
+    }// Нажатие кнопки заметок
     @FXML private void handlePlansButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/plansView.fxml","Plans");// Замена текущей сцены на сцену планов
-    }
+    }// Нажатие кнопки планов
+    @FXML private void handleMonitoringSettingsButton(ActionEvent event) throws IOException {
+        System.out.println("Кнопка Settings нажата!");
+
+        if(monitoringSettingsStage!=null&&monitoringSettingsStage.isShowing()){
+            monitoringSettingsStage.toFront();
+            return;
+        }
+
+        monitoringSettingsStage=new Stage();
+        MonitoringSettingsController controller=createSceneAndGetController("/fxml/monitoringSettingsView.fxml","Process Settings",monitoringSettingsStage,false);
+        controller.setFocusMode(focusMode);
+    }// Нажатие кнопки настройки мониторинга
+    @FXML private void handleTimerButton(ActionEvent event) throws IOException {
+        System.out.println("Кнопка Timer нажата!");
+
+        if(timerStage!=null&&timerStage.isShowing()){
+            timerStage.toFront();
+            return;
+        }
+        timerStage=new Stage();
+        createScene("/fxml/timerView.fxml","Timer",timerStage,false);
+    }// Нажатие кнопки настройки таймера
+    @FXML private void handleRunButton(ActionEvent event) {
+        System.out.println("Кнопка Run нажата!");
+
+        if (!isMonitoringActive) {
+            timerUtils.activateMonitoringTimer();// Запуск мониторинг-таймера
+
+            setDisableAllButtons(true); // Отключение элементов
+            closeSideStages();
+            runImageView.setImage(pauseImg);
+            focusMode.startMonitoring();
+        } else {
+            timerUtils.deactivateMonitoringTimer(); // остановка мониторинг-таймера
+
+            setDisableAllButtons(false); // Включение элементов
+            runImageView.setImage(runImg);
+            focusMode.stopMonitoring();
+        }
+    }// Нажатие кнопки запуска мониторинга
 
     // Класс для взаимодействия с мониторингом
     private FocusMode focusMode;
-
-    // Отключение и включение элементов
+    // Класс для работы с таймерами
+    public TimerUtils timerUtils=new TimerUtils();
+    // Отключение и включение элементов(кроме кнопки запуска мониторинга)
     public void setDisableAllButtons(boolean val){
         profileButton.setDisable(val);
         settingsButton.setDisable(val);
@@ -121,7 +149,6 @@ public class MainController {
         monitoringSettingsButton.setDisable(val);
         timerButton.setDisable(val);
     }
-
     // Закрытие всех побочных окон
     private void closeSideStages(){
         if(monitoringSettingsStage!=null) {
@@ -139,195 +166,12 @@ public class MainController {
             timerStage = null;
         }
     }
-
-
-
     // Метод для установки картинки Play для кнопки запуска
     public void setRunImageView() {
         runImageView.setImage(runImg);
     }
 
-    // Запуск потока монитора
-    @FXML
-    private void handleRunButton(ActionEvent event) {
-        System.out.println("Кнопка Run нажата!");
-
-        if (!isMonitoringActive) {
-            if(minutes>0){
-                startMonitoringTimer(); // Включение динамического таймера
-            }
-            if(currentMode.equals("Pomodoro")){
-                startMonitoringTimerPomodoro(); // Включение динамического таймера режима Pomodoro
-            }
-
-            setDisableAllButtons(true); // Отключение элементов
-            closeSideStages();
-            runImageView.setImage(pauseImg);
-            focusMode.startMonitoring();
-        } else {
-            stopMonitoringTimer(); // Отключение динамических таймеров
-
-            setDisableAllButtons(false); // Включение элементов
-            runImageView.setImage(runImg);
-            focusMode.stopMonitoring();
-        }
-    }
-
-    // Таймеры для работы динамических таймеров мониторинга в главном экране
-    Timer monitoringTimer;
-    Timer monitoringTimerPomodoro;
-    private int pomodoroTimerSeconds=0;
-    private boolean workPhase=true; // Флаг для обозначения фазы работы у режима Pomodoro
-    private final int WORK_PHASE_DURATION = 25*60; // 25 минут в секундах
-    private final int BREAK_PHASE_DURATION = 5*60; // 5 минут в секундах
-
-    private int timerSeconds=0;
-
-    // Запустить таймер мониторинга
-    private void startMonitoringTimer(){
-        timerLabel.setVisible(true);
-        timerSeconds=minutes*60;
-
-        if (monitoringTimer == null) { // Пересоздаём, если таймер был отменён
-            monitoringTimer = new Timer();
-        }
-
-        monitoringTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(()->updateMonitoringTimer());
-            }
-        },0,1000);
-
-    }
-
-    private void updateMonitoringTimer(){
-        if(timerSeconds>0) {
-            timerSeconds--;
-
-            // Обновляем текст с оставшимся временем в формате MM:SS
-            int minutes = timerSeconds / 60;
-            int seconds = timerSeconds % 60;
-            String timeText = String.format("%02d:%02d", minutes, seconds);
-
-            timerLabel.setText(timeText);
-        }else{
-            stopMonitoringTimer();
-        }
-    }
-
-    // Остановить все таймеры мониторинга
-    public void stopMonitoringTimer(){
-        timerLabel.setVisible(false);
-        pomodoroTimerLabel.setVisible(false);
-
-        if (monitoringTimer != null) {
-            monitoringTimer.cancel();
-            monitoringTimer = null; // Обнуляем для пересоздания
-        }
-        if (monitoringTimerPomodoro != null) {
-            monitoringTimerPomodoro.cancel();
-            monitoringTimerPomodoro = null; // Обнуляем для пересоздания
-        }
-
-        pomodoroTimerSeconds=0;
-        timerSeconds=0;
-        timerLabel.setText("");
-        pomodoroTimerLabel.setText("");
-    }
-
-    // Запустить таймер режима Pomodoro
-    private void startMonitoringTimerPomodoro(){
-        pomodoroTimerLabel.setVisible(true);
-        workPhase=true;
-        pomodoroTimerSeconds=WORK_PHASE_DURATION;
-
-        if (monitoringTimerPomodoro == null) { // Пересоздаём, если таймер был отменён
-            monitoringTimerPomodoro = new Timer();
-        }
-
-        monitoringTimerPomodoro.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(()->updateMonitoringTimerPomodoro());
-            }
-        },0,1000);
-    }
-
-    private  void updateMonitoringTimerPomodoro(){
-        if (pomodoroTimerSeconds > 0) {
-            pomodoroTimerSeconds--;
-
-            // Обновляем текст с оставшимся временем в формате MM:SS
-            int minutes = pomodoroTimerSeconds / 60;
-            int seconds = pomodoroTimerSeconds % 60;
-            String timeText = String.format("%02d:%02d", minutes, seconds);
-
-            if (workPhase) {
-                pomodoroTimerLabel.setText(timeText);
-                pomodoroTimerLabel.setStyle("-fx-text-fill: red;"); // Красный для работы
-            } else {
-                pomodoroTimerLabel.setText(timeText);
-                pomodoroTimerLabel.setStyle("-fx-text-fill: green;"); // Зеленый для отдыха
-            }
-        } else {
-            // Переключаем фазы, когда время истекло
-            workPhase = !workPhase;
-
-            if (workPhase) {
-                // Начинаем рабочую фазу (25 минут)
-                pomodoroTimerSeconds = WORK_PHASE_DURATION;
-                pomodoroTimerLabel.setStyle("-fx-text-fill: red;");
-            } else {
-                // Начинаем фазу отдыха (5 минут)
-                pomodoroTimerSeconds = BREAK_PHASE_DURATION;
-                pomodoroTimerLabel.setStyle("-fx-text-fill: green;");
-            }
-        }
-    }
-    // Окно для настройки запуска
-
-
-    @FXML
-    private void handleMonitoringSettingsButton(ActionEvent event) throws IOException {
-        System.out.println("Кнопка Settings нажата!");
-
-        if(monitoringSettingsStage!=null||monitoringSettingsStage.isShowing()){
-            monitoringSettingsStage.toFront();
-            return;
-        }
-        monitoringSettingsStage=new Stage();
-        createScene("/fxml/monitoringSettingsView.fxml","Process Settings",monitoringSettingsStage,false);
-    }
-
-    // Окно для настройки таймера
-
-    @FXML
-    private void handleTimerButton(ActionEvent event) throws IOException {
-        System.out.println("Кнопка Timer нажата!");
-
-        if(timerStage!=null&&timerStage.isShowing()){
-            timerStage.toFront();
-            return;
-        }
-        timerStage=new Stage();
-        createScene("/fxml/timerView.fxml","Timer",monitoringSettingsStage,false);
-    }
-
-
-    // Функция для обновления времени
-    private void updateTime(Label label) {
-        Date now = new Date();
-        // Форматируем время в нужный формат
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.LL.yyyy");
-
-        String currentTime = sdf.format(now);
-
-        label.setText(currentTime);
-    }
-
-    @FXML
-    public void initialize(){
+    @FXML public void initialize(){
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
         timerImageView.setImage(timerImg);
@@ -336,15 +180,12 @@ public class MainController {
         focusMode = new FocusMode(consoleTextArea,this);
         focusMode.setFullLockdownMode();
 
-        // Часы в главном меню
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(()->updateTime(clockLabel));
-            }
-        },0,1000);
+        timerUtils.setTimerLabel(timerLabel);
+        timerUtils.setPomodoroTimerLabel(pomodoroTimerLabel);
+        timerUtils.setClockLabel(clockLabel);
 
+        // Часы в главном меню
+        timerUtils.activateClock();
         // Чтения и сохранение мотивирующих сообщений
         readMotivationMessages();
 

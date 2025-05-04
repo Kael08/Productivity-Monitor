@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindowInterface;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,10 +13,8 @@ import static productivityMonitor.services.FocusMode.isDelayRunning;
 
 public class DelayGratificationWindowController implements ModeWindowInterface {
     // Label
-    @FXML
-    private Label infoLabel;
-    @FXML
-    private Label timerLabel;
+    @FXML private Label infoLabel;
+    @FXML private Label timerLabel;
 
     private int seconds = 300; // 5 минут
     private Stage currentStage;
@@ -25,19 +22,6 @@ public class DelayGratificationWindowController implements ModeWindowInterface {
     @Override
     public void setStage(Stage currentStage){
         this.currentStage=currentStage;
-    }
-
-    @FXML
-    private void initialize(){
-        timerLabel.setText(calcTime(seconds));
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(()->updateTimer(timerLabel));
-            }
-        },0,1000);
     }
 
     // Функция для обновления времени
@@ -59,5 +43,17 @@ public class DelayGratificationWindowController implements ModeWindowInterface {
 
         // Форматируем с ведущим нулём для секунд
         return minutes + ":" + String.format("%02d", seconds);
+    }
+
+    @FXML private void initialize(){
+        timerLabel.setText(calcTime(seconds));
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(()->updateTimer(timerLabel));
+            }
+        },0,1000);
     }
 }
