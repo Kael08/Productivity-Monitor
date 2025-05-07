@@ -145,6 +145,7 @@ public class MainController {
     public TimerUtils timerUtils=new TimerUtils();
     // Отключение и включение элементов(кроме кнопки запуска мониторинга)
     public void setDisableAllButtons(boolean val){
+        mainImageView.setDisable(val);
         profileButton.setDisable(val);
         settingsButton.setDisable(val);
         statisticsButton.setDisable(val);

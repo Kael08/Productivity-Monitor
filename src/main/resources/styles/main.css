@@ -1,80 +1,114 @@
+/* Основной стиль навигационной панели */
 #navbarPane {
-    -fx-background-color: #6A5CDA;
+    -fx-background-color: linear-gradient(to bottom, #6A5CDA, #4A3AB5);
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
 }
 
+/* Стили кнопок навигации */
 #navbarPane .button {
-    -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
+    -fx-text-fill: white;
+    -fx-background-color: #8B7BFF;
+    -fx-background-radius: 12px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
     -fx-font-size: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
+#navbarPane .button:hover {
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
+/* Стиль часов */
 #clockLabel {
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
+    -fx-background-color: #F5F5F5;
+    -fx-border-radius: 20px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 58px;
+    -fx-font-size: 50px;
     -fx-text-fill: #6A5CDA;
     -fx-border-color: #6A5CDA;
-    -fx-border-width: 5px;
+    -fx-border-width: 4px;
     -fx-alignment: center;
-    -fx-background-radius:15px;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
+/* Панель кнопок управления */
 #startPane {
-    -fx-border-color:#6A5CDA;
-    -fx-border-radius:15px;
-    -fx-border-width:5px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
 }
 
+/* Стиль кнопок в startPane */
 #startPane .button {
-    -fx-background-color: transparent; /* Прозрачный фон */
-    -fx-border-color: transparent; /* Прозрачная граница */
-    -fx-padding: 0; /* Убрать отступы */
-    -fx-background-insets: 0; /* Убрать внутренние отступы */
-    -fx-background-radius: 0; /* Убрать скругление углов */
-    -fx-border-width: 0; /* Убрать границу */
-    -fx-effect: null; /* Убрать тени и эффекты */
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: none;
 }
 
+#startPane .button:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+    -fx-cursor: hand;
+}
+
+/* Стиль консоли */
 #consolePane {
-    -fx-border-color:#6A5CDA;
-    -fx-border-radius:15px;
-    -fx-border-width:5px;
-    -fx-padding:5px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
 }
 
 #consoleTextArea {
-    -fx-focus-color: transparent; /* Убирает цвет фокуса */
+    -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
 }
 
-#timerLabel{
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
+/* Стили таймеров */
+#timerLabel, #pomodoroTimerLabel {
+    -fx-background-color: #E8E8FF;
+    -fx-border-radius: 12px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
+    -fx-font-size: 20px;
     -fx-text-fill: #6A5CDA;
-    -fx-border-width: 5px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
     -fx-alignment: center;
-    -fx-background-radius:15px;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-#pomodoroTimerLabel{
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-    -fx-border-width: 5px;
-    -fx-alignment: center;
-    -fx-background-radius:15px;
+/* Фон центральной панели */
+#rightSide {
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 20px;
 }

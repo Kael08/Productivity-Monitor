@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
-
-<?import javafx.scene.layout.VBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
+
 <BorderPane prefHeight="720.0" prefWidth="1280.0" minWidth="850" minHeight="500" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="productivityMonitor.controllers.MainController">
 
    <!-- Навигация слева -->
    <left>
-      <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="20">
+      <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="15">
          <children>
-            <ImageView fx:id="mainImageView" fitWidth="64" fitHeight="64" pickOnBounds="true" preserveRatio="true" onMouseClicked="#handleMainImageClick">
+            <ImageView fx:id="mainImageView" fitWidth="80" fitHeight="80" pickOnBounds="true" preserveRatio="true" onMouseClicked="#handleMainImageClick">
                <VBox.margin>
                   <Insets top="20"/>
                </VBox.margin>
             </ImageView>
-            <Button fx:id="profileButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton">
-            </Button>
-            <Button fx:id="statisticsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton" />
-            <Button fx:id="settingsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton" />
-            <Button fx:id="achievementsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton" />
-            <Button fx:id="notesButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton" />
-            <Button fx:id="plansButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton" />
+            <Button fx:id="profileButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton"/>
+            <Button fx:id="statisticsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton"/>
+            <Button fx:id="settingsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton"/>
+            <Button fx:id="achievementsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton"/>
+            <Button fx:id="notesButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton"/>
+            <Button fx:id="plansButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton"/>
          </children>
+         <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+         </padding>
       </VBox>
    </left>
 
    <!-- Основной контент по центру -->
    <center>
-      <VBox fx:id="rightSide" alignment="CENTER" spacing="50">
-         <Label fx:id="clockLabel" maxHeight="110.0" maxWidth="500.0" minHeight="110.0"
-                minWidth="500.0" prefHeight="110.0" prefWidth="500.0" text="00:00 01.01.2000" />
-
-         <VBox fx:id="timerBox" maxWidth="500" maxHeight="70" spacing="10" alignment="CENTER">
-            <Label fx:id="timerLabel" visible="false"/>
-            <Label fx:id="pomodoroTimerLabel" visible="false"/>
-         </VBox>
-
-         <HBox fx:id="startPane" maxHeight="110.0" maxWidth="500.0"
-               prefHeight="110.0" prefWidth="500.0" alignment="CENTER" spacing="60">
-            <children>
-               <Button fx:id="runButton" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleRunButton">
-                  <graphic>
-                     <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="runImageView"/>
-                  </graphic>
-               </Button>
-
-               <Button fx:id="monitoringSettingsButton" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleMonitoringSettingsButton">
-                  <graphic>
-                     <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="settingsImageView"/>
-                  </graphic>
-               </Button>
-
-               <Button fx:id="timerButton" maxHeight="90.0" maxWidth="90.0" minHeight="90.0" minWidth="90.0" onAction="#handleTimerButton">
-                  <graphic>
-                     <ImageView fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" fx:id="timerImageView"/>
-                  </graphic>
-               </Button>
-            </children>
-         </HBox>
-
-         <VBox fx:id="consolePane" maxWidth="500.0" prefHeight="690.0" prefWidth="500.0">
-            <children>
-               <TextArea fx:id="consoleTextArea" editable="false" wrapText="true"  VBox.vgrow="ALWAYS"/>
-            </children>
-         </VBox>
+      <VBox fx:id="rightSide" alignment="CENTER" spacing="20">
+         <children>
+            <StackPane fx:id="timerBox" maxWidth="500" maxHeight="80" alignment="CENTER">
+               <children>
+                  <Label fx:id="timerLabel" visible="false" maxWidth="200.0" prefWidth="200.0" StackPane.alignment="TOP_LEFT"/>
+                  <Label fx:id="pomodoroTimerLabel" visible="false" maxWidth="200.0" prefWidth="200.0" StackPane.alignment="TOP_RIGHT"/>
+               </children>
+            </StackPane>
+            <Label fx:id="clockLabel" maxHeight="120.0" maxWidth="500.0" minHeight="120.0"
+                   minWidth="500.0" prefHeight="120.0" prefWidth="500.0" text="00:00 01.01.2000"/>
+            <HBox fx:id="startPane" maxHeight="120.0" maxWidth="500.0"
+                  prefHeight="120.0" prefWidth="500.0" alignment="CENTER" spacing="50">
+               <children>
+                  <Button fx:id="runButton" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleRunButton">
+                     <graphic>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" fx:id="runImageView"/>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="monitoringSettingsButton" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleMonitoringSettingsButton">
+                     <graphic>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" fx:id="settingsImageView"/>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="timerButton" maxHeight="100.0" maxWidth="100.0" minHeight="100.0" minWidth="100.0" onAction="#handleTimerButton">
+                     <graphic>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" fx:id="timerImageView"/>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <VBox fx:id="consolePane" maxWidth="500.0" prefHeight="300.0" prefWidth="500.0">
+               <children>
+                  <TextArea fx:id="consoleTextArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+         </padding>
       </VBox>
    </center>
-
 </BorderPane>
-

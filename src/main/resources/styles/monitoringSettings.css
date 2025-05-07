@@ -1,149 +1,169 @@
+/* Основной фон панели */
 #mainPane {
-    -fx-background-color: white;
-    -fx-padding:10px;
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
 }
 
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
-#deleteButton, #deleteUrlButton {
-    -fx-background-color: red;
-    -fx-border-color: black;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-effect: null;
-    -fx-border-width:1px;
-    -fx-border-radius:5px;
-    -fx-background-radius:5px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
+/* Стили верхней панели */
+#topPane {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 3px;
+    -fx-padding: 10px;
 }
 
-#addButton, #addUrlButton {
-    -fx-background-color:green;
-    -fx-border-color:black;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-effect: null;
-    -fx-border-width:1px;
-    -fx-border-radius:5px;
-    -fx-background-radius:5px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-}
-
-#consoleTextArea{
-    -fx-pref-width:100%;
-    -fx-pref-height:100%;
-    -fx-focus-color: transparent; /* Убирает цвет фокуса */
-    -fx-faint-focus-color: transparent; /* Убирает вторичный цвет фокуса */
-}
-
-#inputTextField {
-    -fx-pref-width: 100%;
-    -fx-max-width: infinity;
-    -fx-focus-color: transparent; /* Убирает цвет фокуса */
-    -fx-faint-focus-color: transparent;
-}
-
-#processListComboBox {
-    -fx-focus-color: transparent; /* Убирает цвет фокуса */
-    -fx-faint-focus-color: transparent;
-}
-
-#selectCustomModeLabel {
-    -fx-font-family:'Jomhuria-Regular';
-    -fx-font-size:20px;
-    -fx-font-weight:bold;
-}
-
-#customModeListComboBox {
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
-}
-
-#selectModeLabel {
-    -fx-font-family:'Jomhuria-Regular';
-    -fx-font-size:20px;
-    -fx-font-weight:bold;
-}
-
-#modeListComboBox {
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
-}
-
-#blockDomainLabel{
-    -fx-font-family:'Jomhuria-Regular';
-    -fx-font-size:15px;
-    -fx-font-weight:bold;
-}
-
+/* Стили кнопок управления */
 #openButton, #createButton, #editButton{
-    -fx-border-color:black;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-effect: null;
-    -fx-border-width:1px;
-    -fx-border-radius:1px;
-    -fx-background-radius:1px;
+    -fx-background-color: #8B7BFF;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-#cancelButton{
-    -fx-border-color:black;
-    -fx-background-color:red;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-effect: null;
-    -fx-border-width:1px;
-    -fx-border-radius:1px;
-    -fx-background-radius:1px;
+#saveButton, #cancelButton {
+    -fx-background-color: #8B7BFF;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 #saveButton{
-    -fx-background-color:green;
-    -fx-border-color:black;
-    -fx-padding: 0;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
-    -fx-border-width: 0;
-    -fx-effect: null;
-    -fx-border-width:1px;
-    -fx-border-radius:1px;
-    -fx-background-radius:1px;
+    -fx-border-color: #388E3C;
+}
+
+#cancelButton{
+    -fx-border-color: #D32F2F;
+}
+
+#openButton:hover, #createButton:hover, #editButton:hover{
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+#saveButton {
+    -fx-background-color: #4CAF50;
+}
+
+#cancelButton {
+    -fx-background-color: #F44336;
+}
+
+/* Стили кнопок добавления и удаления */
+#addButton, #addUrlButton {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
     -fx-font-size: 12px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #388E3C;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 10px;
 }
 
-#customModeNameTextField {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-border-color: transparent transparent black transparent; /* Только нижняя граница */
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 0 0 2 0; /* Немного отступа снизу */
+#deleteButton, #deleteUrlButton {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #D32F2F;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 10px;
 }
 
-#customModeNameTextField:focused {
-    -fx-border-color: transparent transparent #3498db transparent; /* Синяя линия при фокусе */
+#addButton:hover, #addUrlButton:hover, #deleteButton:hover, #deleteUrlButton:hover,#cancelButton:hover, #saveButton:hover {
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Стили текстовых полей */
+#inputTextField, #inputUrlTextField, #customModeNameTextField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
+}
+
+#customModeNameTextField:focused, #inputTextField:focused, #inputUrlTextField:focused {
+    -fx-border-color: #A79EFF;
+}
+
+/* Стили выпадающих списков */
+#customModeListComboBox, #modeListComboBox, #processListComboBox, #urlListComboBox {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Стили меток */
+#selectCustomModeLabel, #selectModeLabel, #blockDomainLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A5CDA;
+}
+
+/* Стиль консоли */
+#consoleTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Стили панелей */
+#middlePane, #processPane, #urlPane {
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 3px;
+    -fx-padding: 10px;
 }

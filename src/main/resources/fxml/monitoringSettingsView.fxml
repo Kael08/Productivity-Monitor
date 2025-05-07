@@ -20,7 +20,7 @@
          <VBox.margin>
             <Insets bottom="10"/>
          </VBox.margin>
-         <HBox fx:id="toolsPane">
+         <HBox fx:id="toolsPane" spacing="5">
             <Button fx:id="openButton" text="Open" VBox.vgrow="NEVER" onAction="#handleOpenButton" prefWidth="100"/>
             <Button fx:id="createButton" text="Create" VBox.vgrow="NEVER" onAction="#handleCreateButton" prefWidth="100"/>
             <Button fx:id="editButton" text="Edit" VBox.vgrow="NEVER" onAction="#handleEditButton" prefWidth="100"/>
