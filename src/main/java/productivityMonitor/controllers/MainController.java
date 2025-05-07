@@ -11,13 +11,16 @@ import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
 import static productivityMonitor.services.StageService.*;
-import static productivityMonitor.utils.DataLoader.readMotivationMessages;
-import static productivityMonitor.utils.DataLoader.readSailorsKnotText;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
+import static productivityMonitor.utils.DataLoader.*;
 
 public class MainController {
     // ImageView
@@ -64,12 +67,12 @@ public class MainController {
     @FXML private void handleProfileButton(ActionEvent event) throws IOException {
         // Проверяем валидность токена и активность пользователя
         if (isAccessTokenValid() && getUser().isUserActive) {
-            replaceMainScene("/fxml/profileView.fxml","Profile");// Замена текущей сцены на сцену профиля
+            replaceMainScene("/fxml/profileView.fxml",bundle.getString("profile"));// Замена текущей сцены на сцену профиля
         } else {
             // Пробуем обновить токен, если access-токен невалиден
             if (refreshAccessToken()) {
                 updateUser(); // Обновляем данные пользователя
-                replaceMainScene("/fxml/profileView.fxml","Profile");// Замена текущей сцены на сцену профиля
+                replaceMainScene("/fxml/profileView.fxml",bundle.getString("profile"));// Замена текущей сцены на сцену профиля
             } else {
                 // Если refresh тоже не сработал - показываем окно авторизации
                 if(authStage!=null&&authStage.isShowing()) {
@@ -77,7 +80,7 @@ public class MainController {
                     return;
                 }
                 authStage=new Stage();
-                createScene("/fxml/authView.fxml","Authentification",authStage,false);
+                createScene("/fxml/authView.fxml",bundle.getString("auth.title"),authStage,false);
             }
         }
     }// Нажатие кнопки профиля
@@ -85,16 +88,16 @@ public class MainController {
 
     }// Нажатие кнопки статистики
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
-        replaceMainScene("/fxml/settingsView.fxml","Settings");
+        replaceMainScene("/fxml/settingsView.fxml",bundle.getString("settings"));
     }// Нажатие кнопки настроек
     @FXML private void handleAchievementsButton(ActionEvent event){
 
     }// Нажатие кнопки достижений
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/notesView.fxml","Notes"); // Замена текущей сцены на сцену заметок
+        replaceMainScene("/fxml/notesView.fxml",bundle.getString("notes")); // Замена текущей сцены на сцену заметок
     }// Нажатие кнопки заметок
     @FXML private void handlePlansButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/plansView.fxml","Plans");// Замена текущей сцены на сцену планов
+        replaceMainScene("/fxml/plansView.fxml",bundle.getString("plans"));// Замена текущей сцены на сцену планов
     }// Нажатие кнопки планов
     @FXML private void handleMonitoringSettingsButton(ActionEvent event) throws IOException {
         System.out.println("Кнопка Settings нажата!");
@@ -105,7 +108,7 @@ public class MainController {
         }
 
         monitoringSettingsStage=new Stage();
-        MonitoringSettingsController controller=createSceneAndGetController("/fxml/monitoringSettingsView.fxml","Process Settings",monitoringSettingsStage,false);
+        MonitoringSettingsController controller=createSceneAndGetController("/fxml/monitoringSettingsView.fxml",bundle.getString("monitoring.title"),monitoringSettingsStage,false);
         controller.setMonitoringManager(monitoringManager);
     }// Нажатие кнопки настройки мониторинга
     @FXML private void handleTimerButton(ActionEvent event) throws IOException {
@@ -116,7 +119,7 @@ public class MainController {
             return;
         }
         timerStage=new Stage();
-        createScene("/fxml/timerView.fxml","Timer",timerStage,false);
+        createScene("/fxml/timerView.fxml",bundle.getString("timer.title"),timerStage,false);
     }// Нажатие кнопки настройки таймера
     @FXML private void handleRunButton(ActionEvent event) {
         System.out.println("Кнопка Run нажата!");
@@ -136,6 +139,26 @@ public class MainController {
             monitoringManager.stopMonitoring();
         }
     }// Нажатие кнопки запуска мониторинга
+
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        profileButton.setText(bundle.getString("profile"));
+        statisticsButton.setText(bundle.getString("statistics"));
+        settingsButton.setText(bundle.getString("settings"));
+        achievementsButton.setText(bundle.getString("achievements"));
+        notesButton.setText(bundle.getString("notes"));
+        plansButton.setText(bundle.getString("plans"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+    }
 
     // Класс для взаимодействия с мониторингом
     private MonitoringManager monitoringManager;
@@ -178,6 +201,9 @@ public class MainController {
     }
 
     @FXML public void initialize(){
+        // Установка языка
+        setLocalization(getLang());
+
         runImageView.setImage(runImg);
         settingsImageView.setImage(settingsImg);
         timerImageView.setImage(timerImg);

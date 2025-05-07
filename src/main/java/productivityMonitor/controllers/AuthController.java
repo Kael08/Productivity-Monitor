@@ -16,11 +16,17 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.controllers.TimerController.getLang;
+import static productivityMonitor.services.SettingsService.localization;
 import static productivityMonitor.services.TokenManager.setTokens;
 import static productivityMonitor.services.TokenManager.updateUser;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.StageService.replaceScene;
+import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 
 public class AuthController {
@@ -111,7 +117,29 @@ public class AuthController {
         replaceScene("/fxml/regView.fxml","Registration",currentStage,false);
     }// Нажатие кнопки перехода на регистрацию
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("auth.title"));
+        loginTextField.setPromptText(bundle.getString("auth.login"));
+        passwordTextField.setPromptText(bundle.getString("auth.password"));
+        regButton.setText(bundle.getString("auth.noacc"));
+        authButton.setText(bundle.getString("auth.signin"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+        localization=lang;
+        saveLocalizationToFile(lang);
+    }
+
     @FXML public void initialize(){
+        setLocalization(getLang());
         iconImageView.setImage(iconImage);// Установка картинки для иконки
     }
 }

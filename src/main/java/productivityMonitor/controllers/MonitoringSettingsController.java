@@ -11,26 +11,23 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.models.CustomMode;
-import productivityMonitor.utils.ConsoleLogger;
-import productivityMonitor.utils.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.currentMode;
 import static productivityMonitor.services.MonitoringManager.isWebSocketServerActive;
+import static productivityMonitor.utils.DataLoader.loadCustomModeFromFile;
+import static productivityMonitor.utils.DataLoader.saveCustomModeToFile;
 
 public class MonitoringSettingsController {
-    // ComboBox
     @FXML private ComboBox<String> processListComboBox;
     @FXML private ComboBox<String> modeListComboBox;
     @FXML private ComboBox<String> urlListComboBox;
     @FXML private ComboBox<String> customModeListComboBox;
 
-    // Button
     @FXML private Button addButton;
     @FXML private Button deleteButton;
     @FXML private Button openButton;
@@ -41,100 +38,103 @@ public class MonitoringSettingsController {
     @FXML private Button deleteUrlButton;
     @FXML private Button addUrlButton;
 
-    // TextField
     @FXML private TextField inputTextField;
     @FXML private TextField inputUrlTextField;
     @FXML TextField customModeNameTextField;
 
-    // TextArea
-    @FXML private TextArea consoleTextArea;// Консоль именно окна настройки мониторинга
+    @FXML private TextArea consoleTextArea;
 
-    // CheckBox
     @FXML private CheckBox blockDomainCheckBox;
 
-    // Label
     @FXML private Label selectCustomModeLabel;
 
-    // Списки для мониторинга
-    public static ObservableList<String> processList = FXCollections.observableArrayList();// Список запрещенных процессов
-    public static ObservableList<String> urlList = FXCollections.observableArrayList();// Список запрещенных доменов
-    public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown","Mindfulness","Sailor's Knot","Delay Gratification", "Pomodoro");// Список режимов
-    public static ObservableList<String> customModeList=FXCollections.observableArrayList();// Список кастомных режимов
-    public static Map<String, CustomMode> customModeListOb=new HashMap<>();// Список, содержащий экземпляры кастомныe режимов
+    public static ObservableList<String> processList = FXCollections.observableArrayList();
+    public static ObservableList<String> urlList = FXCollections.observableArrayList();
+    public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown", "Mindfulness", "Sailor's Knot", "Delay Gratification", "Pomodoro");
+    public static ObservableList<String> customModeList = FXCollections.observableArrayList();
+    public static Map<String, CustomMode> customModeListOb = new HashMap<>();
 
-    private MonitoringManager monitoringManager;// Класс для работы с режимами
+    private MonitoringManager monitoringManager;
+    private ResourceBundle bundle;
 
-    public void setMonitoringManager(MonitoringManager monitoringManager){
+    public void setMonitoringManager(MonitoringManager monitoringManager) {
         this.monitoringManager = monitoringManager;
     }
 
-    //TODO: Решить проблему с таймером в кастомных режимах
-    //TODO: Решить проблему с блокировкой кнопок и режимом редактирования(open,create,edit)
-    @FXML private void handleOpenButton(ActionEvent event){
-        // Создание окна выбора файла
+    public void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+    }
+
+    private void applyLocalization() {
+        openButton.setText(bundle.getString("monitoringSettings.open"));
+        createButton.setText(bundle.getString("monitoringSettings.create"));
+        editButton.setText(bundle.getString("monitoringSettings.edit"));
+        saveButton.setText(bundle.getString("monitoringSettings.save"));
+        cancelButton.setText(bundle.getString("monitoringSettings.cancel"));
+        customModeNameTextField.setPromptText(bundle.getString("monitoringSettings.customModeName"));
+        selectCustomModeLabel.setText(bundle.getString("monitoringSettings.selectCustomMode"));
+        modeListComboBox.setPromptText(bundle.getString("monitoringSettings.selectMode"));
+        deleteButton.setText(bundle.getString("monitoringSettings.delete"));
+        addButton.setText(bundle.getString("monitoringSettings.add"));
+        blockDomainCheckBox.setText(bundle.getString("monitoringSettings.blockURL"));
+        deleteUrlButton.setText(bundle.getString("monitoringSettings.deleteURL"));
+        addUrlButton.setText(bundle.getString("monitoringSettings.addURL"));
+    }
+
+    @FXML private void handleOpenButton(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Выберите файл с кастомным режимом");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("JSON Files","*.json")
-        );
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
 
-        // Указание пути по умолчанию
         File defaultDirectory = new File("C:\\Users\\mingi\\Documents");
-        if(defaultDirectory.exists()){
+        if (defaultDirectory.exists()) {
             fileChooser.setInitialDirectory(defaultDirectory);
         }
 
         Stage stage = (Stage) openButton.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
 
-        if(selectedFile!=null){
-            try{
-                // Проверка, что файл соответствует структуре CustomMode
-                if(!isCustomModeFile(selectedFile)){
-                    consoleTextArea.appendText("ОШИБКА: файл не является валидным CustomMode\n");
+        if (selectedFile != null) {
+            try {
+                if (!isCustomModeFile(selectedFile)) {
+                    consoleTextArea.appendText(bundle.getString("monitoringSettings.errorInvalidCustomMode") + "\n");
                     return;
                 }
                 try {
-                    CustomMode customMode=JsonUtils.loadCustomModeFromFile(selectedFile.getAbsolutePath());
-
-                    // Добавляем режим в оба хранилища
-                    if(!customModeListOb.containsKey(customMode.getName())){
-                        customModeListOb.put(customMode.getName(),customMode);
+                    CustomMode customMode = loadCustomModeFromFile(selectedFile.getAbsolutePath());
+                    if (!customModeListOb.containsKey(customMode.getName())) {
+                        customModeListOb.put(customMode.getName(), customMode);
                         customModeList.add(customMode.getName());
-                        consoleTextArea.appendText("\""+customMode.getName()+"\" Добавлен!\n");
+                        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.customModeAdded"), customMode.getName()) + "\n");
                     } else {
-                        consoleTextArea.appendText("Режим с таким именем уже существует!\n");
-                        // TODO: Добавить обработку для случая, когда режимы одинакового имени
+                        consoleTextArea.appendText(bundle.getString("monitoringSettings.errorDuplicateMode") + "\n");
                     }
                 } catch (IOException e) {
-                    System.out.println("ОШИБКА ПРИ ОТКРЫТИИ ФАЙЛА CustomMode: "+e.getMessage());
-                    consoleTextArea.appendText("ОШИБКА ПРИ ОТКРЫТИИ ФАЙЛА CustomMode: "+e.getMessage());
-                    e.printStackTrace();
+                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorOpenCustomMode"), e.getMessage()) + "\n");
                 }
-            } catch (Exception e){
-                System.out.println("Ошибка загрузки файла: " + e.getMessage());
-                consoleTextArea.appendText("Ошибка загрузки файла: " + e.getMessage() + "\n");
-                e.printStackTrace();
+            } catch (Exception e) {
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorLoadFile"), e.getMessage()) + "\n");
             }
         }
-    }                               // Открыть кастомный режим
-    @FXML private void handleCreateButton(ActionEvent event){
+    }
+
+    @FXML private void handleCreateButton(ActionEvent event) {
         createCustomModeInterface();
-    } // Создать кастомный режим
+    }
+
     @FXML private void handleEditButton(ActionEvent event) {
         String selectedMode = customModeListComboBox.getValue();
-
-        if(selectedMode == null || selectedMode.equals("<НЕТ>")) {
-            consoleTextArea.appendText("Не выбран кастомный режим для редактирования!\n");
+        if (selectedMode == null || selectedMode.equals("<НЕТ>")) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorNoModeSelected") + "\n");
             return;
         }
-
         customModeNameTextField.setText(customModeListComboBox.getValue());
         editCustomModeInterface();
-    }                              // Редактировать кастомный режим
-    @FXML private void handleSaveButton(ActionEvent event) {
-        //TODO: Ошибка: Что делать, если названия одинаковы
+    }
 
+    @FXML private void handleSaveButton(ActionEvent event) {
         String fileName = "newCustomMode";
         if (!customModeNameTextField.getText().isEmpty()) {
             fileName = customModeNameTextField.getText();
@@ -152,65 +152,51 @@ public class MonitoringSettingsController {
 
         if (selectedDirectory != null) {
             String filePath = selectedDirectory.getAbsolutePath() + File.separator + fileName + ".json";
-
             try {
-                // Создаём объект CustomMode
                 CustomMode customMode = new CustomMode(
                         fileName,
                         currentMode.getName(),
-                        new ArrayList<>(processList),  // Копируем список, а не передаём ссылку
-                        new ArrayList<>(urlList),     // Копируем список, а не передаём ссылку
+                        new ArrayList<>(processList),
+                        new ArrayList<>(urlList),
                         isWebSocketServerActive
                 );
-
-                JsonUtils.saveCustomModeToFile(customMode, filePath);
-
-                // Добавляем режим в оба хранилища
+                saveCustomModeToFile(customMode, filePath);
                 if (!customModeListOb.containsKey(fileName)) {
                     customModeListOb.put(fileName, customMode);
                     customModeList.add(fileName);
-                }else{
+                } else {
                     customModeListOb.put(fileName, customMode);
                 }
-
-                // Обновляем ComboBox
                 customModeListComboBox.setItems(FXCollections.observableArrayList(customModeList));
-                //customModeListComboBox.setValue(fileName);  // Устанавливаем выбранный режим
-
                 clearInterface();
-
-                consoleTextArea.appendText("Файл успешно сохранен: " + filePath + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.fileSaved"), filePath) + "\n");
             } catch (Exception e) {
-                consoleTextArea.appendText("ОШИБКА СОХРАНЕНИЯ ФАЙЛА: " + e.getMessage() + "\n");
-                e.printStackTrace();
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorSaveFile"), e.getMessage()) + "\n");
             }
         } else {
-            consoleTextArea.appendText("Сохранение отменено пользователем\n");
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.saveCanceled") + "\n");
         }
-    }                              // Сохранить изменения кастомного режима
-    @FXML private void handleCancelButton(ActionEvent event){
+    }
+
+    @FXML private void handleCancelButton(ActionEvent event) {
         clearInterface();
         customModeListComboBox.setValue("<НЕТ>");
-    }                             // Отменить редактирование кастомного режима
+    }
 
-    // Проверка, что файл соответствует Классу
-    private boolean isCustomModeFile(File file){
-        try{
-            // Пробуем загрузить файл как CustomMode
-            CustomMode temp = JsonUtils.loadCustomModeFromFile(file.getAbsolutePath());
-
-            return temp!=null
-                    &&temp.getName()!=null
+    private boolean isCustomModeFile(File file) {
+        try {
+            CustomMode temp = loadCustomModeFromFile(file.getAbsolutePath());
+            return temp != null
+                    && temp.getName() != null
                     && temp.getModeName() != null
                     && temp.getProcessList() != null
                     && temp.getUrlList() != null;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-
-    private void clearInterface(){
+    private void clearInterface() {
         openButton.setDisable(false);
         createButton.setDisable(false);
         editButton.setDisable(false);
@@ -231,8 +217,9 @@ public class MonitoringSettingsController {
         consoleTextArea.setDisable(false);
         customModeNameTextField.setText("Новый режим");
         customModeListComboBox.setValue("<НЕТ>");
-    }           // Метод для возвращения интерфейса к исходному варианту
-    private void createCustomModeInterface(){
+    }
+
+    private void createCustomModeInterface() {
         openButton.setDisable(true);
         createButton.setDisable(true);
         editButton.setDisable(true);
@@ -251,8 +238,9 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(false);
         addUrlButton.setDisable(false);
         consoleTextArea.setDisable(false);
-    }// Переход к созданию кастомного режима
-    private void editCustomModeInterface(){
+    }
+
+    private void editCustomModeInterface() {
         openButton.setDisable(true);
         createButton.setDisable(true);
         editButton.setDisable(true);
@@ -271,8 +259,9 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(false);
         addUrlButton.setDisable(false);
         consoleTextArea.setDisable(false);
-    }  // Режим редактирования кастомного режима
-    private void customModeInterface(){
+    }
+
+    private void customModeInterface() {
         openButton.setDisable(false);
         createButton.setDisable(false);
         editButton.setDisable(false);
@@ -291,70 +280,67 @@ public class MonitoringSettingsController {
         inputUrlTextField.setDisable(true);
         addUrlButton.setDisable(true);
         consoleTextArea.setDisable(false);
-    }      // Интерфейс при выборе кастомного режима
+    }
 
-    @FXML private void handleDeleteProcess(ActionEvent event){
+    @FXML private void handleDeleteProcess(ActionEvent event) {
         String selectedProcess = processListComboBox.getValue();
-        if(selectedProcess==null){
-            consoleTextArea.appendText("Ошибка: процесс не выбран\n");
+        if (selectedProcess == null) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorNoProcess") + "\n");
         } else {
-            Boolean isRemoved = processList.removeIf(process->process.equals(selectedProcess));
-
-            if(isRemoved){
-                consoleTextArea.appendText("Процесс успешно удален!\n");
+            Boolean isRemoved = processList.removeIf(process -> process.equals(selectedProcess));
+            if (isRemoved) {
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"), selectedProcess) + "\n");
             } else {
-                consoleTextArea.appendText("Ошибка: Процесс с именем '" + selectedProcess + "' не найден!\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorProcessNotFound"), selectedProcess) + "\n");
             }
         }
-    }// Удаление процесса
-    @FXML private void handleAddProcess(ActionEvent event){
+    }
+
+    @FXML private void handleAddProcess(ActionEvent event) {
         String processName = inputTextField.getText();
-
-        if(processName.isEmpty()) {
-            consoleTextArea.appendText("Ошибка: Название процесса не может быть пустым!\n");
+        if (processName.isEmpty()) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorEmptyProcess") + "\n");
             return;
-        } else if(processName.equals(".exe")) {
-            consoleTextArea.appendText("Ошибка: Введите название процесса!\n");
+        } else if (processName.equals(".exe")) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorInvalidProcess") + "\n");
             return;
         }
-
-        if(!processName.endsWith(".exe")){
-            processName+=".exe";
+        if (!processName.endsWith(".exe")) {
+            processName += ".exe";
         }
-
         inputTextField.clear();
-        consoleTextArea.appendText("Процесс "+processName+" добавлен\n");
+        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"), processName) + "\n");
         processList.add(processName);
-    }   // Добавление процесса
-    @FXML private void handleDeleteUrl(ActionEvent event){
+    }
+
+    @FXML private void handleDeleteUrl(ActionEvent event) {
         String selectedUrl = urlListComboBox.getValue();
-
-        if(selectedUrl==null){
-            consoleTextArea.appendText("Ошибка: домен не выбран\n");
+        if (selectedUrl == null) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorNoURL") + "\n");
         } else {
-            Boolean isRemoved = urlList.removeIf(url->url.equals(selectedUrl));
-
-            if(isRemoved){
-                consoleTextArea.appendText("Домен успешно удален!\n");
+            Boolean isRemoved = urlList.removeIf(url -> url.equals(selectedUrl));
+            if (isRemoved) {
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"), selectedUrl) + "\n");
             } else {
-                consoleTextArea.appendText("Ошибка: домен "+selectedUrl+" не найден!\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorURLNotFound"), selectedUrl) + "\n");
             }
         }
-    }    // Удаление URL
-    @FXML private void handleAddUrl(ActionEvent event){
-        String urlName = inputUrlTextField.getText();
+    }
 
-        if(urlName.isEmpty()){
-            consoleTextArea.appendText("Ошибка: Домен не может быть пустым!\n");
+    @FXML private void handleAddUrl(ActionEvent event) {
+        String urlName = inputUrlTextField.getText();
+        if (urlName.isEmpty()) {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.errorEmptyURL") + "\n");
             return;
         }
-
         inputUrlTextField.clear();
-        consoleTextArea.appendText("Домен "+urlName+" добавлен\n");
+        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"), urlName) + "\n");
         urlList.add(urlName);
-    }       // Добавление URL
+    }
 
-    public void initialize(){
+    public void initialize() {
+        setLocalization(getLang());
+
         processListComboBox.setItems(processList);
         urlListComboBox.setItems(urlList);
         modeListComboBox.setItems(modeList);
@@ -362,25 +348,20 @@ public class MonitoringSettingsController {
         customModeListComboBox.setItems(customModeList);
 
         blockDomainCheckBox.setSelected(isWebSocketServerActive);
-
-        blockDomainCheckBox.setOnAction(event->{
-            if(blockDomainCheckBox.isSelected()) {
+        blockDomainCheckBox.setOnAction(event -> {
+            if (blockDomainCheckBox.isSelected()) {
                 isWebSocketServerActive = true;
-            }
-            else {
+            } else {
                 isWebSocketServerActive = false;
             }
         });
 
-        // Добавление пустого кастомного режима
-        if(!customModeListOb.containsKey("<НЕТ>")) {
+        if (!customModeListOb.containsKey("<НЕТ>")) {
             CustomMode emptyCustomMode = new CustomMode("<НЕТ>", "FullLockdown", new ArrayList<>(), new ArrayList<>(), true);
             customModeListOb.put("<НЕТ>", emptyCustomMode);
-
             if (!customModeList.contains("<НЕТ>")) {
                 customModeList.add("<НЕТ>");
             }
-
             customModeListComboBox.setValue("<НЕТ>");
         }
 
@@ -390,56 +371,41 @@ public class MonitoringSettingsController {
                 consoleTextArea.appendText("Ошибка: не выбран режим\n");
                 return;
             }
-
             CustomMode customMode = customModeListOb.get(selectedMode);
             if (customMode == null) {
                 consoleTextArea.appendText("Ошибка: режим '" + selectedMode + "' не найден\n");
                 return;
             }
-
-            // Установка значений
             modeListComboBox.setValue(customMode.modeName);
             processList.clear();
             processList.setAll(customMode.getProcessList());
-            isWebSocketServerActive=customMode.isWebSocketServerActive();
+            isWebSocketServerActive = customMode.isWebSocketServerActive();
             blockDomainCheckBox.setSelected(isWebSocketServerActive);
             urlList.clear();
             urlList.setAll(customMode.getUrlList());
-
-            // Управление блокировкой элементов
-            if(!selectedMode.equals("<НЕТ>")) {
+            if (!selectedMode.equals("<НЕТ>")) {
                 customModeInterface();
             } else {
                 clearInterface();
             }
-        });// Если кастомный режим выбран, то установка новых значений
+        });
 
         modeListComboBox.setOnAction(actionEvent -> {
-            switch (modeListComboBox.getValue()){
+            switch (modeListComboBox.getValue()) {
                 case "FullLockdown":
-                    Platform.runLater(()->{
-                        monitoringManager.setMode("FullLockdown");
-                    });
+                    Platform.runLater(() -> monitoringManager.setMode("FullLockdown"));
                     break;
                 case "Mindfulness":
-                    Platform.runLater(()->{
-                        monitoringManager.setMode("Mindfulness");
-                    });
+                    Platform.runLater(() -> monitoringManager.setMode("Mindfulness"));
                     break;
                 case "Sailor's Knot":
-                    Platform.runLater(()->{
-                        monitoringManager.setMode("Sailor's Knot");
-                    });
+                    Platform.runLater(() -> monitoringManager.setMode("Sailor's Knot"));
                     break;
                 case "Delay Gratification":
-                    Platform.runLater(()->{
-                        monitoringManager.setMode("Delay Gratification");
-                    });
+                    Platform.runLater(() -> monitoringManager.setMode("Delay Gratification"));
                     break;
                 case "Pomodoro":
-                    Platform.runLater(()->{
-                        monitoringManager.setMode("Pomodoro");
-                    });
+                    Platform.runLater(() -> monitoringManager.setMode("Pomodoro"));
                     break;
             }
         });

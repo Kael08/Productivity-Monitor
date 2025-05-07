@@ -10,7 +10,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.controllers.TimerController.getLang;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
@@ -93,7 +97,31 @@ public class ProfileController {
     private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),
                   avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("profile"));
+        profileButton.setText(bundle.getString("profile"));
+        statisticsButton.setText(bundle.getString("statistics"));
+        settingsButton.setText(bundle.getString("settings"));
+        achievementsButton.setText(bundle.getString("achievements"));
+        notesButton.setText(bundle.getString("notes"));
+        plansButton.setText(bundle.getString("plans"));
+        logoutButton.setText(bundle.getString("profile.logout"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+    }
+
     public void initialize(){
+        setLocalization(getLang());
+
         mainImageView.setImage(iconImg);
         avatarImageView.setImage(avatarImg);
 

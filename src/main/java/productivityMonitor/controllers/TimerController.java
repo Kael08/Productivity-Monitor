@@ -6,8 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.services.SettingsService.localization;
+import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class TimerController {
@@ -53,8 +59,35 @@ public class TimerController {
         consoleTextArea.appendText("Время убрано!\n");
     }
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("timer.title"));
+        setButton.setText(bundle.getString("timer.set"));
+        clearButton.setText(bundle.getString("timer.clear"));
+        minuteTextField.setPromptText(bundle.getString("timer.minutes"));
+        hourTextField.setPromptText(bundle.getString("timer.hours"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+        localization=lang;
+        saveLocalizationToFile(lang);
+    }
+
+    public static String getLang(){
+        return localization;
+    }
+
     @FXML
     public void initialize(){
+        setLocalization(getLang());
+
         // Фильтр для записи только двух цифр и только цифр в поля для записи времени
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();

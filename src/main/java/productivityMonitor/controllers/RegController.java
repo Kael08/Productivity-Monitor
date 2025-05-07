@@ -13,8 +13,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.controllers.TimerController.getLang;
+import static productivityMonitor.services.SettingsService.localization;
 import static productivityMonitor.services.StageService.replaceScene;
+import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 public class RegController {
     // ImageView
@@ -91,7 +97,31 @@ public class RegController {
         }
     }// Нажатие кнопки регистрации
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("reg.title"));
+        loginTextField.setPromptText(bundle.getString("reg.login"));
+        passwordTextField.setPromptText(bundle.getString("reg.password"));
+        usernameTextField.setPromptText(bundle.getString("reg.username"));
+        regButton.setText(bundle.getString("reg.signup"));
+        authButton.setText(bundle.getString("reg.noacc"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+        localization=lang;
+        saveLocalizationToFile(lang);
+    }
+
     @FXML public void initialize(){
+        setLocalization(getLang());
+
         iconImageView.setImage(iconImage);// Установка картинки для иконки
     }
 }

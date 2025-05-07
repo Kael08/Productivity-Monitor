@@ -3,7 +3,6 @@ package productivityMonitor.controllers;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import productivityMonitor.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +18,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import productivityMonitor.models.User;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -29,7 +30,11 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
@@ -86,8 +91,39 @@ public class NotesController {
 
     private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("app.title"));
+        profileButton.setText(bundle.getString("profile"));
+        statisticsButton.setText(bundle.getString("statistics"));
+        settingsButton.setText(bundle.getString("settings"));
+        achievementsButton.setText(bundle.getString("achievements"));
+        notesButton.setText(bundle.getString("notes"));
+        plansButton.setText(bundle.getString("plans"));
+        notesListTitle.setText(bundle.getString("notes"));
+        authStatusLabel.setText(bundle.getString("notes.notAuthorized"));
+        addNoteButton.setText(bundle.getString("notes.addNote"));
+        noteDetailsTitle.setText(bundle.getString("notes.selectNote"));
+        noteTitleField.setPromptText(bundle.getString("notes.noteTitle"));
+        noteContentArea.setPromptText(bundle.getString("notes.noteContent"));
+        updateNoteButton.setText(bundle.getString("notes.update"));
+        deleteNoteButton.setText(bundle.getString("notes.delete"));
+    }
+
+    // Установка локализации
+    public void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+    }
+
     @FXML
     public void initialize() {
+        setLocalization(getLang());
+
         mainImageView.setImage(iconImg);
         notesButton.setDisable(true);
         updateAuthStatus();
@@ -98,9 +134,9 @@ public class NotesController {
     private void updateAuthStatus() {
         User user = User.getUser();
         if (user.isUserActive) {
-            authStatusLabel.setText("Авторизован как " + user.getUsername());
+            authStatusLabel.setText(bundle.getString("notes.authorized") + " " + user.getUsername());
         } else {
-            authStatusLabel.setText("Не авторизован");
+            authStatusLabel.setText(bundle.getString("notes.notAuthorized"));
         }
     }
 
@@ -135,10 +171,10 @@ public class NotesController {
                     ));
                 }
             } else {
-                showError("Ошибка загрузки заметок: " + response.body());
+                showError(bundle.getString("notes.errorUploadNotes") + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка сервера: " + e.getMessage());
+            showError(bundle.getString("notes.errorServer") + e.getMessage());
         }
     }
 
@@ -160,7 +196,7 @@ public class NotesController {
                 }
             }
         } catch (Exception e) {
-            showError("Ошибка загрузки локальных заметок: " + e.getMessage());
+            showError(bundle.getString("notes.errorUploadLocalNotes") + e.getMessage());
         }
     }
 
@@ -180,7 +216,7 @@ public class NotesController {
             }
             Files.writeString(LOCAL_NOTES_PATH, jsonArray.toString(2));
         } catch (IOException e) {
-            showError("Ошибка сохранения локальных заметок: " + e.getMessage());
+            showError(bundle.getString("notes.errorSaveLocalNotes") + e.getMessage());
         }
     }
 
@@ -201,7 +237,7 @@ public class NotesController {
         selectedNote = (Note) card.getUserData();
         noteTitleField.setText(selectedNote.title);
         noteContentArea.setText(selectedNote.content);
-        noteDetailsTitle.setText("Редактировать заметку");
+        noteDetailsTitle.setText(bundle.getString("notes.edit"));
         updateNoteButton.setDisable(false);
         deleteNoteButton.setDisable(false);
     }
@@ -211,7 +247,7 @@ public class NotesController {
         String title = noteTitleField.getText().trim();
         String content = noteContentArea.getText().trim();
         if (title.isEmpty() || content.isEmpty()) {
-            showError("Поля заголовка и содержимого обязательны");
+            showError(bundle.getString("notes.errorHeaderContent"));
             return;
         }
 
@@ -247,10 +283,10 @@ public class NotesController {
                 ));
                 updateNoteListUI();
             } else {
-                showError("Ошибка добавления заметки: " + response.body());
+                showError(bundle.getString("notes.errorAddNote") + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка сервера: " + e.getMessage());
+            showError(bundle.getString("notes.errorServer") + e.getMessage());
         }
     }
 
@@ -266,13 +302,13 @@ public class NotesController {
     @FXML
     private void handleUpdateNoteButton(ActionEvent event) {
         if (selectedNote == null) {
-            showError("Выберите заметку для обновления");
+            showError(bundle.getString("notes.errorSelectNoteForUpdate"));
             return;
         }
         String title = noteTitleField.getText().trim();
         String content = noteContentArea.getText().trim();
         if (title.isEmpty() || content.isEmpty()) {
-            showError("Поля заголовка и содержимого обязательны");
+            showError(bundle.getString("notes.errorHeaderContent"));
             return;
         }
 
@@ -304,10 +340,10 @@ public class NotesController {
                 selectedNote.updateAt = updateNote.getString("updated_at");
                 updateNoteListUI();
             } else {
-                showError("Ошибка обновления заметки: " + response.body());
+                showError(bundle.getString("notes.errorUpdateNote") + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка сервера: " + e.getMessage());
+            showError(bundle.getString("notes.errorServer") + e.getMessage());
         }
     }
 
@@ -322,7 +358,7 @@ public class NotesController {
     @FXML
     private void handleDeleteNoteButton(ActionEvent event) {
         if (selectedNote == null) {
-            showError("Выберите заметку для удаления");
+            showError(bundle.getString("notes.errorSelectNoteForDelete"));
             return;
         }
         if (selectedNote.isLocal) {
@@ -349,10 +385,10 @@ public class NotesController {
                 selectedNote = null;
                 updateNoteListUI();
             } else {
-                showError("Ошибка удаления заметки: " + response.body());
+                showError(bundle.getString("notes.errorDeleteNote") + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка сервера: " + e.getMessage());
+            showError(bundle.getString("notes.errorServer") + e.getMessage());
         }
     }
 
@@ -367,85 +403,65 @@ public class NotesController {
         selectedNote = null;
         noteTitleField.clear();
         noteContentArea.clear();
-        noteDetailsTitle.setText("Выберите заметку");
+        noteDetailsTitle.setText(bundle.getString("notes.selectNote"));
         updateNoteButton.setDisable(true);
         deleteNoteButton.setDisable(true);
     }
 
     private String getAuthToken() {
-        // Замените на реальный способ получения токена
         return getAccessToken();
-        //return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImxvZ2luIjoidXNlcjIiLCJpYXQiOjE3NDYwOTMzMDcsImV4cCI6MTc0NjA5NjkwN30.gc6BkS7SUvS8NLbTgoUI_YYBGVIWfeq7loIyQjAJA8s";
     }
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
+        alert.setTitle(bundle.getString("plans.error"));
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    // Проверка валидности токена
     private boolean isAccessTokenValid() {
-        // Реализуйте проверку токена (например, проверка exp)
-        // Здесь заглушка, предполагающая, что токен валиден
         return User.getUser().isUserActive;
     }
 
-    // Обновление токена
     private boolean refreshAccessToken() {
-        // Реализуйте запрос к /auth/refresh или аналогичному эндпоинту
-        // Возвращайте true, если токен успешно обновлен
-        return false; // Заглушка
+        return false;
     }
 
-    // Обновление данных пользователя
     private void updateUser() {
-        // Реализуйте обновление данных пользователя, если нужно
     }
 
-    // Переход на главную страницу
     @FXML
     private void handleMainImageClick(MouseEvent event) throws IOException {
-        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");
+        replaceMainScene("/fxml/mainView.fxml", bundle.getString("app.title"));
     }
 
-    // Переход на профиль
     @FXML
     private void handleProfileButton(ActionEvent event) throws IOException {
-        // Проверяем валидность токена и активность пользователя
         if (isAccessTokenValid() && getUser().isUserActive) {
-            replaceMainScene("/fxml/profileView.fxml","Profile");
+            replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
         } else {
-            // Пробуем обновить токен, если access-токен невалиден
             if (refreshAccessToken()) {
-                updateUser(); // Обновляем данные пользователя
-                replaceMainScene("/fxml/profileView.fxml","Profile");
+                updateUser();
+                replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
             } else {
-                // Если refresh тоже не сработал - показываем окно авторизации
-                if(authStage!=null&&authStage.isShowing()) {
+                if (authStage != null && authStage.isShowing()) {
                     authStage.toFront();
                     return;
                 }
-                authStage=new Stage();
-                createScene("/fxml/authView.fxml","Authentification",authStage,false);
+                authStage = new Stage();
+                createScene("/fxml/authView.fxml", bundle.getString("auth.title"), authStage, false);
             }
         }
     }
 
-    // Методы навигации (заглушки)
     @FXML private void handleStatisticsButton(ActionEvent event) {}
     @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/settingsView.fxml","Settings");
+        replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
     }
     @FXML private void handleAchievementsButton(ActionEvent event) {}
-
-    @FXML private void handleNotesButton(ActionEvent event) {
-        // Кнопка заблокирована
-    }
-
+    @FXML private void handleNotesButton(ActionEvent event) {}
     @FXML private void handlePlansButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/plansView.fxml","Plans");
+        replaceMainScene("/fxml/plansView.fxml", bundle.getString("plans"));
     }
 }

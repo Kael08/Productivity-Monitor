@@ -5,22 +5,21 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.models.User.getUser;
-import static productivityMonitor.services.SettingsService.colorList;
-import static productivityMonitor.services.SettingsService.langList;
+import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.TokenManager.*;
+import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 public class SettingsController {
     // Button
@@ -56,7 +55,7 @@ public class SettingsController {
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
-        replaceMainScene("/fxml/mainView.fxml", bundle.getString("app.title"));
+        replaceMainScene("/fxml/mainView.fxml", "Productivity Monitor");
     }
     @FXML private void handleProfileButton(ActionEvent event) throws IOException {
         if (isAccessTokenValid() && getUser().isUserActive) {
@@ -93,6 +92,7 @@ public class SettingsController {
 
     // Применение локализации
     private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("settings"));
         selectLangLabel.setText(bundle.getString("select.language"));
         selectColorLabel.setText(bundle.getString("select.color"));
         profileButton.setText(bundle.getString("profile"));
@@ -108,18 +108,28 @@ public class SettingsController {
         Locale locale = new Locale(lang);
         bundle = ResourceBundle.getBundle("lang.messages", locale);
         applyLocalization();
+        localization=lang;
+        saveLocalizationToFile(lang);
+    }
+
+    public static String getLang(){
+        return localization;
     }
 
     @FXML
     public void initialize() {
         // Инициализация локализации (по умолчанию английский)
-        setLocalization("en");
+        setLocalization(localization);
+
         mainImageView.setImage(iconImg);
         settingsButton.setDisable(true);
 
-        // Инициализация Combo visantBox для языков
+        // Инициализация ComboBox для языков
         langComboBox.setItems(langList);
-        langComboBox.setValue("English");
+        switch (localization) {
+            case "en" -> langComboBox.setValue("English");
+            case "ru" -> langComboBox.setValue("Русский");
+        }
 
         // Инициализация ComboBox для цветов
         colorComboBox.setItems(colorList);

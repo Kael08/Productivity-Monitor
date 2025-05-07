@@ -1,7 +1,6 @@
 /* Основной фон панели */
 BorderPane {
     -fx-background-color: #E8E8FF;
-    -fx-padding: 20px;
 }
 
 /* Стиль навигационной панели */
@@ -70,14 +69,4 @@ BorderPane {
     -fx-scale-y: 1.05;
     -fx-scale-x: 1.05;
     -fx-cursor: hand;
-}
-
-/* Центральная панель */
-VBox {
-    -fx-background-color: #F5F5F5;
-    -fx-background-radius: 15px;
-    -fx-border-radius: 15px;
-    -fx-border-color: #6A5CDA;
-    -fx-border-width: 3px;
-    -fx-padding: 20px;
 }

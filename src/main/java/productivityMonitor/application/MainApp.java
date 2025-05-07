@@ -7,9 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import productivityMonitor.controllers.MainController;
 
 import java.io.IOException;
+
+import static productivityMonitor.utils.DataLoader.loadLocalizationFromFile;
+import static productivityMonitor.services.SettingsService.localization;
 
 public class MainApp extends Application {
     public static Stage MainStage;
@@ -38,6 +40,9 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
+        // Чтения и сохранение файла локализации
+        localization = loadLocalizationFromFile();
+
         launch();
     }
 }

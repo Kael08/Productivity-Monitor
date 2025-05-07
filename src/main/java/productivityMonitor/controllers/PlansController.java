@@ -30,10 +30,14 @@ import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.services.StageService.replaceMainScene;
+import static productivityMonitor.controllers.SettingsController.getLang;
 
 public class PlansController {
 
@@ -126,8 +130,44 @@ public class PlansController {
         }
     }
 
+    // ResourceBundle для локализации
+    private ResourceBundle bundle;
+
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("plans"));
+        profileButton.setText(bundle.getString("profile"));
+        statisticsButton.setText(bundle.getString("statistics"));
+        settingsButton.setText(bundle.getString("settings"));
+        achievementsButton.setText(bundle.getString("achievements"));
+        notesButton.setText(bundle.getString("notes"));
+        plansButton.setText(bundle.getString("plans"));
+        listsTitle.setText(bundle.getString("plans.taskList"));
+        authStatusLabel.setText(bundle.getString("plans.notAuthorized"));
+        listTitleField.setPromptText(bundle.getString("plans.listName"));
+        addListButton.setText(bundle.getString("plans.addList"));
+        itemsTitle.setText(bundle.getString("plans.selectList"));
+        completedColumn.setText(bundle.getString("plans.done"));
+        descriptionColumn.setText(bundle.getString("plans.description"));
+        priorityColumn.setText(bundle.getString("plans.priority"));
+        itemDescriptionField.setPromptText(bundle.getString("plans.taskDescription"));
+        itemPriorityField.setPromptText(bundle.getString("plans.priority(0-10)"));
+        addItemButton.setText(bundle.getString("plans.addTask"));
+        updateItemButton.setText(bundle.getString("plans.updateTask"));
+        deleteItemButton.setText(bundle.getString("plans.deleteTask"));
+    }
+
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
+    }
+
     @FXML
     public void initialize() {
+        setLocalization(getLang());
+
         mainImageView.setImage(iconImg);
         plansButton.setDisable(true);
         setupTableColumns();
@@ -168,7 +208,7 @@ public class PlansController {
                 itemPriorityField.setText(String.valueOf(newSelection.priority));
                 updateItemButton.setDisable(false);
                 deleteItemButton.setDisable(false);
-                itemsTitle.setText("Редактировать задачу");
+                itemsTitle.setText(bundle.getString("plans.editTask"));
             } else {
                 clearItemDetails();
             }
@@ -178,9 +218,9 @@ public class PlansController {
     private void updateAuthStatus() {
         User user = User.getUser();
         if (user.isUserActive) {
-            authStatusLabel.setText("Авторизован как " + user.getUsername());
+            authStatusLabel.setText(bundle.getString("plans.authorized") + user.getUsername());
         } else {
-            authStatusLabel.setText("Не авторизован");
+            authStatusLabel.setText(bundle.getString("plans.notAuthorized"));
         }
     }
 
@@ -197,7 +237,7 @@ public class PlansController {
         try {
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             HttpRequest request = HttpRequest.newBuilder()
@@ -236,14 +276,14 @@ public class PlansController {
                     ));
                 }
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает списки задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.notSuppTaskList"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Не удалось загрузить списки задач: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorLoadTaskList") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -280,7 +320,7 @@ public class PlansController {
                 }
             }
         } catch (Exception e) {
-            showError("Ошибка загрузки локальных списков: " + e.getMessage());
+            showError(bundle.getString("plans.errorLoadLocalLists") + e.getMessage());
         }
     }
 
@@ -311,7 +351,7 @@ public class PlansController {
             }
             Files.writeString(LOCAL_LISTS_PATH, jsonArray.toString(2));
         } catch (IOException e) {
-            showError("Ошибка сохранения локальных списков: " + e.getMessage());
+            showError(bundle.getString("plans.errorSaveLocalLists") + e.getMessage());
         }
     }
 
@@ -337,7 +377,7 @@ public class PlansController {
                 if (list.id == selectedList.id && list.isLocal == selectedList.isLocal) {
                     selectedList = list;
                     itemsTable.setItems(FXCollections.observableArrayList(selectedList.items));
-                    itemsTitle.setText("Задачи: " + selectedList.title);
+                    itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.title);
                     break;
                 }
             }
@@ -356,7 +396,7 @@ public class PlansController {
     private void handleAddListButton(ActionEvent event) {
         String title = listTitleField.getText().trim();
         if (title.isEmpty()) {
-            showError("Поле названия списка обязательно");
+            showError(bundle.getString("plans.errorFieldName"));
             return;
         }
         if (User.getUser().isUserActive) {
@@ -373,7 +413,7 @@ public class PlansController {
             json.put("title", title);
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             System.out.println("POST /plans/add Request Body: " + json.toString());
@@ -399,14 +439,14 @@ public class PlansController {
                 ));
                 updateListsUI();
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает добавление списков задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.errorServerNotSuppAddTaskLists"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Не удалось добавить список: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorAddList") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -437,7 +477,7 @@ public class PlansController {
             json.put("list_id", list.id);
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             HttpRequest request = HttpRequest.newBuilder()
@@ -456,14 +496,14 @@ public class PlansController {
                 }
                 updateListsUI();
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает удаление списков задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.errorServerNotSuppDelListsTask"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Ошибка удаления списка: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorDelList") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -480,24 +520,24 @@ public class PlansController {
     @FXML
     private void handleAddItemButton(ActionEvent event) {
         if (selectedList == null) {
-            showError("Выберите список для добавления задачи");
+            showError(bundle.getString("plans.errorSelectListForTaskAdd"));
             return;
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
         if (description.isEmpty()) {
-            showError("Поле описания задачи обязательно");
+            showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
         }
         int priority;
         try {
             priority = priorityStr.isEmpty() ? 0 : Integer.parseInt(priorityStr);
             if (priority < 0 || priority > 10) {
-                showError("Приоритет должен быть от 0 до 10");
+                showError(bundle.getString("plans.errorPriorityMustBe1-10"));
                 return;
             }
         } catch (NumberFormatException e) {
-            showError("Приоритет должен быть числом");
+            showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
         if (selectedList.isLocal) {
@@ -516,7 +556,7 @@ public class PlansController {
             json.put("priority", priority);
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             HttpRequest request = HttpRequest.newBuilder()
@@ -541,14 +581,14 @@ public class PlansController {
                 ));
                 updateListsUI();
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает добавление задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.errorServerNotSuppAddTask"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Ошибка добавления задачи: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorAddTask") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -565,24 +605,24 @@ public class PlansController {
     @FXML
     private void handleUpdateItemButton(ActionEvent event) {
         if (selectedItem == null) {
-            showError("Выберите задачу для обновления");
+            showError(bundle.getString("plans.selectTaskToUpdate"));
             return;
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
         if (description.isEmpty()) {
-            showError("Поле описания задачи обязательно");
+            showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
         }
         int priority;
         try {
             priority = priorityStr.isEmpty() ? 0 : Integer.parseInt(priorityStr);
             if (priority < 0 || priority > 10) {
-                showError("Приоритет должен быть от 0 до 10");
+                showError(bundle.getString("plans.errorPriorityMustBe1-10"));
                 return;
             }
         } catch (NumberFormatException e) {
-            showError("Приоритет должен быть числом");
+            showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
         if (selectedList.isLocal) {
@@ -595,7 +635,7 @@ public class PlansController {
 
     private void handleItemUpdateFromTable(TodoItem item) {
         if (item == null || selectedList == null) {
-            showError("Ошибка: задача или список не выбраны");
+            showError(bundle.getString("plans.errorTaskOrListNotSel"));
             return;
         }
         if (selectedList.isLocal) {
@@ -614,7 +654,7 @@ public class PlansController {
             json.put("priority", priority);
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             HttpRequest request = HttpRequest.newBuilder()
@@ -634,21 +674,21 @@ public class PlansController {
                 item.updatedAt = updatedItem.getString("updated_at");
                 updateListsUI();
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает обновление задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.errorServerNotSuppUpdateTasks"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Ошибка обновления задачи: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorUpdateTask") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void updateLocalItem(TodoItem item, String description, boolean isCompleted, int priority) {
         if (item == null) {
-            showError("Ошибка: задача не выбрана");
+            showError(bundle.getString("plans.errorTaskNotSel"));
             return;
         }
         item.description = description;
@@ -662,7 +702,7 @@ public class PlansController {
     @FXML
     private void handleDeleteItemButton(ActionEvent event) {
         if (selectedItem == null) {
-            showError("Выберите задачу для удаления");
+            showError(bundle.getString("plans.errorSelectTaskForDelete"));
             return;
         }
         if (selectedList.isLocal) {
@@ -679,7 +719,7 @@ public class PlansController {
             json.put("item_id", selectedItem.id);
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
-                showError("Токен авторизации отсутствует. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
             HttpRequest request = HttpRequest.newBuilder()
@@ -696,14 +736,14 @@ public class PlansController {
                 selectedItem = null;
                 updateListsUI();
             } else if (response.statusCode() == 404) {
-                showError("Сервер не поддерживает удаление задач. Проверьте конфигурацию сервера.");
+                showError(bundle.getString("plans.errorServerNotSuppDelTasks"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError("Ошибка авторизации. Пожалуйста, авторизуйтесь заново.");
+                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
-                showError("Ошибка удаления задачи: HTTP " + response.statusCode() + " - " + response.body());
+                showError(bundle.getString("plans.errorDelTask") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
-            showError("Ошибка подключения к серверу: " + e.getMessage());
+            showError(bundle.getString("plans.errorServerBadConnect") + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -721,12 +761,12 @@ public class PlansController {
         itemPriorityField.clear();
         updateItemButton.setDisable(true);
         deleteItemButton.setDisable(true);
-        itemsTitle.setText(selectedList != null ? "Задачи: " + selectedList.title : "Выберите список");
+        itemsTitle.setText(selectedList != null ? bundle.getString("plans.tasks") + selectedList.title : bundle.getString("plans.errorSelectList"));
     }
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
+        alert.setTitle(bundle.getString("plans.error"));
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
@@ -735,7 +775,7 @@ public class PlansController {
     private String getAuthToken() {
         String token = getAccessToken();
         if (token == null || token.isEmpty()) {
-            System.out.println("Warning: Auth token is null or empty");
+            System.out.println(bundle.getString("plans.errorAuthTokenNull"));
         }
         return token;
     }
