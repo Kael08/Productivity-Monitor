@@ -1,39 +1,67 @@
-#navbarPane {
-    -fx-background-color: #6A5CDA;
+/* Основной фон панели */
+BorderPane {
+    -fx-background-color: #E8E8FF;
 }
 
+/* Стиль навигационной панели */
+#navbarPane {
+    -fx-background-color: linear-gradient(to bottom, #6A5CDA, #4A3AB5);
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+/* Стили кнопок навигации */
 #navbarPane .button {
-    -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
+    -fx-text-fill: white;
+    -fx-background-color: #8B7BFF;
+    -fx-background-radius: 12px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
     -fx-font-size: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
+#navbarPane .button:hover {
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
+/* Стиль часов */
 #clockLabel {
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
+    -fx-background-color: #F5F5F5;
+    -fx-border-radius: 20px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 58px;
+    -fx-font-size: 50px;
     -fx-text-fill: #6A5CDA;
     -fx-border-color: #6A5CDA;
-    -fx-border-width: 5px;
+    -fx-border-width: 4px;
     -fx-alignment: center;
-    -fx-background-radius: 15px;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
+/* Панель кнопок управления */
 #startPane {
     -fx-border-color: #6A5CDA;
-    -fx-border-radius: 15px;
-    -fx-border-width: 5px;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
 }
 
+/* Стиль кнопок в startPane */
 #startPane .button {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -41,197 +69,147 @@
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-border-width: 0;
-    -fx-effect: null;
+    -fx-effect: none;
 }
 
+#startPane .button:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+    -fx-cursor: hand;
+}
+
+/* Стиль консоли */
 #consolePane {
     -fx-border-color: #6A5CDA;
-    -fx-border-radius: 15px;
-    -fx-border-width: 5px;
-    -fx-padding: 5px;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
 }
 
 #consoleTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
 
-#timerLabel {
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
+/* Стили таймеров */
+#timerLabel, #pomodoroTimerLabel {
+    -fx-background-color: #E8E8FF;
+    -fx-border-radius: 12px;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
+    -fx-font-size: 20px;
     -fx-text-fill: #6A5CDA;
-    -fx-border-width: 5px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
     -fx-alignment: center;
-    -fx-background-radius: 15px;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-#pomodoroTimerLabel {
-    -fx-background-color: white;
-    -fx-border-radius: 15px;
+/* Стили для заметок */
+.notes-title {
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
-    -fx-border-width: 5px;
+    -fx-font-size: 24px;
+    -fx-text-fill: #6A5CDA;
     -fx-alignment: center;
-    -fx-background-radius: 15px;
+    -fx-padding: 10px;
 }
 
-/* Стили для панели списков задач */
-.lists-pane {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+.auth-status {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #6A5CDA;
+    -fx-alignment: center;
+    -fx-padding: 5px;
 }
 
-/* Стили для панели задач */
-.items-pane {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-/* Стили для таблицы задач */
-.table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-.table-view .column-header-background {
-    -fx-background-color: #f0f0f0;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
-}
-
-.table-view .column-header {
-    -fx-background-color: transparent;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-}
-
-.table-view .table-cell {
-    -fx-font-size: 14px;
-    -fx-alignment: center-left;
-    -fx-padding: 5;
-}
-
-.table-row-cell {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: #f9f9f9;
-}
-
-.table-row-cell:hover {
-    -fx-background-color: #e0e0e0;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #d0d0d0;
-}
-
-/* Стили для чекбокса в колонке "Выполнено" */
-.table-view .check-box {
-    -fx-padding: 5;
-}
-
-.table-view .check-box .box {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #4CAF50;
-    -fx-border-width: 2;
-    -fx-border-radius: 3;
-}
-
-.table-view .check-box:selected .mark {
-    -fx-background-color: #4CAF50;
-}
-
-/* Стили для полей ввода задач */
 .note-field {
-    -fx-background-color: #f9f9f9;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 1;
-    -fx-border-radius: 3;
-    -fx-padding: 5;
-    -fx-font-size: 14px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
 }
 
 .note-field:focused {
-    -fx-border-color: #4CAF50;
-    -fx-border-width: 2;
+    -fx-border-color: #A79EFF;
 }
 
-/* Стили для кнопок действий */
 .action-button {
-    -fx-background-color: #4CAF50;
+    -fx-background-color: #8B7BFF;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 5 15;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .action-button:hover {
-    -fx-background-color: #45a049;
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
 }
 
-.action-button:disabled {
-    -fx-background-color: #cccccc;
-    -fx-text-fill: #666666;
-}
-
-/* Стили для кнопки удаления списка */
 .delete-button {
-    -fx-background-color: #ff4444;
+    -fx-background-color: #F44336;
     -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-padding: 2 8;
-    -fx-min-width: 24;
-    -fx-min-height: 24;
-    -fx-border-radius: 3;
-    -fx-background-radius: 3;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #D32F2F;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .delete-button:hover {
-    -fx-background-color: #cc0000;
-}
-
-/* Стили для заголовков */
-.notes-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-}
-
-/* Стили для статуса авторизации */
-.auth-status {
-    -fx-font-size: 14px;
-    -fx-text-fill: #555555;
-}
-
-/* Стили для карточек списков */
-.note-card {
-    -fx-background-color: #f0f0f0;
-    -fx-padding: 10;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+    -fx-background-color: #EF5350;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
     -fx-cursor: hand;
-    -fx-font-size: 14px;
-    -fx-pref-width: 220;
+}
+
+.note-card {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .note-card:hover {
-    -fx-background-color: #e0e0e0;
+    -fx-background-color: #E8E8FF;
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
 }

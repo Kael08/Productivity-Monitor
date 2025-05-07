@@ -17,26 +17,29 @@
 
     <!-- Навигация слева -->
     <left>
-        <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="20">
+        <VBox fx:id="navbarPane" prefHeight="1080.0" prefWidth="300.0" alignment="TOP_CENTER" spacing="15">
             <children>
-                <ImageView fx:id="mainImageView" fitWidth="64" fitHeight="64" pickOnBounds="true" preserveRatio="true" onMouseClicked="#handleMainImageClick">
+                <ImageView fx:id="mainImageView" fitWidth="80" fitHeight="80" pickOnBounds="true" preserveRatio="true" onMouseClicked="#handleMainImageClick">
                     <VBox.margin>
                         <Insets top="20"/>
                     </VBox.margin>
                 </ImageView>
-                <Button fx:id="profileButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton"/>
-                <Button fx:id="statisticsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton"/>
-                <Button fx:id="settingsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton"/>
-                <Button fx:id="achievementsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton"/>
-                <Button fx:id="notesButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton"/>
-                <Button fx:id="plansButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton"/>
+                <Button fx:id="profileButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton"/>
+                <Button fx:id="statisticsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton"/>
+                <Button fx:id="settingsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton"/>
+                <Button fx:id="achievementsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton"/>
+                <Button fx:id="notesButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton"/>
+                <Button fx:id="plansButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
+                        mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton"/>
             </children>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
         </VBox>
     </left>
 

@@ -1,44 +1,77 @@
-#taskTextArea{
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-text-fill: #6A5CDA;
+/* Основной фон панели */
+BorderPane {
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
 }
 
-#answerTextArea{
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-text-fill: #6A5CDA;
-    -fx-focus-color: transparent; /* Убирает цвет фокуса */
-    -fx-faint-focus-color: transparent; /* Убирает вторичный цвет фокуса */
-}
-
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
-#enterButton{
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 5 15 5 15; /* Увеличил отступы внутри кнопок */
-    -fx-background-insets: 0;
-    -fx-background-radius: 5px;
-    -fx-border-width: 3px;
-    -fx-border-radius: 5px;
-    -fx-effect: null;
+/* Стили для верхней части */
+HBox {
+    -fx-padding: 10px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+}
+
+/* Стили для метки */
+#enterTextLabel {
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-    -fx-cursor: hand;
-    -fx-text-fill: green;
-    -fx-border-color: green;
+    -fx-text-fill: #6A5CDA;
+    -fx-padding: 5px;
 }
 
-#enterTextLabel{
+/* Стили для текстовых полей */
+#taskTextArea, #answerTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
+}
+
+#taskTextArea {
+    -fx-text-fill: #6A5CDA;
+}
+
+/* Стиль для кнопки */
+#enterButton {
+    -fx-background-color: #8B7BFF;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-text-fill: #6A5CDA;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#enterButton:hover {
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Центральная панель */
+VBox {
+    -fx-padding: 10px;
 }

@@ -1,53 +1,82 @@
-#mainPane {
-
+/* Основной фон панели */
+VBox {
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
 }
 
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
-.button {
-    -fx-background-color: white;
-    -fx-border-color: #6a5cda;
+/* Стили для текстовых полей */
+#hourTextField, #minuteTextField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
     -fx-border-width: 2px;
-    -fx-border-radius: 10px;
-    -fx-text-fill: #6a5cda;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #888888;
+    -fx-padding: 8px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
+}
+
+#hour funny thing is that I generated all those files before knowing that you would ask for them to be styled!TextField:focused, #minuteTextField:focused {
+    -fx-border-color: #A79EFF;
+}
+
+/* Стили для кнопок */
+#setButton, #clearButton {
+    -fx-background-color: #8B7BFF;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
-#setButton{
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+#clearButton {
+    -fx-background-color: #F44336;
+    -fx-border-color: #D32F2F;
 }
 
-#clearButton{
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+#setButton:hover, #clearButton:hover {
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
 }
 
+#clearButton:hover {
+    -fx-background-color: #EF5350;
+}
+
+/* Стиль для консоли */
 #consoleTextArea {
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
-#hourTextField{
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
-    -fx-border-color:#6a5cda;
-    -fx-border-radius:10px;
-    -fx-background-radius:10px;
-    -fx-border-width:2px;
-    -fx-text-fill:#6a5cda;
-}
-
-#minuteTextField{
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
-    -fx-border-color:#6a5cda;
-    -fx-border-radius:10px;
-    -fx-background-radius:10px;
-    -fx-border-width:2px;
-    -fx-text-fill:#6a5cda;
+/* Панель кнопок */
+HBox {
+    -fx-padding: 10px;
 }

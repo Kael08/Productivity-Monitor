@@ -1,71 +1,84 @@
-/* Основные стили для BorderPane */
+/* Основной фон панели */
 #borderPane {
-    -fx-background-color: white;
-    -fx-padding: 10 15 10 15; /* Верх 10, право 15, низ 10, лево 15 */
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
 }
 
 /* Стили для верхней части */
 #hboxTop {
-    -fx-padding: 0 0 10 0; /* Только снизу 10px */
-}
-
-/* Стили для центральной части */
-#vboxCenter {
-    -fx-spacing: 15; /* Увеличил расстояние между элементами */
-    -fx-padding: 0 0 10 0; /* Только снизу 10px */
-}
-
-/* Стили для основного текста */
-#messageLabel {
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-wrap-text: true;
-    -fx-padding: 0 15 0 15; /* Отступы слева и справа */
-    -fx-text-alignment: center;
+    -fx-padding: 10px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
 }
 
 /* Стили для цитаты */
 #quoteLabel {
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
+    -fx-font-size: 16px;
+    -fx-text-fill: #6A5CDA;
     -fx-wrap-text: true;
     -fx-text-alignment: center;
-    -fx-padding: 0 15 0 15; /* Отступы слева и справа */
-    -fx-text-fill:green;
+    -fx-padding: 5px;
 }
 
-/* Общие стили для кнопок */
-#agreeButton, #refuseButton {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 5 15 5 15; /* Увеличил отступы внутри кнопок */
-    -fx-background-insets: 0;
-    -fx-background-radius: 5px;
-    -fx-border-width: 3px;
-    -fx-border-radius: 5px;
-    -fx-effect: null;
+/* Стили для центральной части */
+#vboxCenter {
+    -fx-padding: 10px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+}
+
+/* Стили для основного текста */
+#messageLabel {
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 12px;
-    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-text-fill: #6A5CDA;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-padding: 10px;
 }
 
-/* Стиль для кнопки согласия */
+/* Стили для кнопок */
+#agreeButton, #refuseButton {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
 #agreeButton {
-    -fx-text-fill: green;
-    -fx-border-color: green;
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #388E3C;
+    -fx-border-width: 2px;
 }
 
-/* Стиль для кнопки отказа */
 #refuseButton {
-    -fx-text-fill: red;
-    -fx-border-color: red;
+    -fx-background-color: #F44336;
+    -fx-border-color: #D32F2F;
+    -fx-border-width: 2px;
 }
 
-/* Загрузка шрифта */
-@font-face {
-    src: url('/fonts/Jomhuria-Regular.ttf');
-    font-family: 'Jomhuria-Regular';
+#agreeButton:hover, #refuseButton:hover {
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
 }

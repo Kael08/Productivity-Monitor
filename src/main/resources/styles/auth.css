@@ -1,44 +1,61 @@
-#loginTextField {
-    -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+/* Основной фон панели */
+VBox {
+    -fx-background-color: #E8E8FF;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-background-radius: 15px;
 }
 
-#passwordTextField {
-    -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
-}
-
+/* Подключение шрифта */
 @font-face {
     src: url('/fonts/Jomhuria-Regular.ttf');
     font-family: 'Jomhuria-Regular';
 }
 
-#authButton {
-    -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
+/* Стили текстовых полей */
+#loginTextField, #passwordTextField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #888888;
+    -fx-padding: 8px;
+    -fx-focus-color: #A79EFF;
+    -fx-faint-focus-color: transparent;
+}
+
+#loginTextField:focused, #passwordTextField:focused {
+    -fx-border-color: #A79EFF;
+}
+
+/* Стили кнопок */
+#authButton, #regButton {
+    -fx-background-color: #8B7BFF;
+    -fx-text-fill: white;
     -fx-font-family: 'Jomhuria-Regular';
     -fx-font-weight: bold;
-    -fx-font-size: 17px;
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #6A5CDA;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#authButton:hover, #regButton:hover {
+    -fx-background-color: #A79EFF;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
 }
 
 #regButton {
+    -fx-background-color: transparent;
     -fx-text-fill: #6A5CDA;
-    -fx-background-radius: 10px;
-    -fx-font-family: 'Jomhuria-Regular';
-    -fx-font-weight: bold;
-    -fx-font-size: 17px;
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+    -fx-border-color: transparent;
 }
