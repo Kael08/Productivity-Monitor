@@ -84,8 +84,8 @@ public class MainController {
     @FXML private void handleStatisticsButton(ActionEvent action){
 
     }// Нажатие кнопки статистики
-    @FXML private void handleSettingsButton(ActionEvent action){
-
+    @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/settingsView.fxml","Settings");
     }// Нажатие кнопки настроек
     @FXML private void handleAchievementsButton(ActionEvent event){
 

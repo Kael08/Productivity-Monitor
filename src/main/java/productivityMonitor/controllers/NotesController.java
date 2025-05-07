@@ -436,7 +436,9 @@ public class NotesController {
 
     // Методы навигации (заглушки)
     @FXML private void handleStatisticsButton(ActionEvent event) {}
-    @FXML private void handleSettingsButton(ActionEvent event) {}
+    @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/settingsView.fxml","Settings");
+    }
     @FXML private void handleAchievementsButton(ActionEvent event) {}
 
     @FXML private void handleNotesButton(ActionEvent event) {

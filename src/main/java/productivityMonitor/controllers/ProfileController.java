@@ -7,9 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
 import static productivityMonitor.services.StageService.replaceMainScene;
@@ -21,33 +23,26 @@ public class ProfileController {
     private ImageView mainImageView;
 
     // Нажатие кнопок навигационной области
-    @FXML
-    private void handleMainImageClick(MouseEvent event) throws IOException {
+    @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
         replaceMainScene("/fxml/mainView.fxml","Productivity Monitor"); // Замена текущей сцены на главную сцену
-    }
-    @FXML
-    private void handleProfileButton(ActionEvent event) throws IOException {
+    }// Нажатие иконки приложения
+    @FXML private void handleProfileButton(ActionEvent event) throws IOException {
+    }// Нажатие кнопки профиля
+    @FXML private void handleStatisticsButton(ActionEvent action){
 
-    }// Кнопка заблокирована
-    @FXML
-    private void handleStatisticsButton(ActionEvent action){
+    }// Нажатие кнопки статистики
+    @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/settingsView.fxml","Settings");
+    }// Нажатие кнопки настроек
+    @FXML private void handleAchievementsButton(ActionEvent event){
 
-    }
-    @FXML
-    private void handleSettingsButton(ActionEvent action){
-
-    }
-    @FXML
-    private void handleAchievementsButton(ActionEvent event){
-
-    }
-    @FXML
-    private void handleNotesButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/notesView.fxml","Notes");// Замена текущей сцены на сцену заметок
-    }
+    }// Нажатие кнопки достижений
+    @FXML private void handleNotesButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/notesView.fxml","Notes"); // Замена текущей сцены на сцену заметок
+    }// Нажатие кнопки заметок
     @FXML private void handlePlansButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/plansView.fxml","Plans");// Замена текущей сцены на сцену планов
-    }
+    }// Нажатие кнопки планов
 
     @FXML
     private ImageView avatarImageView;
