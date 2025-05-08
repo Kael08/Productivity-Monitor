@@ -1,14 +1,9 @@
 package productivityMonitor.controllers;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import productivityMonitor.models.TodoItem;
+import productivityMonitor.models.TodoList;
 import productivityMonitor.models.User;
 
 import java.io.IOException;
@@ -27,7 +24,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,38 +34,52 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.services.StageService.createScene;
-import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.services.StageService.replaceMainScene;
+import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.controllers.SettingsController.getLang;
 
 public class PlansController {
+    // Label
+    @FXML private Label listsTitle;
+    @FXML private Label authStatusLabel;
+    @FXML private Label itemsTitle;
 
-    @FXML private VBox navbarPane;
-    @FXML private ImageView mainImageView;
+    // Button
     @FXML private Button profileButton;
     @FXML private Button statisticsButton;
     @FXML private Button settingsButton;
     @FXML private Button achievementsButton;
     @FXML private Button notesButton;
     @FXML private Button plansButton;
-    @FXML private HBox plansContent;
-    @FXML private VBox listsPane;
-    @FXML private Label listsTitle;
-    @FXML private Label authStatusLabel;
-    @FXML private VBox listsContainer;
-    @FXML private TextField listTitleField;
-    @FXML private Button addListButton;
-    @FXML private VBox itemsPane;
-    @FXML private Label itemsTitle;
-    @FXML private TableView<TodoItem> itemsTable;
-    @FXML private TableColumn<TodoItem, Boolean> completedColumn;
-    @FXML private TableColumn<TodoItem, String> descriptionColumn;
-    @FXML private TableColumn<TodoItem, String> priorityColumn;
-    @FXML private TextField itemDescriptionField;
-    @FXML private TextField itemPriorityField;
     @FXML private Button addItemButton;
     @FXML private Button updateItemButton;
     @FXML private Button deleteItemButton;
+    @FXML private Button addListButton;
+
+    // TextField
+    @FXML private TextField itemDescriptionField;
+    @FXML private TextField itemPriorityField;
+    @FXML private TextField itemDeadlineField;
+    @FXML private TextField listTitleField;
+
+    // TableColumn
+    @FXML private TableColumn<TodoItem, Boolean> completedColumn;
+    @FXML private TableColumn<TodoItem, String> descriptionColumn;
+    @FXML private TableColumn<TodoItem, String> priorityColumn;
+    @FXML private TableColumn<TodoItem, String> deadlineColumn;
+
+    // TableView
+    @FXML private TableView<TodoItem> itemsTable;
+
+    // VBox||HBox
+    @FXML private VBox navbarPane;
+    @FXML private VBox listsPane;
+    @FXML private VBox listsContainer;
+    @FXML private VBox itemsPane;
+    @FXML private HBox plansContent;
+
+    // ImageView
+    @FXML private ImageView mainImageView;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String API_BASE_URL = "http://localhost:3000";
@@ -76,105 +89,43 @@ public class PlansController {
     private TodoItem selectedItem = null;
     private Stage authStage;
     private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
-
-    // Модель to-do листа
-    private static class TodoList {
-        int id;
-        String title;
-        String createdAt;
-        String updatedAt;
-        List<TodoItem> items;
-        boolean isLocal;
-
-        TodoList(int id, String title, String createdAt, String updatedAt, List<TodoItem> items, boolean isLocal) {
-            this.id = id;
-            this.title = title;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-            this.items = items;
-            this.isLocal = isLocal;
-        }
-    }
-
-    // Модель задачи
-    private static class TodoItem {
-        int id;
-        int todoListId;
-        String description;
-        BooleanProperty isCompleted;
-        int priority;
-        String createdAt;
-        String updatedAt;
-
-        TodoItem(int id, int todoListId, String description, boolean isCompleted, int priority,
-                 String createdAt, String updatedAt) {
-            this.id = id;
-            this.todoListId = todoListId;
-            this.description = description;
-            this.isCompleted = new SimpleBooleanProperty(isCompleted);
-            this.priority = priority;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-        }
-
-        public BooleanProperty isCompletedProperty() {
-            return isCompleted;
-        }
-
-        public StringProperty descriptionProperty() {
-            return new SimpleStringProperty(description);
-        }
-
-        public StringProperty priorityProperty() {
-            return new SimpleStringProperty(String.valueOf(priority));
-        }
-    }
-
-    // ResourceBundle для локализации
     private ResourceBundle bundle;
 
-    // Применение локализации
-    private void applyLocalization() {
-        MainStage.setTitle(bundle.getString("plans"));
-        profileButton.setText(bundle.getString("profile"));
-        statisticsButton.setText(bundle.getString("statistics"));
-        settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
-        notesButton.setText(bundle.getString("notes"));
-        plansButton.setText(bundle.getString("plans"));
-        listsTitle.setText(bundle.getString("plans.taskList"));
-        authStatusLabel.setText(bundle.getString("plans.notAuthorized"));
-        listTitleField.setPromptText(bundle.getString("plans.listName"));
-        addListButton.setText(bundle.getString("plans.addList"));
-        itemsTitle.setText(bundle.getString("plans.selectList"));
-        completedColumn.setText(bundle.getString("plans.done"));
-        descriptionColumn.setText(bundle.getString("plans.description"));
-        priorityColumn.setText(bundle.getString("plans.priority"));
-        itemDescriptionField.setPromptText(bundle.getString("plans.taskDescription"));
-        itemPriorityField.setPromptText(bundle.getString("plans.priority(0-10)"));
-        addItemButton.setText(bundle.getString("plans.addTask"));
-        updateItemButton.setText(bundle.getString("plans.updateTask"));
-        deleteItemButton.setText(bundle.getString("plans.deleteTask"));
+    @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
+        replaceMainScene("/fxml/mainView.fxml", "Productivity Monitor");
     }
 
-    // Установка локализации
-    private void setLocalization(String lang) {
-        Locale locale = new Locale(lang);
-        bundle = ResourceBundle.getBundle("lang.messages", locale);
-        applyLocalization();
+    @FXML private void handleProfileButton(ActionEvent event) throws IOException {
+        if (isAccessTokenValid() && User.getUser().isUserActive) {
+            replaceMainScene("/fxml/profileView.fxml", "Profile");
+        } else {
+            if (refreshAccessToken()) {
+                updateUser();
+                replaceMainScene("/fxml/profileView.fxml", "Profile");
+            } else {
+                if (authStage != null && authStage.isShowing()) {
+                    authStage.toFront();
+                    return;
+                }
+                authStage = new Stage();
+                createScene("/fxml/authView.fxml", "Authentification", authStage, false);
+            }
+        }
     }
 
-    @FXML
-    public void initialize() {
-        setLocalization(getLang());
+    @FXML private void handleStatisticsButton(ActionEvent event) {}
 
-        mainImageView.setImage(iconImg);
-        plansButton.setDisable(true);
-        setupTableColumns();
-        updateAuthStatus();
-        loadTodoLists();
-        updateListsUI();
+    @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/settingsView.fxml", "Settings");
     }
+
+    @FXML private void handleAchievementsButton(ActionEvent event) {}
+
+    @FXML private void handleNotesButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/notesView.fxml", "Notes");
+    }
+
+    @FXML private void handlePlansButton(ActionEvent event) {}
 
     private void setupTableColumns() {
         completedColumn.setCellValueFactory(cellData -> cellData.getValue().isCompletedProperty());
@@ -190,7 +141,7 @@ public class PlansController {
                     checkBox.setSelected(item);
                     checkBox.setOnAction(e -> {
                         TodoItem todoItem = getTableView().getItems().get(getIndex());
-                        todoItem.isCompleted.set(checkBox.isSelected());
+                        todoItem.setCompleted(checkBox.isSelected());
                         handleItemUpdateFromTable(todoItem);
                     });
                     setGraphic(checkBox);
@@ -200,12 +151,15 @@ public class PlansController {
 
         descriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         priorityColumn.setCellValueFactory(cellData -> cellData.getValue().priorityProperty());
+        deadlineColumn.setCellValueFactory(cellData -> cellData.getValue().deadlineProperty());
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             selectedItem = newSelection;
             if (newSelection != null) {
-                itemDescriptionField.setText(newSelection.description);
-                itemPriorityField.setText(String.valueOf(newSelection.priority));
+                itemDescriptionField.setText(newSelection.getDescription());
+                itemPriorityField.setText(String.valueOf(newSelection.getPriority()));
+                itemDeadlineField.setText(newSelection.getDeadline() != null ?
+                        TodoItem.INPUT_FORMATTER.format(newSelection.getDeadline()) : "");
                 updateItemButton.setDisable(false);
                 deleteItemButton.setDisable(false);
                 itemsTitle.setText(bundle.getString("plans.editTask"));
@@ -256,12 +210,23 @@ public class PlansController {
                     JSONArray jsonItems = jsonList.getJSONArray("items");
                     for (int j = 0; j < jsonItems.length(); j++) {
                         JSONObject jsonItem = jsonItems.getJSONObject(j);
+                        LocalDate deadline = null;
+                        String deadlineStr = jsonItem.isNull("deadline") ? null : jsonItem.getString("deadline");
+                        if (deadlineStr != null) {
+                            try {
+                                deadline = TodoItem.parseServerDate(deadlineStr);
+                            } catch (DateTimeParseException e) {
+                                showError(bundle.getString("plans.errorInvalidDateFormat") + ": " + deadlineStr);
+                                continue;
+                            }
+                        }
                         items.add(new TodoItem(
                                 jsonItem.getInt("id"),
                                 jsonList.getInt("id"),
                                 jsonItem.getString("description"),
                                 jsonItem.getBoolean("is_completed"),
                                 jsonItem.getInt("priority"),
+                                deadline,
                                 jsonItem.getString("created_at"),
                                 jsonItem.getString("updated_at")
                         ));
@@ -299,12 +264,18 @@ public class PlansController {
                     JSONArray jsonItems = jsonList.getJSONArray("items");
                     for (int j = 0; j < jsonItems.length(); j++) {
                         JSONObject jsonItem = jsonItems.getJSONObject(j);
+                        LocalDate deadline = null;
+                        String deadlineStr = jsonItem.isNull("deadline") ? null : jsonItem.getString("deadline");
+                        if (deadlineStr != null) {
+                            deadline = TodoItem.parseInputDate(deadlineStr);
+                        }
                         items.add(new TodoItem(
                                 jsonItem.getInt("id"),
                                 jsonList.getInt("id"),
                                 jsonItem.getString("description"),
                                 jsonItem.getBoolean("is_completed"),
                                 jsonItem.getInt("priority"),
+                                deadline,
                                 jsonItem.getString("created_at"),
                                 jsonItem.getString("updated_at")
                         ));
@@ -328,21 +299,23 @@ public class PlansController {
         try {
             JSONArray jsonArray = new JSONArray();
             for (TodoList list : todoLists) {
-                if (list.isLocal) {
+                if (list.isLocal()) {
                     JSONObject jsonList = new JSONObject();
-                    jsonList.put("id", list.id);
-                    jsonList.put("title", list.title);
-                    jsonList.put("created_at", list.createdAt);
-                    jsonList.put("updated_at", list.updatedAt);
+                    jsonList.put("id", list.getId());
+                    jsonList.put("title", list.getTitle());
+                    jsonList.put("created_at", list.getCreatedAt());
+                    jsonList.put("updated_at", list.getUpdatedAt());
                     JSONArray jsonItems = new JSONArray();
-                    for (TodoItem item : list.items) {
+                    for (TodoItem item : list.getItems()) {
                         JSONObject jsonItem = new JSONObject();
-                        jsonItem.put("id", item.id);
-                        jsonItem.put("description", item.description);
-                        jsonItem.put("is_completed", item.isCompleted.get());
-                        jsonItem.put("priority", item.priority);
-                        jsonItem.put("created_at", item.createdAt);
-                        jsonItem.put("updated_at", item.updatedAt);
+                        jsonItem.put("id", item.getId());
+                        jsonItem.put("description", item.getDescription());
+                        jsonItem.put("is_completed", item.isCompleted());
+                        jsonItem.put("priority", item.getPriority());
+                        jsonItem.put("deadline", item.getDeadline() != null ?
+                                TodoItem.INPUT_FORMATTER.format(item.getDeadline()) : null);
+                        jsonItem.put("created_at", item.getCreatedAt());
+                        jsonItem.put("updated_at", item.getUpdatedAt());
                         jsonItems.put(jsonItem);
                     }
                     jsonList.put("items", jsonItems);
@@ -359,7 +332,7 @@ public class PlansController {
         listsContainer.getChildren().clear();
         for (TodoList list : todoLists) {
             HBox cardBox = new HBox(10);
-            Label card = new Label(list.title);
+            Label card = new Label(list.getTitle());
             card.getStyleClass().add("note-card");
             card.setUserData(list);
             card.setOnMouseClicked(this::handleListCardClick);
@@ -374,10 +347,10 @@ public class PlansController {
         itemsTable.setItems(FXCollections.observableArrayList());
         if (selectedList != null) {
             for (TodoList list : todoLists) {
-                if (list.id == selectedList.id && list.isLocal == selectedList.isLocal) {
+                if (list.getId() == selectedList.getId() && list.isLocal() == selectedList.isLocal()) {
                     selectedList = list;
-                    itemsTable.setItems(FXCollections.observableArrayList(selectedList.items));
-                    itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.title);
+                    itemsTable.setItems(FXCollections.observableArrayList(selectedList.getItems()));
+                    itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.getTitle());
                     break;
                 }
             }
@@ -387,13 +360,12 @@ public class PlansController {
     private void handleListCardClick(MouseEvent event) {
         Label card = (Label) event.getSource();
         selectedList = (TodoList) card.getUserData();
-        itemsTable.setItems(FXCollections.observableArrayList(selectedList.items));
-        itemsTitle.setText("Задачи: " + selectedList.title);
-        clearItemDetails();
+        itemsTable.setItems(FXCollections.observableArrayList(selectedList.getItems()));
+        itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.getTitle());
+        //clearItemDetails();
     }
 
-    @FXML
-    private void handleAddListButton(ActionEvent event) {
+    @FXML private void handleAddListButton(ActionEvent event) {
         String title = listTitleField.getText().trim();
         if (title.isEmpty()) {
             showError(bundle.getString("plans.errorFieldName"));
@@ -416,8 +388,6 @@ public class PlansController {
                 showError(bundle.getString("plans.authTokenMissing"));
                 return;
             }
-            System.out.println("POST /plans/add Request Body: " + json.toString());
-            System.out.println("POST /plans/add Auth Token: " + authToken);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(API_BASE_URL + "/plans/add"))
                     .header("Authorization", "Bearer " + authToken)
@@ -452,7 +422,7 @@ public class PlansController {
     }
 
     private void addLocalList(String title) {
-        int newId = todoLists.stream().mapToInt(l -> l.id).max().orElse(0) + 1;
+        int newId = todoLists.stream().mapToInt(TodoList::getId).max().orElse(0) + 1;
         String now = ZonedDateTime.now().toString();
         TodoList list = new TodoList(newId, title, now, now, new ArrayList<>(), true);
         todoLists.add(list);
@@ -460,11 +430,10 @@ public class PlansController {
         updateListsUI();
     }
 
-    @FXML
-    private void handleDeleteListButton(ActionEvent event) {
+    @FXML private void handleDeleteListButton(ActionEvent event) {
         Button button = (Button) event.getSource();
         TodoList list = (TodoList) button.getUserData();
-        if (list.isLocal) {
+        if (list.isLocal()) {
             deleteLocalList(list);
         } else {
             deleteServerList(list);
@@ -474,7 +443,7 @@ public class PlansController {
     private void deleteServerList(TodoList list) {
         try {
             JSONObject json = new JSONObject();
-            json.put("list_id", list.id);
+            json.put("list_id", list.getId());
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
                 showError(bundle.getString("plans.authTokenMissing"));
@@ -495,7 +464,7 @@ public class PlansController {
                     selectedList = null;
                 }
                 updateListsUI();
-            } else if (response.statusCode() == 404) {
+            } else if (response.statusCode()==404) {
                 showError(bundle.getString("plans.errorServerNotSuppDelListsTask"));
             } else if (response.statusCode() == 401 || response.statusCode() == 403) {
                 showError(bundle.getString("plans.errorAuthTryAg"));
@@ -517,14 +486,14 @@ public class PlansController {
         updateListsUI();
     }
 
-    @FXML
-    private void handleAddItemButton(ActionEvent event) {
+    @FXML private void handleAddItemButton(ActionEvent event) {
         if (selectedList == null) {
             showError(bundle.getString("plans.errorSelectListForTaskAdd"));
             return;
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
+        String deadlineStr = itemDeadlineField.getText().trim();
         if (description.isEmpty()) {
             showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
@@ -540,20 +509,30 @@ public class PlansController {
             showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
-        if (selectedList.isLocal) {
-            addLocalItem(description, priority);
-        } else {
-            addServerItem(description, priority);
+        LocalDate deadline = null;
+        try {
+            deadline = TodoItem.parseInputDate(deadlineStr);
+        } catch (DateTimeParseException e) {
+            showError(bundle.getString("plans.errorInvalidDateFormat"));
+            return;
         }
-        clearItemDetails();
+        if (selectedList.isLocal()) {
+            addLocalItem(description, priority, deadline);
+        } else {
+            addServerItem(description, priority, deadline);
+        }
+        //clearItemDetails();
     }
 
-    private void addServerItem(String description, int priority) {
+    private void addServerItem(String description, int priority, LocalDate deadline) {
         try {
             JSONObject json = new JSONObject();
-            json.put("list_id", selectedList.id);
+            json.put("list_id", selectedList.getId());
             json.put("description", description);
             json.put("priority", priority);
+            if (deadline != null) {
+                json.put("deadline", TodoItem.SERVER_FORMATTER.format(deadline));
+            }
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
                 showError(bundle.getString("plans.authTokenMissing"));
@@ -570,12 +549,23 @@ public class PlansController {
             System.out.println("POST /plans/items/add Response Body: " + response.body());
             if (response.statusCode() == 201) {
                 JSONObject newItem = new JSONObject(response.body());
-                selectedList.items.add(new TodoItem(
+                LocalDate itemDeadline = null;
+                String deadlineStr = newItem.isNull("deadline") ? null : newItem.getString("deadline");
+                if (deadlineStr != null) {
+                    try {
+                        itemDeadline = TodoItem.parseServerDate(deadlineStr);
+                    } catch (DateTimeParseException e) {
+                        showError(bundle.getString("plans.errorInvalidDateFormat") + ": " + deadlineStr);
+                        return;
+                    }
+                }
+                selectedList.getItems().add(new TodoItem(
                         newItem.getInt("id"),
-                        selectedList.id,
+                        selectedList.getId(),
                         newItem.getString("description"),
                         newItem.getBoolean("is_completed"),
                         newItem.getInt("priority"),
+                        itemDeadline,
                         newItem.getString("created_at"),
                         newItem.getString("updated_at")
                 ));
@@ -593,23 +583,23 @@ public class PlansController {
         }
     }
 
-    private void addLocalItem(String description, int priority) {
-        int newId = selectedList.items.stream().mapToInt(i -> i.id).max().orElse(0) + 1;
+    private void addLocalItem(String description, int priority, LocalDate deadline) {
+        int newId = selectedList.getItems().stream().mapToInt(TodoItem::getId).max().orElse(0) + 1;
         String now = ZonedDateTime.now().toString();
-        TodoItem item = new TodoItem(newId, selectedList.id, description, false, priority, now, now);
-        selectedList.items.add(item);
+        TodoItem item = new TodoItem(newId, selectedList.getId(), description, false, priority, deadline, now, now);
+        selectedList.getItems().add(item);
         saveLocalLists();
         updateListsUI();
     }
 
-    @FXML
-    private void handleUpdateItemButton(ActionEvent event) {
+    @FXML private void handleUpdateItemButton(ActionEvent event) {
         if (selectedItem == null) {
             showError(bundle.getString("plans.selectTaskToUpdate"));
             return;
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
+        String deadlineStr = itemDeadlineField.getText().trim();
         if (description.isEmpty()) {
             showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
@@ -625,10 +615,17 @@ public class PlansController {
             showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
-        if (selectedList.isLocal) {
-            updateLocalItem(selectedItem, description, selectedItem.isCompleted.get(), priority);
+        LocalDate deadline = null;
+        try {
+            deadline = TodoItem.parseInputDate(deadlineStr);
+        } catch (DateTimeParseException e) {
+            showError(bundle.getString("plans.errorInvalidDateFormat"));
+            return;
+        }
+        if (selectedList.isLocal()) {
+            updateLocalItem(selectedItem, description, selectedItem.isCompleted(), priority, deadline);
         } else {
-            updateServerItem(selectedItem, description, selectedItem.isCompleted.get(), priority);
+            updateServerItem(selectedItem, description, selectedItem.isCompleted(), priority, deadline);
         }
         clearItemDetails();
     }
@@ -638,20 +635,23 @@ public class PlansController {
             showError(bundle.getString("plans.errorTaskOrListNotSel"));
             return;
         }
-        if (selectedList.isLocal) {
-            updateLocalItem(item, item.description, item.isCompleted.get(), item.priority);
+        if (selectedList.isLocal()) {
+            updateLocalItem(item, item.getDescription(), item.isCompleted(), item.getPriority(), item.getDeadline());
         } else {
-            updateServerItem(item, item.description, item.isCompleted.get(), item.priority);
+            updateServerItem(item, item.getDescription(), item.isCompleted(), item.getPriority(), item.getDeadline());
         }
     }
 
-    private void updateServerItem(TodoItem item, String description, boolean isCompleted, int priority) {
+    private void updateServerItem(TodoItem item, String description, boolean isCompleted, int priority, LocalDate deadline) {
         try {
             JSONObject json = new JSONObject();
-            json.put("item_id", item.id);
+            json.put("item_id", item.getId());
             json.put("description", description);
             json.put("is_completed", isCompleted);
             json.put("priority", priority);
+            if (deadline != null) {
+                json.put("deadline", TodoItem.SERVER_FORMATTER.format(deadline));
+            }
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
                 showError(bundle.getString("plans.authTokenMissing"));
@@ -668,10 +668,21 @@ public class PlansController {
             System.out.println("PATCH /plans/items/update Response Body: " + response.body());
             if (response.statusCode() == 200) {
                 JSONObject updatedItem = new JSONObject(response.body()).getJSONObject("item");
-                item.description = updatedItem.getString("description");
-                item.isCompleted.set(updatedItem.getBoolean("is_completed"));
-                item.priority = updatedItem.getInt("priority");
-                item.updatedAt = updatedItem.getString("updated_at");
+                LocalDate itemDeadline = null;
+                String deadlineStr = updatedItem.isNull("deadline") ? null : updatedItem.getString("deadline");
+                if (deadlineStr != null) {
+                    try {
+                        itemDeadline = TodoItem.parseServerDate(deadlineStr);
+                    } catch (DateTimeParseException e) {
+                        showError(bundle.getString("plans.errorInvalidDateFormat") + ": " + deadlineStr);
+                        return;
+                    }
+                }
+                item.setDescription(updatedItem.getString("description"));
+                item.setCompleted(updatedItem.getBoolean("is_completed"));
+                item.setPriority(updatedItem.getInt("priority"));
+                item.setDeadline(itemDeadline);
+                item.setUpdatedAt(updatedItem.getString("updated_at"));
                 updateListsUI();
             } else if (response.statusCode() == 404) {
                 showError(bundle.getString("plans.errorServerNotSuppUpdateTasks"));
@@ -686,26 +697,26 @@ public class PlansController {
         }
     }
 
-    private void updateLocalItem(TodoItem item, String description, boolean isCompleted, int priority) {
+    private void updateLocalItem(TodoItem item, String description, boolean isCompleted, int priority, LocalDate deadline) {
         if (item == null) {
             showError(bundle.getString("plans.errorTaskNotSel"));
             return;
         }
-        item.description = description;
-        item.isCompleted.set(isCompleted);
-        item.priority = priority;
-        item.updatedAt = ZonedDateTime.now().toString();
+        item.setDescription(description);
+        item.setCompleted(isCompleted);
+        item.setPriority(priority);
+        item.setDeadline(deadline);
+        item.setUpdatedAt(ZonedDateTime.now().toString());
         saveLocalLists();
         updateListsUI();
     }
 
-    @FXML
-    private void handleDeleteItemButton(ActionEvent event) {
+    @FXML private void handleDeleteItemButton(ActionEvent event) {
         if (selectedItem == null) {
             showError(bundle.getString("plans.errorSelectTaskForDelete"));
             return;
         }
-        if (selectedList.isLocal) {
+        if (selectedList.isLocal()) {
             deleteLocalItem();
         } else {
             deleteServerItem();
@@ -716,7 +727,7 @@ public class PlansController {
     private void deleteServerItem() {
         try {
             JSONObject json = new JSONObject();
-            json.put("item_id", selectedItem.id);
+            json.put("item_id", selectedItem.getId());
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
                 showError(bundle.getString("plans.authTokenMissing"));
@@ -732,7 +743,7 @@ public class PlansController {
             System.out.println("DELETE /plans/items/delete Response Code: " + response.statusCode());
             System.out.println("DELETE /plans/items/delete Response Body: " + response.body());
             if (response.statusCode() == 200) {
-                selectedList.items.remove(selectedItem);
+                selectedList.getItems().remove(selectedItem);
                 selectedItem = null;
                 updateListsUI();
             } else if (response.statusCode() == 404) {
@@ -749,7 +760,7 @@ public class PlansController {
     }
 
     private void deleteLocalItem() {
-        selectedList.items.remove(selectedItem);
+        selectedList.getItems().remove(selectedItem);
         selectedItem = null;
         saveLocalLists();
         updateListsUI();
@@ -759,9 +770,10 @@ public class PlansController {
         selectedItem = null;
         itemDescriptionField.clear();
         itemPriorityField.clear();
+        itemDeadlineField.clear();
         updateItemButton.setDisable(true);
         deleteItemButton.setDisable(true);
-        itemsTitle.setText(selectedList != null ? bundle.getString("plans.tasks") + selectedList.title : bundle.getString("plans.errorSelectList"));
+        itemsTitle.setText(selectedList != null ? bundle.getString("plans.tasks") + selectedList.getTitle() : bundle.getString("plans.errorSelectList"));
     }
 
     private void showError(String message) {
@@ -792,40 +804,44 @@ public class PlansController {
         // Заглушка
     }
 
-    @FXML
-    private void handleMainImageClick(MouseEvent event) throws IOException {
-        replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");
+    // Применение локализации
+    private void applyLocalization() {
+        MainStage.setTitle(bundle.getString("plans"));
+        profileButton.setText(bundle.getString("profile"));
+        statisticsButton.setText(bundle.getString("statistics"));
+        settingsButton.setText(bundle.getString("settings"));
+        achievementsButton.setText(bundle.getString("achievements"));
+        notesButton.setText(bundle.getString("notes"));
+        plansButton.setText(bundle.getString("plans"));
+        listsTitle.setText(bundle.getString("plans.taskList"));
+        authStatusLabel.setText(bundle.getString("plans.notAuthorized"));
+        listTitleField.setPromptText(bundle.getString("plans.listName"));
+        addListButton.setText(bundle.getString("plans.addList"));
+        itemsTitle.setText(bundle.getString("plans.selectList"));
+        completedColumn.setText(bundle.getString("plans.done"));
+        descriptionColumn.setText(bundle.getString("plans.description"));
+        priorityColumn.setText(bundle.getString("plans.priority"));
+        itemDescriptionField.setPromptText(bundle.getString("plans.taskDescription"));
+        itemPriorityField.setPromptText(bundle.getString("plans.priority(0-10)"));
+        addItemButton.setText(bundle.getString("plans.addTask"));
+        updateItemButton.setText(bundle.getString("plans.updateTask"));
+        deleteItemButton.setText(bundle.getString("plans.deleteTask"));
     }
 
-    @FXML
-    private void handleProfileButton(ActionEvent event) throws IOException {
-        if (isAccessTokenValid() && User.getUser().isUserActive) {
-            replaceMainScene("/fxml/profileView.fxml","Profile");
-        } else {
-            if (refreshAccessToken()) {
-                updateUser();
-                replaceMainScene("/fxml/profileView.fxml","Profile");
-            } else {
-                if(authStage!=null&&authStage.isShowing()) {
-                    authStage.toFront();
-                    return;
-                }
-                authStage=new Stage();
-                createScene("/fxml/authView.fxml","Authentification",authStage,false);
-            }
-        }
+    // Установка локализации
+    private void setLocalization(String lang) {
+        Locale locale = new Locale(lang);
+        bundle = ResourceBundle.getBundle("lang.messages", locale);
+        applyLocalization();
     }
 
-
-    @FXML private void handleStatisticsButton(ActionEvent event) {}
-    @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/settingsView.fxml","Settings");
-    }
-    @FXML private void handleAchievementsButton(ActionEvent event) {}
-    @FXML private void handleNotesButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/notesView.fxml","Notes");
-    }
-    @FXML private void handlePlansButton(ActionEvent event) {
-        // Кнопка заблокирована
+    @FXML public void initialize() {
+        setLocalization(getLang());
+        mainImageView.setImage(iconImg);
+        plansButton.setDisable(true);
+        setupTableColumns();
+        updateAuthStatus();
+        loadTodoLists();
+        updateListsUI();
     }
 }

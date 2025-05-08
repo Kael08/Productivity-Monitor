@@ -1,7 +1,26 @@
 [{
-  "updated_at": "2025-05-08T00:13:01.202480500+03:00[Europe/Moscow]",
-  "created_at": "2025-05-08T00:13:01.202480500+03:00[Europe/Moscow]",
+  "updated_at": "2025-05-08T13:56:12.443259900+03:00[Europe/Moscow]",
+  "created_at": "2025-05-08T13:56:12.443259900+03:00[Europe/Moscow]",
   "id": 1,
-  "title": "3",
-  "items": []
+  "title": "123",
+  "items": [
+    {
+      "updated_at": "2025-05-08T13:56:33.314677+03:00[Europe/Moscow]",
+      "description": "123",
+      "created_at": "2025-05-08T13:56:33.314677+03:00[Europe/Moscow]",
+      "id": 1,
+      "priority": 3,
+      "deadline": "17-01-2024",
+      "is_completed": false
+    },
+    {
+      "updated_at": "2025-05-08T14:05:32.965004800+03:00[Europe/Moscow]",
+      "description": "1",
+      "created_at": "2025-05-08T14:05:32.965004800+03:00[Europe/Moscow]",
+      "id": 2,
+      "priority": 1,
+      "deadline": "17-01-2024",
+      "is_completed": false
+    }
+  ]
 }]

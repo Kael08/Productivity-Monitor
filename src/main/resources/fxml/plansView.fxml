@@ -70,10 +70,12 @@
                                 <TableColumn fx:id="completedColumn" text="Выполнено" prefWidth="100"/>
                                 <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="300"/>
                                 <TableColumn fx:id="priorityColumn" text="Приоритет" prefWidth="100"/>
+                                <TableColumn fx:id="deadlineColumn" text="Дедлайн" prefWidth="160"/>
                             </columns>
                         </TableView>
                         <TextField fx:id="itemDescriptionField" promptText="Описание задачи" styleClass="note-field"/>
                         <TextField fx:id="itemPriorityField" promptText="Приоритет (0-10)" styleClass="note-field"/>
+                        <TextField fx:id="itemDeadlineField" promptText="Дедлайн (ДД-ММ-ГГГГ)" styleClass="note-field"/>
                         <HBox spacing="20" alignment="CENTER">
                             <children>
                                 <Button fx:id="addItemButton" text="Добавить задачу" onAction="#handleAddItemButton" styleClass="action-button"/>
