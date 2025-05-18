@@ -1,5 +1,8 @@
 package productivityMonitor.controllers;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,16 +12,23 @@ import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.models.CustomMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.currentMode;
 import static productivityMonitor.services.MonitoringManager.isWebSocketServerActive;
+import static productivityMonitor.services.TokenManager.getAccessToken;
+import static productivityMonitor.services.TokenManager.refreshAccessToken;
 import static productivityMonitor.utils.DataLoader.loadCustomModeFromFile;
 import static productivityMonitor.utils.DataLoader.saveCustomModeToFile;
 
@@ -53,6 +63,10 @@ public class MonitoringSettingsController {
     public static ObservableList<String> modeList = FXCollections.observableArrayList("FullLockdown", "Mindfulness", "Sailor's Knot", "Delay Gratification", "Pomodoro");
     public static ObservableList<String> customModeList = FXCollections.observableArrayList();
     public static Map<String, CustomMode> customModeListOb = new HashMap<>();
+
+    private final String API_BASE_URL = "http://localhost:3000";
+
+    private final HttpClient httpClient = HttpClient. newHttpClient();
 
     private MonitoringManager monitoringManager;
     private ResourceBundle bundle;
@@ -107,15 +121,15 @@ public class MonitoringSettingsController {
                     if (!customModeListOb.containsKey(customMode.getName())) {
                         customModeListOb.put(customMode.getName(), customMode);
                         customModeList.add(customMode.getName());
-                        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.customModeAdded"), customMode.getName()) + "\n");
+                        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.customModeAdded"))+customMode.getName() + "\n");
                     } else {
                         consoleTextArea.appendText(bundle.getString("monitoringSettings.errorDuplicateMode") + "\n");
                     }
                 } catch (IOException e) {
-                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorOpenCustomMode"), e.getMessage()) + "\n");
+                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorOpenCustomMode"))+e.getMessage() + "\n");
                 }
             } catch (Exception e) {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorLoadFile"), e.getMessage()) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorLoadFile"))+e.getMessage() + "\n");
             }
         }
     }
@@ -160,6 +174,12 @@ public class MonitoringSettingsController {
                         new ArrayList<>(urlList),
                         isWebSocketServerActive
                 );
+
+                // Сохранение кастомного режима на сервере
+                if(refreshAccessToken()){
+                    saveCustomModeOnServer(customMode);
+                }
+
                 saveCustomModeToFile(customMode, filePath);
                 if (!customModeListOb.containsKey(fileName)) {
                     customModeListOb.put(fileName, customMode);
@@ -169,9 +189,9 @@ public class MonitoringSettingsController {
                 }
                 customModeListComboBox.setItems(FXCollections.observableArrayList(customModeList));
                 clearInterface();
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.fileSaved"), filePath) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.fileSaved"))+filePath + "\n");
             } catch (Exception e) {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorSaveFile"), e.getMessage()) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorSaveFile"))+e.getMessage() + "\n");
             }
         } else {
             consoleTextArea.appendText(bundle.getString("monitoringSettings.saveCanceled") + "\n");
@@ -193,6 +213,53 @@ public class MonitoringSettingsController {
                     && temp.getUrlList() != null;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void saveCustomModeOnServer(CustomMode customMode) throws IOException, InterruptedException {
+        JSONObject json=new JSONObject();
+        json.put("name",customMode.getName());
+        json.put("mode_name",customMode.getModeName());
+        json.put("process_list",customMode.getProcessList());
+        json.put("url_list",customMode.getUrlList());
+        json.put("is_domain_blocker_active",customMode.isWebSocketServerActive());
+
+        String authToken = getAccessToken();
+
+        if(authToken==null|authToken.isEmpty()){
+            System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ КАСТОМНОГО РЕЖИМА НА СЕРВЕР: Access-токен пуст!");
+            return;
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_BASE_URL + "/customModes/add"))
+                .header("Authorization", "Bearer " + authToken)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Проверяем, есть ли ошибка о существующем режиме
+        if (response.statusCode() == 409) {
+
+            HttpRequest patchRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(API_BASE_URL + "/customModes/update"))
+                    .header("Authorization", "Bearer " + authToken)
+                    .header("Content-Type", "application/json")
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(json.toString()))
+                    .build();
+
+            HttpResponse<String> patchResponse = httpClient.send(patchRequest, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("PATCH /customModes/update Response Code: " + patchResponse.statusCode());
+            System.out.println("PATCH /customModes/update Response Body: " + patchResponse.body());
+            if(patchResponse.statusCode()==200){
+                System.out.println("Кастомный режим успешно обновлен на сервере!");
+            }else{
+                System.out.println("Ошибка при попытке сохранить кастомный режим на сервер!");
+            }
+        }else{
+            System.out.println("Кастомный режим успешно сохранен на сервере!");
         }
     }
 
@@ -289,9 +356,9 @@ public class MonitoringSettingsController {
         } else {
             Boolean isRemoved = processList.removeIf(process -> process.equals(selectedProcess));
             if (isRemoved) {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"), selectedProcess) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"))+selectedProcess + "\n");
             } else {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorProcessNotFound"), selectedProcess) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorProcessNotFound"))+selectedProcess + "\n");
             }
         }
     }
@@ -309,7 +376,7 @@ public class MonitoringSettingsController {
             processName += ".exe";
         }
         inputTextField.clear();
-        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"), processName) + "\n");
+        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"))+processName + "\n");
         processList.add(processName);
     }
 
@@ -320,9 +387,9 @@ public class MonitoringSettingsController {
         } else {
             Boolean isRemoved = urlList.removeIf(url -> url.equals(selectedUrl));
             if (isRemoved) {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"), selectedUrl) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"))+selectedUrl + "\n");
             } else {
-                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorURLNotFound"), selectedUrl) + "\n");
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorURLNotFound")) +selectedUrl+ "\n");
             }
         }
     }
@@ -334,7 +401,7 @@ public class MonitoringSettingsController {
             return;
         }
         inputUrlTextField.clear();
-        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"), urlName) + "\n");
+        consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.urlAdded"))+urlName + "\n");
         urlList.add(urlName);
     }
 

@@ -2,6 +2,8 @@ package productivityMonitor.services;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import productivityMonitor.models.CustomMode;
 import productivityMonitor.utils.CryptoUtils;
 
 import java.io.FileWriter;
@@ -10,7 +12,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.util.List;
 
+import static productivityMonitor.controllers.MonitoringSettingsController.customModeList;
+import static productivityMonitor.controllers.MonitoringSettingsController.customModeListOb;
 import static productivityMonitor.models.User.getUser;
 
 public class TokenManager {
@@ -113,6 +118,39 @@ public class TokenManager {
             getUser().activateUser();
         }catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadCustomModes(){
+        try{
+            HttpRequest request=HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:3000/customModes/"))
+                    .header("Authorization","Bearer "+accessToken)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(response.statusCode());
+            System.out.println(response.body());
+
+            Gson gson = new Gson();
+            JsonObject[] jsonObject = gson.fromJson(response.body(),JsonObject[].class);
+
+            for(JsonObject obj:jsonObject){
+                CustomMode mode = new CustomMode(
+                        obj.get("name").getAsString(),
+                        obj.get("mode_name").getAsString(),
+                        gson.fromJson(obj.get("process_list"), new TypeToken<List<String>>(){}.getType()),
+                        gson.fromJson(obj.get("url_list"), new TypeToken<List<String>>(){}.getType()),
+                        obj.get("is_domain_blocker_active").getAsBoolean()
+                );
+                customModeList.add(mode.name);
+                customModeListOb.put(mode.name,mode);
+            }
+        }catch (Exception e){
+            System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ КАСТОМНЫХ РЕЖИМОВ: "+e.getMessage());
             e.printStackTrace();
         }
     }

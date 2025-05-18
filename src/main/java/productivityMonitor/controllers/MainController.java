@@ -228,6 +228,7 @@ public class MainController {
         // Обновляем access-токен и, в случае успеха, загружает данные пользователя
         if(refreshAccessToken()){
             updateUser();
+            loadCustomModes();
         }
     }
 }
