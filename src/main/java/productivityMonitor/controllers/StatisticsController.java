@@ -2,13 +2,20 @@ package productivityMonitor.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import productivityMonitor.models.DailyStats;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -73,6 +80,18 @@ public class StatisticsController {
         replaceMainScene("/fxml/plansView.fxml",bundle.getString("plans"));// Замена текущей сцены на сцену планов
     }// Нажатие кнопки планов
 
+    // Label
+    @FXML private Label monitoringLabel;
+    @FXML private Label processesLabel;
+    @FXML private Label domainsLabel;
+
+    // LineChart
+    @FXML LineChart<String,Number> monitoringChart;
+
+    // BarChart
+    @FXML BarChart<String,Number> processesChart;
+    @FXML BarChart<String,Number> domainsChart;
+
     // Stage
     private Stage authStage = null;
 
@@ -87,6 +106,9 @@ public class StatisticsController {
         achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
+        monitoringLabel.setText(bundle.getString("statistics.monitoring"));
+        processesLabel.setText(bundle.getString("statistics.processes"));
+        domainsLabel.setText(bundle.getString("statistics.domains"));
     }
 
     // Установка локализации
@@ -96,12 +118,52 @@ public class StatisticsController {
         applyLocalization();
     }
 
+    // Обновление всех графиков
+    private void updateStatistics() {
+        // Очищаем старые данные из графиков
+        monitoringChart.getData().clear();
+        processesChart.getData().clear();
+        domainsChart.getData().clear();
+
+        // Создаем серии данных для каждого графика
+        XYChart.Series<String, Number> monitoringSeries = new XYChart.Series<>();
+        XYChart.Series<String, Number> processesSeries = new XYChart.Series<>();
+        XYChart.Series<String, Number> domainsSeries = new XYChart.Series<>();
+
+        // Устанавливаем названия серий (опционально, для легенды)
+        monitoringSeries.setName("Monitoring Time");
+        processesSeries.setName("Blocked Processes");
+        domainsSeries.setName("Blocked Domains");
+
+        // Заполняем серии данными из списка DailyStats
+        for (DailyStats stats :dailyStatsList) {
+            String date = stats.getDate();
+            double monitoringMinutes = stats.getMonitoringTimeInMinutes();
+            int blockedProcesses = stats.getBlockedProcesses();
+            int blockedDomains = stats.getBlockedDomains();
+
+            // Добавляем данные в серии
+            monitoringSeries.getData().add(new XYChart.Data<>(date, monitoringMinutes));
+            processesSeries.getData().add(new XYChart.Data<>(date, blockedProcesses));
+            domainsSeries.getData().add(new XYChart.Data<>(date, blockedDomains));
+        }
+
+        // Привязываем серии к соответствующим графикам
+        monitoringChart.getData().add(monitoringSeries);
+        processesChart.getData().add(processesSeries);
+        domainsChart.getData().add(domainsSeries);
+    }
+
     @FXML public void initialize(){
         // Установка языка
         setLocalization(getLang());
 
         mainImageView.setImage(iconImg);
 
-        loadDailyStatistics();
+        // Загрузка и обновление статистики
+        if(refreshAccessToken()) {
+            loadDailyStatistics();
+            updateStatistics();
+        }
     }
 }

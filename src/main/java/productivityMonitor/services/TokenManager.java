@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,10 +32,14 @@ public class TokenManager {
 
     private static final HttpClient client = HttpClient.newHttpClient();
 
+    public static List<DailyStats> dailyStatsList=new ArrayList<>();
+
+    // Проверка что access-токен валиден
     public static boolean isAccessTokenValid(){
         return accessToken!=null&&System.currentTimeMillis()<accessTokenExpirationTime;
     }
 
+    // Обновление access-токена
     public static boolean refreshAccessToken(){
         if(!loadRefreshToken()){
             return false;
@@ -61,7 +66,6 @@ public class TokenManager {
             } else{
                 return false;
             }
-
         } catch (Exception e){
             System.out.println("ОШИБКА: "+e.getMessage());
             //e.printStackTrace();
@@ -162,24 +166,24 @@ public class TokenManager {
     }
 
     // Загрузка дневной статистики с сервера
-    public static void loadDailyStatistics(){
-        try{
+    public static void loadDailyStatistics() {
+        try {
             // Получаем сегодняшнюю дату
-            LocalDate today = LocalDate.now();
-            LocalDate onMonthAgo=today.minusMonths(1);
-            // Форматирует дату
+            LocalDate today = LocalDate.now(); // 2025-05-19
+            LocalDate oneMonthAgo = today.minusMonths(1); // 2025-04-19
+
+            // Форматируем дату
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            // Переводим дату в String
-            String end_date= today.format(formatter);
-            String start_date=onMonthAgo.format(formatter);
+            String endDate = today.format(formatter); // 2025-05-19
+            String startDate = oneMonthAgo.format(formatter); // 2025-04-19
 
             // Формируем URL с параметрами в строке запроса
             String query = String.format("start_date=%s&end_date=%s",
-                    URLEncoder.encode(start_date, StandardCharsets.UTF_8),
-                    URLEncoder.encode(end_date, StandardCharsets.UTF_8));
+                    URLEncoder.encode(startDate, StandardCharsets.UTF_8),
+                    URLEncoder.encode(endDate, StandardCharsets.UTF_8));
             String url = "http://localhost:3000/statistics/?" + query;
 
-            System.out.println(query);
+            //System.out.println("Query: " + query);
 
             // Создаем GET-запрос
             HttpRequest request = HttpRequest.newBuilder()
@@ -188,20 +192,74 @@ public class TokenManager {
                     .GET()
                     .build();
 
-            HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response.statusCode());
-            System.out.println(response.body());
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
 
             Gson gson = new Gson();
-            JsonObject[] jsonObject = gson.fromJson(response.body(), JsonObject[].class);
+            JsonObject[] jsonObjects = gson.fromJson(response.body(), JsonObject[].class);
 
-            for(JsonObject obj:jsonObject){
-                System.out.println(obj);
+            dailyStatsList.clear();
+
+            for (JsonObject obj : jsonObjects) {
+                // Извлекаем данные
+                String date = obj.get("date").getAsString().split("T")[0]; // Берем только дату (2025-05-17)
+                JsonObject monitoringTime = obj.getAsJsonObject("monitoring_time");
+
+                // Проверяем наличие полей и используем значения по умолчанию, если они отсутствуют
+                int hours = monitoringTime.has("hours") ? monitoringTime.get("hours").getAsInt() : 0;
+                int minutes = monitoringTime.has("minutes") ? monitoringTime.get("minutes").getAsInt() : 0;
+                int seconds = monitoringTime.has("seconds") ? monitoringTime.get("seconds").getAsInt() : 0;
+                int blockedProcesses = obj.get("blocked_processes").getAsInt();
+                int blockedDomains = obj.get("blocked_domains").getAsInt();
+
+                // Создаем объект DailyStats
+                DailyStats ds = new DailyStats(date, hours, minutes, seconds, blockedProcesses, blockedDomains);
+
+                // Выводим данные
+                /*System.out.println("Date: " + ds.getDate());
+                System.out.println("Monitoring Time: " + ds.getMonitoringTime());
+                System.out.println("Blocked Processes: " + ds.getBlockedProcesses());
+                System.out.println("Blocked Domains: " + ds.getBlockedDomains());
+                System.out.println();*/
+
+                dailyStatsList.add(ds);
             }
 
+
+
         } catch (Exception e) {
-            System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ СТАТИСТИКИ:"+e.getMessage());
+            System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ СТАТИСТИКИ: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Отправка статистики мониторинга на сервер
+    public static void saveDailyStatistics(int hours,int minutes,int seconds,int blockedProcesses,int blockedDomains){
+        try{
+            String time=hours+":"+minutes+":"+seconds;// Преобразуем в нужный формат
+
+            LocalDate today = LocalDate.now();
+            // Форматируем дату
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String date = today.format(formatter);
+
+            String json=String.format("{\"date\":\"%s\",\"monitoring_time\":\"%s\",\"blocked_processes\":\"%s\",\"blocked_domains\":\"%s\"}",date,time,blockedProcesses,blockedDomains);
+
+            HttpRequest request=HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:3000/statistics/add"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("POST /statistics/add Response Code: " + response.statusCode());
+            System.out.println("POST /statistics/add Response Body: " + response.body());
+        }catch (Exception e){
+            System.out.println("ОШИБКА ПРИ ОТПРАВКЕ СТАТИСТИКИ: "+ e.getMessage());
             e.printStackTrace();
         }
     }

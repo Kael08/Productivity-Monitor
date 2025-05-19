@@ -2,30 +2,31 @@ package productivityMonitor.models;
 
 public class DailyStats {
     private final String date;
-    private final String monitoringTime; // Формат: HH:mm:ss
+    private final String monitoringTime; // Будем хранить как строку в формате HH:mm:ss
     private final int blockedProcesses;
     private final int blockedDomains;
 
-    public DailyStats(String date,String monitoringTimem,int blockedProcesses,int blockedDomains){
-        this.date=date;
-        this.monitoringTime=monitoringTimem;
-        this.blockedProcesses=blockedProcesses;
-        this.blockedDomains=blockedDomains;
+    public DailyStats(String date, int hours, int minutes, int seconds, int blockedProcesses, int blockedDomains) {
+        this.date = date;
+        // Форматируем переданные часы, минуты и секунды в строку HH:mm:ss
+        this.monitoringTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        this.blockedProcesses = blockedProcesses;
+        this.blockedDomains = blockedDomains;
     }
 
-    public String getDate(){
+    public String getDate() {
         return date;
     }
 
-    public String getMonitoringTime(){
+    public String getMonitoringTime() {
         return monitoringTime;
     }
 
-    public int getBlockedProcesses(){
+    public int getBlockedProcesses() {
         return blockedProcesses;
     }
 
-    public int getBlockedDomains(){
+    public int getBlockedDomains() {
         return blockedDomains;
     }
 

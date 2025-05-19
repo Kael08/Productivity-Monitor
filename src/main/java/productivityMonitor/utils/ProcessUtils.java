@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static productivityMonitor.controllers.MainController.blockedProcesses;
+
 public class ProcessUtils {
     private final ConsoleLogger logger;
 
@@ -21,6 +23,7 @@ public class ProcessUtils {
 
                 if (exitCode == 0) {
                     logger.log("Процесс " + pn + " был завершен\n");
+                    blockedProcesses++;
                 }
             } catch (Exception e) {
                 logger.log("Не удалось завершить процесс " + pn + ": " + e.getMessage() + "\n");

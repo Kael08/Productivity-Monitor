@@ -7,10 +7,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import productivityMonitor.models.DailyStats;
 import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -59,6 +62,13 @@ public class MainController {
     private Stage authStage = null;
     private Stage monitoringSettingsStage = null;
     private Stage timerStage = null;
+
+    // Переменные для отслеживания статистики пользователя
+    public static int blockedProcesses=0;   // Число заблокированных процессов
+    public static int blockedDomains=0;     // Число заблокированных доменов
+    public static int monitoringTime=0;     // Время мониторинга
+    private long startМonitoring=0;        // Начало мониторинга
+    private long endМonitopring=0;         // Конец мониторинга
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
@@ -127,12 +137,42 @@ public class MainController {
         if (!isMonitoringActive) {
             timerUtils.activateMonitoringTimer();// Запуск мониторинг-таймера
 
+            // Подсчет времени мониторинга
+            if(refreshAccessToken()){
+                startМonitoring=System.currentTimeMillis();
+            }
+
             setDisableAllButtons(true); // Отключение элементов
             closeSideStages();
             runImageView.setImage(pauseImg);
             monitoringManager.startMonitoring();
         } else {
             timerUtils.deactivateMonitoringTimer(); // остановка мониторинг-таймера
+
+            // Приостановка подсчета времени мониторинга
+            // и отправка статистики мониторинга на сервер
+            if(refreshAccessToken()){
+                endМonitopring=System.currentTimeMillis();
+                monitoringTime= Math.toIntExact((endМonitopring - startМonitoring));
+
+                long totalSeconds = monitoringTime / 1000;
+
+                int hours = (int) (totalSeconds / 3600);
+
+                long remainingSecondsAfterHours = totalSeconds % 3600;
+
+                int minutes = (int) (remainingSecondsAfterHours / 60);
+
+                int seconds = (int) (remainingSecondsAfterHours % 60);
+                System.out.println(hours+":"+minutes+":"+seconds+"\t"+"\t"+blockedProcesses+"\t"+blockedDomains);
+                saveDailyStatistics(hours,minutes,seconds,blockedProcesses,blockedDomains);
+            }
+            // Очистка данных статистики
+            monitoringTime=0;
+            startМonitoring=0;
+            endМonitopring=0;
+            blockedDomains=0;
+            blockedProcesses=0;
 
             setDisableAllButtons(false); // Включение элементов
             runImageView.setImage(runImg);
