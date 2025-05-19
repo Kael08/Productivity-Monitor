@@ -19,6 +19,7 @@ import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.TokenManager.*;
+import static productivityMonitor.utils.DataLoader.saveColorToFile;
 import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 public class SettingsController {
@@ -49,9 +50,6 @@ public class SettingsController {
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;
-
-    // Текущий выбранный цвет
-    public static String currentColor = "Purple";
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
@@ -118,11 +116,27 @@ public class SettingsController {
 
     @FXML
     public void initialize() {
+        // Запомни!!! Что в ComboBox - цвет с большой буквы, а в файле он с маленькой!!!
+
         // Инициализация локализации (по умолчанию английский)
         setLocalization(localization);
 
+        // Установка цвета интерфейса
+        setUIColor(UIColor);
+
         mainImageView.setImage(iconImg);
         settingsButton.setDisable(true);
+
+        // Инициализация ComboBox для цветов
+        colorComboBox.setItems(colorList);
+        switch (UIColor){
+            case "purple"->colorComboBox.setValue("Purple");
+            case "green"->colorComboBox.setValue("Green");
+            case "black"->colorComboBox.setValue("Black");
+            case "red"->colorComboBox.setValue("Red");
+            case "blue"->colorComboBox.setValue("Blue");
+            case "white"->colorComboBox.setValue("White");
+        }
 
         // Инициализация ComboBox для языков
         langComboBox.setItems(langList);
@@ -131,9 +145,17 @@ public class SettingsController {
             case "ru" -> langComboBox.setValue("Русский");
         }
 
-        // Инициализация ComboBox для цветов
-        colorComboBox.setItems(colorList);
-        colorComboBox.setValue(currentColor);
+        colorComboBox.setOnAction(e->{
+            String selectedColor = colorComboBox.getValue();
+            switch (selectedColor){
+                case "Purple"->setUIColor("purple");
+                case "Green"->setUIColor("green");
+                case "Black"->setUIColor("black");
+                case "Red"->setUIColor("red");
+                case "Blue"->setUIColor("blue");
+                case "White"->setUIColor("white");
+            }
+        });
 
         // Обработчик смены языка
         langComboBox.setOnAction(e -> {

@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -15,16 +15,34 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.TimerController.getLang;
-import static productivityMonitor.services.StageService.createScene;
+import static productivityMonitor.services.SettingsService.profileStylePath;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
 import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class ProfileController {
-    //private final HttpClient client = HttpClient.newHttpClient();
+    // Pane
+    @FXML BorderPane rootPane;
 
-    @FXML
-    private ImageView mainImageView;
+    // Label
+    @FXML private Label usernameLabel;
+
+    // Button
+    @FXML private Button logoutButton;
+    @FXML private Button profileButton;
+    @FXML private Button settingsButton;
+    @FXML private Button statisticsButton;
+    @FXML private Button achievementsButton;
+    @FXML private Button notesButton;
+    @FXML private Button plansButton;
+
+    // ImageView
+    @FXML private ImageView mainImageView;
+    @FXML private ImageView avatarImageView;
+
+    // Image
+    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),
+            avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
@@ -48,54 +66,15 @@ public class ProfileController {
         replaceMainScene("/fxml/plansView.fxml","Plans");// Замена текущей сцены на сцену планов
     }// Нажатие кнопки планов
 
-    @FXML
-    private ImageView avatarImageView;
-
-    @FXML
-    private Label usernameLabel;
-
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private void handleLogoutButton(ActionEvent event) throws IOException{
+    @FXML private void handleLogoutButton(ActionEvent event) throws IOException{
         clearTokens();// Очистка токенов
         getUser().deactivateUser();// Деактивация пользователя
         replaceMainScene("/fxml/mainView.fxml","Productivity Monitor");// Замена текущей сцены на главную
     }
 
-
-    @FXML
-    private Button profileButton;
-
     private void loadUserData(){
         usernameLabel.setText(getUser().getUsername());
     }
-
-    @FXML
-    private Button settingsButton;
-
-
-    @FXML
-    private Button statisticsButton;
-
-
-    @FXML
-    private Button achievementsButton;
-
-
-    // Заметки
-    @FXML
-    private Button notesButton;
-
-
-    @FXML
-    private Button plansButton;
-
-
-
-    // Иконки
-    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),
-                  avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;
@@ -128,5 +107,7 @@ public class ProfileController {
         profileButton.setDisable(true);
 
         loadUserData();
+
+        rootPane.getStylesheets().add(getClass().getResource(profileStylePath).toExternalForm());
     }
 }

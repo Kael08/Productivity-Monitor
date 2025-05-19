@@ -1,0 +1,74 @@
+/* Основной фон панели (светло-синий) */
+BorderPane {
+    -fx-background-color: #BBDEFB; /* Светло-синий */
+}
+
+/* Стиль навигационной панели (градиент с синим) */
+#navbarPane {
+    -fx-background-color: linear-gradient(to bottom, #2196F3, #1976D2); /* Синий градиент */
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+/* Стили кнопок навигации (средний синий фон, белый текст) */
+#navbarPane .button {
+    -fx-text-fill: #FFFFFF; /* Белый текст */
+    -fx-background-color: #42A5F5; /* Средний синий */
+    -fx-background-radius: 12px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Эффект при наведении на кнопки (светло-синий) */
+#navbarPane .button:hover {
+    -fx-background-color: #90CAF9; /* Светло-синий */
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стиль метки имени пользователя (синий текст) */
+#usernameLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2196F3; /* Синий текст */
+    -fx-padding: 10px;
+}
+
+/* Стиль аватара */
+#avatarImageView {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Стиль кнопки выхода (красный для контраста) */
+#logoutButton {
+    -fx-background-color: #F44336; /* Красный */
+    -fx-text-fill: #FFFFFF; /* Белый текст */
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #D32F2F; /* Тёмно-красный бордер */
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Эффект при наведении на кнопку выхода (светло-красный) */
+#logoutButton:hover {
+    -fx-background-color: #EF5350; /* Светло-красный */
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}

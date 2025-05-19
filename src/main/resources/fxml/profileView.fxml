@@ -8,11 +8,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
-<BorderPane xmlns="http://javafx.com/javafx"
+<BorderPane fx:id="rootPane"
+            xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.ProfileController"
-            prefHeight="400.0" prefWidth="600.0"
-            stylesheets="@../styles/profile.css">
+            prefHeight="400.0" prefWidth="600.0">
     <left>
         <VBox fx:id="navbarPane"  alignment="TOP_CENTER" spacing="20">
             <children>

@@ -77,4 +77,25 @@ public class DataLoader {
             return null;
         }
     }
+
+    public static void saveColorToFile(String color){
+        Gson gson = new Gson();
+        try(FileWriter fileWriter = new FileWriter("src/main/resources/data/color.json")){
+            gson.toJson(color,fileWriter);
+        }catch (Exception e){
+            System.out.println("ОШИБКА В DataLoader: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static String loadColorFromFile(){
+        Gson gson=new Gson();
+        try(FileReader fileReader = new FileReader("src/main/resources/data/color.json")){
+            return gson.fromJson(fileReader,String.class);
+        }catch (Exception e){
+            System.out.println("ОШИБКА В DataLoader: "+e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
