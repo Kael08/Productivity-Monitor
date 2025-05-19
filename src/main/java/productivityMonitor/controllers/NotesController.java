@@ -455,7 +455,9 @@ public class NotesController {
         }
     }
 
-    @FXML private void handleStatisticsButton(ActionEvent event) {}
+    @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
+    }// Нажатие кнопки статистики
     @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
     }

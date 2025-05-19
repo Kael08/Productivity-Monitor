@@ -74,9 +74,9 @@ public class SettingsController {
             }
         }
     }
-    @FXML private void handleStatisticsButton(ActionEvent action) {
-        // Реализуйте, если нужно
-    }
+    @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
+    }// Нажатие кнопки статистики
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
     }

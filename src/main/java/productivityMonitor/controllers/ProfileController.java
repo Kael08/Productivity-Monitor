@@ -32,8 +32,8 @@ public class ProfileController {
     }// Нажатие иконки приложения
     @FXML private void handleProfileButton(ActionEvent event) throws IOException {
     }// Нажатие кнопки профиля
-    @FXML private void handleStatisticsButton(ActionEvent action){
-
+    @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
     }// Нажатие кнопки статистики
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml","Settings");

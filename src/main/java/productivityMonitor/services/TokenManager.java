@@ -4,15 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import productivityMonitor.models.CustomMode;
+import productivityMonitor.models.DailyStats;
 import productivityMonitor.utils.CryptoUtils;
 
 import java.io.FileWriter;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import static productivityMonitor.controllers.MonitoringSettingsController.customModeList;
 import static productivityMonitor.controllers.MonitoringSettingsController.customModeListOb;
@@ -151,6 +157,51 @@ public class TokenManager {
             }
         }catch (Exception e){
             System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ КАСТОМНЫХ РЕЖИМОВ: "+e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Загрузка дневной статистики с сервера
+    public static void loadDailyStatistics(){
+        try{
+            // Получаем сегодняшнюю дату
+            LocalDate today = LocalDate.now();
+            LocalDate onMonthAgo=today.minusMonths(1);
+            // Форматирует дату
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            // Переводим дату в String
+            String end_date= today.format(formatter);
+            String start_date=onMonthAgo.format(formatter);
+
+            // Формируем URL с параметрами в строке запроса
+            String query = String.format("start_date=%s&end_date=%s",
+                    URLEncoder.encode(start_date, StandardCharsets.UTF_8),
+                    URLEncoder.encode(end_date, StandardCharsets.UTF_8));
+            String url = "http://localhost:3000/statistics/?" + query;
+
+            System.out.println(query);
+
+            // Создаем GET-запрос
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(url))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response=client.send(request,HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(response.statusCode());
+            System.out.println(response.body());
+
+            Gson gson = new Gson();
+            JsonObject[] jsonObject = gson.fromJson(response.body(), JsonObject[].class);
+
+            for(JsonObject obj:jsonObject){
+                System.out.println(obj);
+            }
+
+        } catch (Exception e) {
+            System.out.println("ОШИБКА ПРИ ЗАГРУЗКЕ СТАТИСТИКИ:"+e.getMessage());
             e.printStackTrace();
         }
     }
