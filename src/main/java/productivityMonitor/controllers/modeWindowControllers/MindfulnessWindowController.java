@@ -3,6 +3,7 @@ package productivityMonitor.controllers.modeWindowControllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindow;
 
@@ -12,8 +13,12 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.*;
+import static productivityMonitor.services.SettingsService.mindfulnessWindowStylePath;
+import static productivityMonitor.services.SettingsService.statisticsStylePath;
 
 public class MindfulnessWindowController implements ModeWindow {
+    @FXML private BorderPane rootPane;
+
     @FXML private Label quoteLabel;
     @FXML private Label messageLabel;
     @FXML private Button agreeButton;
@@ -55,5 +60,7 @@ public class MindfulnessWindowController implements ModeWindow {
 
         Random rand = new Random();
         quoteLabel.setText(motivationMessagesList.get(rand.nextInt(motivationMessagesList.size())));
+
+        rootPane.getStylesheets().add(getClass().getResource(mindfulnessWindowStylePath).toExternalForm());
     }
 }

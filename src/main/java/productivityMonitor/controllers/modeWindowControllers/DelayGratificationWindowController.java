@@ -3,6 +3,7 @@ package productivityMonitor.controllers.modeWindowControllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindow;
 
@@ -14,8 +15,12 @@ import java.util.ResourceBundle;
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.isDelayOver;
 import static productivityMonitor.services.MonitoringManager.isDelayRunning;
+import static productivityMonitor.services.SettingsService.delayGratificationWindowStylePath;
+import static productivityMonitor.services.SettingsService.statisticsStylePath;
 
 public class DelayGratificationWindowController implements ModeWindow {
+    @FXML private BorderPane rootPane;
+
     @FXML private Label infoLabel;
     @FXML private Label timerLabel;
 
@@ -66,5 +71,7 @@ public class DelayGratificationWindowController implements ModeWindow {
                 Platform.runLater(() -> updateTimer(timerLabel));
             }
         }, 0, 1000);
+
+        rootPane.getStylesheets().add(getClass().getResource(delayGratificationWindowStylePath).toExternalForm());
     }
 }

@@ -1,0 +1,215 @@
+/* Основной фон панели */
+BorderPane {
+    -fx-background-color: #FFFFFF;
+}
+
+/* Стиль навигационной панели */
+#navbarPane {
+    -fx-background-color: linear-gradient(to bottom, #F5F5F5, #E0E0E0);
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+/* Стили кнопок навигации */
+#navbarPane .button {
+    -fx-text-fill: #212121;
+    -fx-background-color: #B0BEC5;
+    -fx-background-radius: 12px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#navbarPane .button:hover {
+    -fx-background-color: #CFD8DC;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стиль часов */
+#clockLabel {
+    -fx-background-color: #F5F5F5;
+    -fx-border-radius: 20px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 50px;
+    -fx-text-fill: #424242;
+    -fx-border-color: #424242;
+    -fx-border-width: 4px;
+    -fx-alignment: center;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Панель кнопок управления */
+#startPane {
+    -fx-border-color: #424242;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+}
+
+/* Стиль кнопок в startPane */
+#startPane .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-effect: none;
+}
+
+#startPane .button:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+    -fx-cursor: hand;
+}
+
+/* Стиль консоли */
+#consolePane {
+    -fx-border-color: #424242;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+    -fx-background-color: #F5F5F5;
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+}
+
+#consoleTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #424242;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* Стили таймеров */
+#timerLabel, #pomodoroTimerLabel {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 12px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-text-fill: #424242;
+    -fx-border-color: #424242;
+    -fx-border-width: 2px;
+    -fx-alignment: center;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Стили для заметок */
+.notes-title {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #424242;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
+.auth-status {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #424242;
+    -fx-alignment: center;
+    -fx-padding: 5px;
+}
+
+.note-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #424242;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px;
+    -fx-focus-color: #B0BEC5;
+    -fx-faint-focus-color: transparent;
+}
+
+.note-field:focused {
+    -fx-border-color: #B0BEC5;
+}
+
+.action-button {
+    -fx-background-color: #B0BEC5;
+    -fx-text-fill: #212121;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #424242;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.action-button:hover {
+    -fx-background-color: #CFD8DC;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+.delete-button {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #D32F2F;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.delete-button:hover {
+    -fx-background-color: #EF5350;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+.note-card {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: #424242;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.note-card:hover {
+    -fx-background-color: #FFFFFF;
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.02;
+}

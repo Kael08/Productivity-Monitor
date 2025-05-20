@@ -6,30 +6,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.VBox;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
 import static productivityMonitor.application.MainApp.MainStage;
-import static productivityMonitor.services.SettingsService.localization;
+import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 import static productivityMonitor.utils.TimerUtils.minutes;
 
 public class TimerController {
-    @FXML
-    private TextField hourTextField;
+    // Pane
+    @FXML private VBox rootVBox;
 
-    @FXML
-    private TextField minuteTextField;
+    @FXML private TextField hourTextField;
 
-    @FXML
-    private TextArea consoleTextArea;
+    @FXML private TextField minuteTextField;
 
-    @FXML
-    private Button setButton;
-    @FXML
-    private void handleSetTime(ActionEvent event){
+    @FXML private TextArea consoleTextArea;
+
+    @FXML private Button setButton;
+    @FXML private void handleSetTime(ActionEvent event){
         int minuteVal =0;
         int hourVal = 0;
 
@@ -51,10 +50,9 @@ public class TimerController {
         }
     }
 
-    @FXML
-    private Button clearButton;
-    @FXML
-    private void handleClearTime(ActionEvent event){
+    @FXML private Button clearButton;
+
+    @FXML private void handleClearTime(ActionEvent event){
         minutes = 0;
         consoleTextArea.appendText("Время убрано!\n");
     }
@@ -99,5 +97,7 @@ public class TimerController {
 
         hourTextField.setTextFormatter(new TextFormatter<>(filter));
         minuteTextField.setTextFormatter(new TextFormatter<>(filter));
+
+        rootVBox.getStylesheets().add(getClass().getResource(timerStylePath).toExternalForm());
     }
 }

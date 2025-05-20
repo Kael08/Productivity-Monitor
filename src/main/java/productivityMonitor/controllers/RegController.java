@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URI;
@@ -19,15 +20,19 @@ import java.util.ResourceBundle;
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.TimerController.getLang;
 import static productivityMonitor.services.SettingsService.localization;
+import static productivityMonitor.services.SettingsService.regStylePath;
 import static productivityMonitor.services.StageService.replaceScene;
 import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 public class RegController {
+    // VBox
+    @FXML private VBox rootVBox;
+
     // ImageView
     @FXML private ImageView iconImageView;
 
     // Image
-    private Image iconImage = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private Image iconImage = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // TextField
     @FXML private TextField loginTextField;
@@ -123,5 +128,7 @@ public class RegController {
         setLocalization(getLang());
 
         iconImageView.setImage(iconImage);// Установка картинки для иконки
+
+        rootVBox.getStylesheets().add(getClass().getResource(regStylePath).toExternalForm());
     }
 }

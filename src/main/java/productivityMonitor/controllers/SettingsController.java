@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Locale;
@@ -19,15 +20,16 @@ import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.TokenManager.*;
-import static productivityMonitor.utils.DataLoader.saveColorToFile;
 import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
 public class SettingsController {
+    // Pane
+    @FXML private BorderPane rootPane;
+
     // Button
     @FXML private Button profileButton;
     @FXML private Button statisticsButton;
     @FXML private Button settingsButton;
-    @FXML private Button achievementsButton;
     @FXML private Button notesButton;
     @FXML private Button plansButton;
 
@@ -46,7 +48,7 @@ public class SettingsController {
     private Stage authStage = null;
 
     // Image
-    private final Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;
@@ -78,9 +80,6 @@ public class SettingsController {
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
     }
-    @FXML private void handleAchievementsButton(ActionEvent event) {
-        // Реализуйте, если нужно
-    }
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml", bundle.getString("notes"));
     }
@@ -96,7 +95,6 @@ public class SettingsController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
     }
@@ -145,16 +143,31 @@ public class SettingsController {
             case "ru" -> langComboBox.setValue("Русский");
         }
 
-        colorComboBox.setOnAction(e->{
+        colorComboBox.setOnAction(e -> {
             String selectedColor = colorComboBox.getValue();
-            switch (selectedColor){
-                case "Purple"->setUIColor("purple");
-                case "Green"->setUIColor("green");
-                case "Black"->setUIColor("black");
-                case "Red"->setUIColor("red");
-                case "Blue"->setUIColor("blue");
-                case "White"->setUIColor("white");
+            switch (selectedColor) {
+                case "Purple":
+                    setUIColor("purple");
+                    break;
+                case "Green":
+                    setUIColor("green");
+                    break;
+                case "Black":
+                    setUIColor("black");
+                    break;
+                case "Red":
+                    setUIColor("red");
+                    break;
+                case "Blue":
+                    setUIColor("blue");
+                    break;
+                case "White":
+                    setUIColor("white");
+                    break;
             }
+            // Очистка старых стилей и добавление нового
+            rootPane.getStylesheets().clear();
+            rootPane.getStylesheets().add(getClass().getResource(settingsStylePath).toExternalForm());
         });
 
         // Обработчик смены языка
@@ -165,5 +178,7 @@ public class SettingsController {
                 case "Русский" -> setLocalization("ru");
             }
         });
+
+        rootPane.getStylesheets().add(getClass().getResource(settingsStylePath).toExternalForm());
     }
 }

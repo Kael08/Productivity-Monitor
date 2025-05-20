@@ -26,7 +26,7 @@ public class MainApp extends Application {
         MainStage = stage;
         Scene scene = new Scene(root);
 
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/icon.png")));
+        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/images/purple/icon.png")));
         stage.setTitle("Productivity Monitor");
         stage.setMinWidth(850);
         stage.setMinHeight(500);

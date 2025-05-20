@@ -1,0 +1,91 @@
+/* Основной фон панели */
+VBox {
+    -fx-background-color: #E8F5E9;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-border-width: 4px;
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стили для текстовых полей */
+#hourTextField, #minuteTextField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #888888;
+    -fx-padding: 8px;
+    -fx-focus-color: #A5D6A7;
+    -fx-faint-focus-color: transparent;
+}
+
+#hourTextField:focused, #minuteTextField:focused {
+    -fx-border-color: #A5D6A7;
+}
+
+/* Стили для кнопок */
+#setButton, #clearButton {
+    -fx-background-color: #81C784;
+    -fx-text-fill: white;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#clearButton {
+    -fx-background-color: #F44336;
+    -fx-border-color: #D32F2F;
+}
+
+#setButton:hover, #clearButton:hover {
+    -fx-background-color: #A5D6A7;
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+#clearButton:hover {
+    -fx-background-color: #EF5350;
+}
+
+/* Стиль для консоли */
+#consoleTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-padding: 10px;
+}
+
+/* Панель кнопок */
+HBox {
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+}
+
+/* Дополнительный стиль для выравнивания содержимого */
+VBox > * {
+    -fx-alignment: center;
+}

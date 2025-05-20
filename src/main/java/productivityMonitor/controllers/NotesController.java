@@ -1,18 +1,16 @@
 package productivityMonitor.controllers;
 
-import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -35,33 +33,79 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.SettingsController.getLang;
+import static productivityMonitor.services.SettingsService.notesStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
 import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class NotesController {
+    // Pane
+    @FXML private BorderPane rootPane;
 
-    @FXML private VBox navbarPane;
-    @FXML private ImageView mainImageView;
+    // Label
+    @FXML private Label notesListTitle;
+    @FXML private Label authStatusLabel;
+    @FXML private Label noteDetailsTitle;
+
+    // Button
     @FXML private Button profileButton;
     @FXML private Button statisticsButton;
     @FXML private Button settingsButton;
-    @FXML private Button achievementsButton;
     @FXML private Button notesButton;
     @FXML private Button plansButton;
-    @FXML private HBox notesContent;
-    @FXML private VBox notesListPane;
-    @FXML private Label notesListTitle;
-    @FXML private Label authStatusLabel;
-    @FXML private VBox notesList;
     @FXML private Button addNoteButton;
+
+    // ImageView
+    @FXML private ImageView mainImageView;
+
+    // HBox
+    @FXML private HBox notesContent;
+
+    // VBox
+    @FXML private VBox navbarPane;
+    @FXML private VBox notesListPane;
+    @FXML private VBox notesList;
     @FXML private VBox noteDetailsPane;
-    @FXML private Label noteDetailsTitle;
-    @FXML private TextField noteTitleField;
+
+    // TextArea
     @FXML private TextArea noteContentArea;
+
+    //TextField
+    @FXML private TextField noteTitleField;
     @FXML private Button updateNoteButton;
     @FXML private Button deleteNoteButton;
+
+    @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
+        replaceMainScene("/fxml/mainView.fxml", bundle.getString("app.title"));
+    }
+    @FXML private void handleProfileButton(ActionEvent event) throws IOException {
+        if (isAccessTokenValid() && getUser().isUserActive) {
+            replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
+        } else {
+            if (refreshAccessToken()) {
+                updateUser();
+                replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
+            } else {
+                if (authStage != null && authStage.isShowing()) {
+                    authStage.toFront();
+                    return;
+                }
+                authStage = new Stage();
+                createScene("/fxml/authView.fxml", bundle.getString("auth.title"), authStage, false);
+            }
+        }
+    }
+    @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
+        replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
+    }// Нажатие кнопки статистики
+    @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
+    }
+    @FXML private void handleNotesButton(ActionEvent event) {}
+    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
+        replaceMainScene("/fxml/plansView.fxml", bundle.getString("plans"));
+    }
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String API_BASE_URL = "http://localhost:3000";
@@ -89,7 +133,7 @@ public class NotesController {
         }
     }
 
-    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;
@@ -100,7 +144,6 @@ public class NotesController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
         notesListTitle.setText(bundle.getString("notes"));
@@ -118,17 +161,6 @@ public class NotesController {
         Locale locale = new Locale(lang);
         bundle = ResourceBundle.getBundle("lang.messages", locale);
         applyLocalization();
-    }
-
-    @FXML
-    public void initialize() {
-        setLocalization(getLang());
-
-        mainImageView.setImage(iconImg);
-        notesButton.setDisable(true);
-        updateAuthStatus();
-        loadNotes();
-        updateNoteListUI();
     }
 
     private void updateAuthStatus() {
@@ -432,38 +464,15 @@ public class NotesController {
     }
 
     @FXML
-    private void handleMainImageClick(MouseEvent event) throws IOException {
-        replaceMainScene("/fxml/mainView.fxml", bundle.getString("app.title"));
-    }
+    public void initialize() {
+        setLocalization(getLang());
 
-    @FXML
-    private void handleProfileButton(ActionEvent event) throws IOException {
-        if (isAccessTokenValid() && getUser().isUserActive) {
-            replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
-        } else {
-            if (refreshAccessToken()) {
-                updateUser();
-                replaceMainScene("/fxml/profileView.fxml", bundle.getString("profile"));
-            } else {
-                if (authStage != null && authStage.isShowing()) {
-                    authStage.toFront();
-                    return;
-                }
-                authStage = new Stage();
-                createScene("/fxml/authView.fxml", bundle.getString("auth.title"), authStage, false);
-            }
-        }
-    }
+        mainImageView.setImage(iconImg);
+        notesButton.setDisable(true);
+        updateAuthStatus();
+        loadNotes();
+        updateNoteListUI();
 
-    @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
-        replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
-    }// Нажатие кнопки статистики
-    @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/settingsView.fxml", bundle.getString("settings"));
-    }
-    @FXML private void handleAchievementsButton(ActionEvent event) {}
-    @FXML private void handleNotesButton(ActionEvent event) {}
-    @FXML private void handlePlansButton(ActionEvent event) throws IOException {
-        replaceMainScene("/fxml/plansView.fxml", bundle.getString("plans"));
+        rootPane.getStylesheets().add(getClass().getResource(notesStylePath).toExternalForm());
     }
 }

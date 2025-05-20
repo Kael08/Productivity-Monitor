@@ -1,0 +1,82 @@
+/* Основной стиль навигационной панели */
+#navbarPane {
+    -fx-background-color: linear-gradient(to bottom, #F5F5F5, #E0E0E0); /* Светло-серый градиент */
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+/* Стили кнопок навигации */
+#navbarPane .button {
+    -fx-text-fill: #212121; /* Тёмно-серый текст */
+    -fx-background-color: #B0BEC5; /* Нейтральный серый */
+    -fx-background-radius: 12px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#navbarPane .button:hover {
+    -fx-background-color: #CFD8DC; /* Светло-серый */
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стиль центральной панели */
+#rightSide {
+    -fx-background-color: #FFFFFF; /* Чисто белый */
+    -fx-padding: 20px;
+}
+
+/* Стиль меток графиков */
+#monitoringLabel, #processesLabel, #domainsLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #424242; /* Тёмно-серый текст */
+    -fx-padding: 5px;
+}
+
+/* Стиль графиков */
+#monitoringChart, #processesChart, #domainsChart {
+    -fx-background-color: #F5F5F5; /* Очень светлый серый */
+    -fx-border-color: #424242; /* Тёмно-серый бордер */
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#monitoringChart .chart-plot-background, #processesChart .chart-plot-background, #domainsChart .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+#monitoringChart .axis-label, #processesChart .axis-label, #domainsChart .axis-label {
+    -fx-text-fill: #424242;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+}
+
+#monitoringChart .chart-series-line, #processesChart .default-color0, #domainsChart .default-color0 {
+    -fx-stroke: #424242;
+    -fx-stroke-width: 2px;
+}
+
+#processesChart .default-color1, #domainsChart .default-color1 {
+    -fx-bar-fill: #B0BEC5;
+}
+
+#monitoringChart .chart-legend, #processesChart .chart-legend, #domainsChart .chart-legend {
+    -fx-text-fill: #424242;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 12px;
+}

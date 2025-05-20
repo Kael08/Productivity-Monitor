@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane prefHeight="720.0" prefWidth="1280.0" minWidth="850" minHeight="500" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/23.0.1"
+<BorderPane fx:id="rootPane" prefHeight="720.0" prefWidth="1280.0" minWidth="850" minHeight="500" xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="productivityMonitor.controllers.MainController">
 
    <!-- Навигация слева -->
@@ -28,8 +28,6 @@
                     mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton"/>
             <Button fx:id="settingsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
                     mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton"/>
-            <Button fx:id="achievementsButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
-                    mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton"/>
             <Button fx:id="notesButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"
                     mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton"/>
             <Button fx:id="plansButton" maxHeight="50.0" maxWidth="260.0" minHeight="50.0" minWidth="260.0"

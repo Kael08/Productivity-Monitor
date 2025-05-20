@@ -6,26 +6,27 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import productivityMonitor.models.DailyStats;
 import productivityMonitor.services.MonitoringManager;
 import productivityMonitor.utils.ConsoleLogger;
 import productivityMonitor.utils.TimerUtils;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
+import static productivityMonitor.services.SettingsService.mainStylePath;
 import static productivityMonitor.services.StageService.*;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
 import static productivityMonitor.utils.DataLoader.*;
 
 public class MainController {
+    // Pane
+    @FXML private BorderPane rootPane;
+
     // ImageView
     @FXML private ImageView mainImageView;// Иконка приложения
     @FXML private ImageView runImageView;// Иконка запуска мониторинга
@@ -37,7 +38,7 @@ public class MainController {
             settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
             timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
             pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
-            iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+            iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // Label
     @FXML private Label clockLabel;// Часы
@@ -48,7 +49,6 @@ public class MainController {
     @FXML private Button profileButton;// Кнопка профиля
     @FXML private Button statisticsButton;// Кнопка статистики
     @FXML private Button settingsButton;// Кнопка настроек
-    @FXML private Button achievementsButton;// Кнопка достижений
     @FXML private Button notesButton;// Кнопка заметок
     @FXML private Button plansButton;// Кнопка планов
     @FXML private Button runButton;// Кнопка запуска мониторинга
@@ -100,9 +100,6 @@ public class MainController {
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml",bundle.getString("settings"));
     }// Нажатие кнопки настроек
-    @FXML private void handleAchievementsButton(ActionEvent event){
-
-    }// Нажатие кнопки достижений
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml",bundle.getString("notes")); // Замена текущей сцены на сцену заметок
     }// Нажатие кнопки заметок
@@ -188,7 +185,6 @@ public class MainController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
     }
@@ -212,7 +208,6 @@ public class MainController {
         profileButton.setDisable(val);
         settingsButton.setDisable(val);
         statisticsButton.setDisable(val);
-        achievementsButton.setDisable(val);
         notesButton.setDisable(val);
         plansButton.setDisable(val);
         monitoringSettingsButton.setDisable(val);
@@ -270,5 +265,7 @@ public class MainController {
             updateUser();
             loadCustomModes();
         }
+        // Установка стиля
+        rootPane.getStylesheets().add(getClass().getResource(mainStylePath).toExternalForm());
     }
 }

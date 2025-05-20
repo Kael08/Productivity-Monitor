@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import productivityMonitor.interfaces.ModeWindow;
 
@@ -14,8 +15,12 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.services.MonitoringManager.isTaskCompleted;
 import static productivityMonitor.services.MonitoringManager.sailorsKnotTextList;
+import static productivityMonitor.services.SettingsService.sailorsKnotWindowStylePath;
+import static productivityMonitor.services.SettingsService.statisticsStylePath;
 
 public class SailorsKnotWindowController implements ModeWindow {
+    @FXML private BorderPane rootPane;
+
     @FXML private Label enterTextLabel;
     @FXML private TextArea taskTextArea;
     @FXML private TextArea answerTextArea;
@@ -54,5 +59,7 @@ public class SailorsKnotWindowController implements ModeWindow {
     @FXML private void initialize() {
         Random rand = new Random();
         taskTextArea.setText(sailorsKnotTextList.get(rand.nextInt(sailorsKnotTextList.size())));
+
+        rootPane.getStylesheets().add(getClass().getResource(sailorsKnotWindowStylePath).toExternalForm());
     }
 }

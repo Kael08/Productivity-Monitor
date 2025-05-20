@@ -10,33 +10,35 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import productivityMonitor.models.DailyStats;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.models.User.getUser;
+import static productivityMonitor.services.SettingsService.statisticsStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.TokenManager.*;
 
 public class StatisticsController {
+    // Pane
+    @FXML private BorderPane rootPane;
+
     // ImageView
     @FXML private ImageView mainImageView;// Иконка приложения
 
     // Image
-    private final Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // Button
     @FXML private Button profileButton;// Кнопка профиля
     @FXML private Button statisticsButton;// Кнопка статистики
     @FXML private Button settingsButton;// Кнопка настроек
-    @FXML private Button achievementsButton;// Кнопка достижений
     @FXML private Button notesButton;// Кнопка заметок
     @FXML private Button plansButton;// Кнопка планов
 
@@ -70,9 +72,6 @@ public class StatisticsController {
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml",bundle.getString("settings"));
     }// Нажатие кнопки настроек
-    @FXML private void handleAchievementsButton(ActionEvent event){
-
-    }// Нажатие кнопки достижений
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml",bundle.getString("notes")); // Замена текущей сцены на сцену заметок
     }// Нажатие кнопки заметок
@@ -103,7 +102,6 @@ public class StatisticsController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
         monitoringLabel.setText(bundle.getString("statistics.monitoring"));
@@ -165,5 +163,7 @@ public class StatisticsController {
             loadDailyStatistics();
             updateStatistics();
         }
+
+        rootPane.getStylesheets().add(getClass().getResource(statisticsStylePath).toExternalForm());
     }
 }

@@ -11,7 +11,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.modeWindowControllers.SailorsKnotWindowController"
             prefHeight="400.0" prefWidth="300.0"
-            stylesheets="@../styles/sailorsKnotWindow.css">
+            fx:id="rootPane">
     <top>
         <HBox alignment="CENTER">
             <Label fx:id="enterTextLabel" text="Enter the Text" />

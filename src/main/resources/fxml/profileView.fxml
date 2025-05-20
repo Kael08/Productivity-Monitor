@@ -28,8 +28,6 @@
                         mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton" />
                 <Button fx:id="settingsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
                         mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton" />
-                <Button fx:id="achievementsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Achievements" onAction="#handleAchievementsButton" />
                 <Button fx:id="notesButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
                         mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton" />
                 <Button fx:id="plansButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"

@@ -1,0 +1,49 @@
+/* Основной фон панели */
+#borderPane {
+    -fx-background-color: #E3F2FD; /* Светло-синий */
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стиль для информационного текста */
+#infoLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-text-fill: #2196F3; /* Синий */
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-padding: 10px;
+    -fx-background-color: #BBDEFB; /* Очень светлый синий */
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+}
+
+/* Стиль для таймера */
+#timerLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #2196F3;
+    -fx-text-alignment: center;
+    -fx-padding: 10px;
+    -fx-background-color: #BBDEFB;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Центральная панель */
+VBox {
+    -fx-padding: 10px;
+}

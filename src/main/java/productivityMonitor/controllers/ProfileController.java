@@ -22,7 +22,7 @@ import static productivityMonitor.services.StageService.replaceMainScene;
 
 public class ProfileController {
     // Pane
-    @FXML BorderPane rootPane;
+    @FXML private BorderPane rootPane;
 
     // Label
     @FXML private Label usernameLabel;
@@ -32,7 +32,6 @@ public class ProfileController {
     @FXML private Button profileButton;
     @FXML private Button settingsButton;
     @FXML private Button statisticsButton;
-    @FXML private Button achievementsButton;
     @FXML private Button notesButton;
     @FXML private Button plansButton;
 
@@ -41,7 +40,7 @@ public class ProfileController {
     @FXML private ImageView avatarImageView;
 
     // Image
-    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm()),
+    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm()),
             avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
     // Нажатие кнопок навигационной области
@@ -56,9 +55,6 @@ public class ProfileController {
     @FXML private void handleSettingsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml","Settings");
     }// Нажатие кнопки настроек
-    @FXML private void handleAchievementsButton(ActionEvent event){
-
-    }// Нажатие кнопки достижений
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml","Notes"); // Замена текущей сцены на сцену заметок
     }// Нажатие кнопки заметок
@@ -85,7 +81,6 @@ public class ProfileController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
         logoutButton.setText(bundle.getString("profile.logout"));

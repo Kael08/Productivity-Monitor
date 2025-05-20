@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="productivityMonitor.controllers.TimerController" stylesheets="@../styles/timer.css"
+<VBox fx:id="rootVBox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="productivityMonitor.controllers.TimerController"
       spacing="10" prefWidth="300" prefHeight="300" minWidth="200" minHeight="200">
    <TextArea fx:id="consoleTextArea" VBox.vgrow="ALWAYS" editable="false" />
    <HBox minHeight="32.0" minWidth="200" alignment="CENTER" spacing="10">

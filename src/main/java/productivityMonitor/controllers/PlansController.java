@@ -1,6 +1,5 @@
 package productivityMonitor.controllers;
 
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,12 +33,16 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.services.SettingsService.plansStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.controllers.SettingsController.getLang;
 
 public class PlansController {
+    // Pane
+    @FXML private BorderPane rootPane;
+
     // Label
     @FXML private Label listsTitle;
     @FXML private Label authStatusLabel;
@@ -48,7 +52,6 @@ public class PlansController {
     @FXML private Button profileButton;
     @FXML private Button statisticsButton;
     @FXML private Button settingsButton;
-    @FXML private Button achievementsButton;
     @FXML private Button notesButton;
     @FXML private Button plansButton;
     @FXML private Button addItemButton;
@@ -88,13 +91,12 @@ public class PlansController {
     private TodoList selectedList = null;
     private TodoItem selectedItem = null;
     private Stage authStage;
-    private Image iconImg = new Image(getClass().getResource("/images/icon.png").toExternalForm());
+    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
     private ResourceBundle bundle;
 
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
         replaceMainScene("/fxml/mainView.fxml", "Productivity Monitor");
     }
-
     @FXML private void handleProfileButton(ActionEvent event) throws IOException {
         if (isAccessTokenValid() && User.getUser().isUserActive) {
             replaceMainScene("/fxml/profileView.fxml", "Profile");
@@ -112,21 +114,15 @@ public class PlansController {
             }
         }
     }
-
     @FXML private void handleStatisticsButton(ActionEvent action) throws IOException {
         replaceMainScene("/fxml/statisticsView.fxml",bundle.getString("statistics"));
     }// Нажатие кнопки статистики
-
     @FXML private void handleSettingsButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/settingsView.fxml", "Settings");
     }
-
-    @FXML private void handleAchievementsButton(ActionEvent event) {}
-
     @FXML private void handleNotesButton(ActionEvent event) throws IOException {
         replaceMainScene("/fxml/notesView.fxml", "Notes");
     }
-
     @FXML private void handlePlansButton(ActionEvent event) {}
 
     private void setupTableColumns() {
@@ -812,7 +808,6 @@ public class PlansController {
         profileButton.setText(bundle.getString("profile"));
         statisticsButton.setText(bundle.getString("statistics"));
         settingsButton.setText(bundle.getString("settings"));
-        achievementsButton.setText(bundle.getString("achievements"));
         notesButton.setText(bundle.getString("notes"));
         plansButton.setText(bundle.getString("plans"));
         listsTitle.setText(bundle.getString("plans.taskList"));
@@ -845,5 +840,7 @@ public class PlansController {
         updateAuthStatus();
         loadTodoLists();
         updateListsUI();
+
+        rootPane.getStylesheets().add(getClass().getResource(plansStylePath).toExternalForm());
     }
 }

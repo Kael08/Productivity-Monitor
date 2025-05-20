@@ -8,8 +8,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.modeWindowControllers.DelayGratificationWindowController"
             prefHeight="200.0" prefWidth="420.0"
-            stylesheets="@../styles/delayGratificationWindow.css"
-            fx:id="borderPane">
+            fx:id="rootPane">
 
     <center>
         <VBox alignment="CENTER" spacing="10">

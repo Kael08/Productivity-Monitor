@@ -8,8 +8,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.modeWindowControllers.MindfulnessWindowController"
             prefHeight="200" prefWidth="400"
-            stylesheets="@../styles/mindfulnessWindow.css"
-            fx:id="borderPane">
+            fx:id="rootPane">
 
     <top>
         <HBox fx:id="hboxTop" alignment="CENTER">

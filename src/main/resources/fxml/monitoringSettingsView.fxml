@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.CheckBox?>
-<BorderPane fx:id="mainPane"
-            stylesheets="@../styles/monitoringSettings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="productivityMonitor.controllers.MonitoringSettingsController">
    <top>
       <VBox fx:id="topPane" spacing="10">

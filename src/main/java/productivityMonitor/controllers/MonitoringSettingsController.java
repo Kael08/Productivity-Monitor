@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -27,12 +28,18 @@ import java.util.*;
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.currentMode;
 import static productivityMonitor.services.MonitoringManager.isWebSocketServerActive;
+import static productivityMonitor.services.SettingsService.mainStylePath;
+import static productivityMonitor.services.SettingsService.monitoringSettingsStylePath;
 import static productivityMonitor.services.TokenManager.getAccessToken;
 import static productivityMonitor.services.TokenManager.refreshAccessToken;
 import static productivityMonitor.utils.DataLoader.loadCustomModeFromFile;
 import static productivityMonitor.utils.DataLoader.saveCustomModeToFile;
 
 public class MonitoringSettingsController {
+    // Pane
+    @FXML private BorderPane rootPane;
+
+    // ComboBox
     @FXML private ComboBox<String> processListComboBox;
     @FXML private ComboBox<String> modeListComboBox;
     @FXML private ComboBox<String> urlListComboBox;
@@ -476,5 +483,7 @@ public class MonitoringSettingsController {
                     break;
             }
         });
+
+        rootPane.getStylesheets().add(getClass().getResource(monitoringSettingsStylePath).toExternalForm());
     }
 }

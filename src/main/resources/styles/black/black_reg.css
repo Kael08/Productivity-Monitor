@@ -1,0 +1,61 @@
+/* Основной фон панели */
+VBox {
+    -fx-background-color: #424242; /* Тёмно-серый */
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-background-radius: 15px;
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стили текстовых полей */
+#loginTextField, #passwordTextField, #usernameTextField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #212121; /* Чёрный */
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #888888;
+    -fx-padding: 8px;
+    -fx-focus-color: #616161; /* Серый */
+    -fx-faint-focus-color: transparent;
+}
+
+#loginTextField:focused, #passwordTextField:focused, #usernameTextField:focused {
+    -fx-border-color: #616161;
+}
+
+/* Стили кнопок */
+#regButton, #authButton {
+    -fx-background-color: #424242; /* Тёмно-серый */
+    -fx-text-fill: white;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #212121;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#regButton:hover, #authButton:hover {
+    -fx-background-color: #616161; /* Светлее серый */
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+#authButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: #B0BEC5; /* Светло-серый */
+    -fx-border-color: transparent;
+}

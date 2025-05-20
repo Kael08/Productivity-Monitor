@@ -1,0 +1,84 @@
+/* Основной фон панели */
+#borderPane {
+    -fx-background-color: #FFEBEE; /* Светло-красный */
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стили для верхней части */
+#hboxTop {
+    -fx-padding: 10px;
+    -fx-background-color: #FFCDD2; /* Очень светлый красный */
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #F44336; /* Красный */
+    -fx-border-width: 2px;
+}
+
+/* Стили для цитаты */
+#quoteLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #F44336;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-padding: 5px;
+}
+
+/* Стили для центральной части */
+#vboxCenter {
+    -fx-padding: 10px;
+    -fx-background-color: #FFCDD2;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #F44336;
+    -fx-border-width: 2px;
+}
+
+/* Стили для основного текста */
+#messageLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #F44336;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-padding: 10px;
+}
+
+/* Стили для кнопок */
+#agreeButton, #refuseButton {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 8px 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#agreeButton {
+    -fx-background-color: #4CAF50; /* Зелёный */
+    -fx-border-color: #388E3C;
+    -fx-border-width: 2px;
+}
+
+#refuseButton {
+    -fx-background-color: #F44336; /* Красный */
+    -fx-border-color: #D32F2F;
+    -fx-border-width: 2px;
+}
+
+#agreeButton:hover, #refuseButton:hover {
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}

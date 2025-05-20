@@ -1,0 +1,77 @@
+/* Основной фон панели */
+BorderPane {
+    -fx-background-color: #E3F2FD; /* Светло-синий */
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+/* Подключение шрифта */
+@font-face {
+    src: url('/fonts/Jomhuria-Regular.ttf');
+    font-family: 'Jomhuria-Regular';
+}
+
+/* Стили для верхней части */
+HBox {
+    -fx-padding: 10px;
+    -fx-background-color: #BBDEFB; /* Очень светлый синий */
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #2196F3; /* Синий */
+    -fx-border-width: 2px;
+}
+
+/* Стили для метки */
+#enterTextLabel {
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #2196F3;
+    -fx-padding: 5px;
+}
+
+/* Стили для текстовых полей */
+#taskTextArea, #answerTextArea {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px;
+    -fx-focus-color: #90CAF9; /* Светло-синий */
+    -fx-faint-focus-color: transparent;
+}
+
+#taskTextArea {
+    -fx-text-fill: #2196F3;
+}
+
+/* Стиль для кнопки */
+#enterButton {
+    -fx-background-color: #42A5F5; /* Средний синий */
+    -fx-text-fill: white;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2px;
+    -fx-padding: 8px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+#enterButton:hover {
+    -fx-background-color: #90CAF9; /* Светло-синий */
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}
+
+/* Центральная панель */
+VBox {
+    -fx-padding: 10px;
+}
