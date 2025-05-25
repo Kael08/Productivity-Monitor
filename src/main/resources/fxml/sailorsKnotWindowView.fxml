@@ -10,7 +10,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.modeWindowControllers.SailorsKnotWindowController"
-            prefHeight="400.0" prefWidth="300.0"
+            prefHeight="500.0" prefWidth="400.0"
             fx:id="rootPane">
     <top>
         <HBox alignment="CENTER">

@@ -12,7 +12,7 @@
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.ProfileController"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="600.0" prefWidth="800.0">
     <left>
         <VBox fx:id="navbarPane"  alignment="TOP_CENTER" spacing="20">
             <children>
@@ -21,17 +21,11 @@
                         <Insets top="20"/>
                     </VBox.margin>
                 </ImageView>
-                <Button fx:id="profileButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton">
-                </Button>
-                <Button fx:id="statisticsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton" />
-                <Button fx:id="settingsButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton" />
-                <Button fx:id="notesButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton" />
-                <Button fx:id="plansButton" maxHeight="40.0" maxWidth="260.0" minHeight="40.0" minWidth="260.0"
-                        mnemonicParsing="false" prefHeight="40.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton" />
+                <Button fx:id="profileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Profile" onAction="#handleProfileButton"/>
+                <Button fx:id="statisticsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Statistics" onAction="#handleStatisticsButton" />
+                <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Settings" onAction="#handleSettingsButton" />
+                <Button fx:id="notesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Notes" onAction="#handleNotesButton" />
+                <Button fx:id="plansButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="260.0" text="Plans" onAction="#handlePlansButton" />
             </children>
         </VBox>
     </left>

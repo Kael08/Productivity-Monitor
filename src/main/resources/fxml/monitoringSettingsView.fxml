@@ -20,9 +20,9 @@
             <Insets bottom="10"/>
          </VBox.margin>
          <HBox fx:id="toolsPane" spacing="5">
-            <Button fx:id="openButton" text="Open" VBox.vgrow="NEVER" onAction="#handleOpenButton" prefWidth="100"/>
-            <Button fx:id="createButton" text="Create" VBox.vgrow="NEVER" onAction="#handleCreateButton" prefWidth="100"/>
-            <Button fx:id="editButton" text="Edit" VBox.vgrow="NEVER" onAction="#handleEditButton" prefWidth="100"/>
+            <Button fx:id="openButton" text="Open" VBox.vgrow="NEVER" onAction="#handleOpenButton" prefWidth="150"/>
+            <Button fx:id="createButton" text="Create" VBox.vgrow="NEVER" onAction="#handleCreateButton" prefWidth="150"/>
+            <Button fx:id="editButton" text="Edit" VBox.vgrow="NEVER" onAction="#handleEditButton" prefWidth="150"/>
             <Button fx:id="saveButton" text="Save" VBox.vgrow="NEVER" onAction="#handleSaveButton" prefWidth="100" visible="false"/>
             <Button fx:id="cancelButton" text="Cancel" VBox.vgrow="NEVER" onAction="#handleCancelButton" prefWidth="100" visible="false"/>
          </HBox>
@@ -48,13 +48,13 @@
                <HBox fx:id="processDelete" spacing="10">
                   <children>
                      <ComboBox fx:id="processListComboBox" minWidth="150.0" HBox.hgrow="ALWAYS" />
-                     <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" HBox.hgrow="NEVER" prefWidth="100.0" onAction="#handleDeleteProcess" />
+                     <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete" HBox.hgrow="NEVER" prefWidth="150.0" onAction="#handleDeleteProcess" />
                   </children>
                </HBox>
                <HBox fx:id="processAdd" spacing="10">
                   <children>
                      <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" minWidth="50.0" />
-                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" HBox.hgrow="NEVER" prefWidth="80.0" />
+                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" HBox.hgrow="NEVER" prefWidth="130.0" />
                   </children>
                </HBox>
             </VBox>
@@ -68,13 +68,13 @@
                <HBox fx:id="urlDelete" spacing="10">
                   <children>
                      <ComboBox fx:id="urlListComboBox" minWidth="150.0" HBox.hgrow="ALWAYS" />
-                     <Button fx:id="deleteUrlButton" mnemonicParsing="false" text="Delete URL" HBox.hgrow="NEVER" prefWidth="100.0" onAction="#handleDeleteUrl" />
+                     <Button fx:id="deleteUrlButton" mnemonicParsing="false" text="Delete URL" HBox.hgrow="NEVER" prefWidth="150.0" onAction="#handleDeleteUrl" />
                   </children>
                </HBox>
                <HBox fx:id="urlAdd" spacing="10">
                   <children>
                      <TextField fx:id="inputUrlTextField" HBox.hgrow="ALWAYS" minWidth="50.0" />
-                     <Button fx:id="addUrlButton" mnemonicParsing="false" text="Add URL" onAction="#handleAddUrl" HBox.hgrow="NEVER" prefWidth="80.0"  />
+                     <Button fx:id="addUrlButton" mnemonicParsing="false" text="Add URL" onAction="#handleAddUrl" HBox.hgrow="NEVER" prefWidth="130.0"  />
                   </children>
                </HBox>
             </VBox>

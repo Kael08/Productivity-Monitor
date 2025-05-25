@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="productivityMonitor.controllers.modeWindowControllers.MindfulnessWindowController"
-            prefHeight="200" prefWidth="400"
+            prefHeight="300" prefWidth="500"
             fx:id="rootPane">
 
     <top>
