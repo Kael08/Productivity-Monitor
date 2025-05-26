@@ -5,10 +5,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Locale;
@@ -127,6 +131,87 @@ public class SettingsController {
 
         // Инициализация ComboBox для цветов
         colorComboBox.setItems(colorList);
+
+        colorComboBox.setCellFactory(listView -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    Rectangle colorRect = new Rectangle(30, 20);
+                    colorRect.setStroke(Color.BLACK);
+                    colorRect.setStrokeWidth(1);
+                    switch (item.toLowerCase()) {
+                        case "purple":
+                            colorRect.setFill(Color.PURPLE);
+                            break;
+                        case "green":
+                            colorRect.setFill(Color.GREEN);
+                            break;
+                        case "black":
+                            colorRect.setFill(Color.BLACK);
+                            break;
+                        case "red":
+                            colorRect.setFill(Color.RED);
+                            break;
+                        case "blue":
+                            colorRect.setFill(Color.BLUE);
+                            break;
+                        case "white":
+                            colorRect.setFill(Color.WHITE);
+                            break;
+                        default:
+                            colorRect.setFill(Color.GRAY);
+                    }
+                    HBox hbox = new HBox(colorRect);
+                    hbox.setPrefWidth(150);
+                    setGraphic(hbox);
+                    setText(null);
+                }
+            }
+        });
+
+        colorComboBox.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    Rectangle colorRect = new Rectangle(30, 20);
+                    colorRect.setStroke(Color.BLACK);
+                    colorRect.setStrokeWidth(1);
+                    switch (item.toLowerCase()) {
+                        case "purple":
+                            colorRect.setFill(Color.PURPLE);
+                            break;
+                        case "green":
+                            colorRect.setFill(Color.GREEN);
+                            break;
+                        case "black":
+                            colorRect.setFill(Color.BLACK);
+                            break;
+                        case "red":
+                            colorRect.setFill(Color.RED);
+                            break;
+                        case "blue":
+                            colorRect.setFill(Color.BLUE);
+                            break;
+                        case "white":
+                            colorRect.setFill(Color.WHITE);
+                            break;
+                        default:
+                            colorRect.setFill(Color.GRAY);
+                    }
+                    HBox hbox = new HBox(colorRect);
+                    hbox.setPrefWidth(150);
+                    setGraphic(hbox);
+                    setText(null);
+                }
+            }
+        });
+
         switch (UIColor){
             case "purple"->colorComboBox.setValue("Purple");
             case "green"->colorComboBox.setValue("Green");

@@ -57,13 +57,18 @@ public class MonitoringSettingsController {
 
     @FXML private TextField inputTextField;
     @FXML private TextField inputUrlTextField;
-    @FXML TextField customModeNameTextField;
+    @FXML private TextField customModeNameTextField;
 
+    // TextArea
     @FXML private TextArea consoleTextArea;
 
+    // CheckBox
     @FXML private CheckBox blockDomainCheckBox;
 
+    // Label
     @FXML private Label selectCustomModeLabel;
+    @FXML private Label selectModeLabel;
+    @FXML private Label blockDomainLabel;
 
     public static ObservableList<String> processList = FXCollections.observableArrayList();
     public static ObservableList<String> urlList = FXCollections.observableArrayList();
@@ -96,10 +101,10 @@ public class MonitoringSettingsController {
         cancelButton.setText(bundle.getString("monitoringSettings.cancel"));
         customModeNameTextField.setPromptText(bundle.getString("monitoringSettings.customModeName"));
         selectCustomModeLabel.setText(bundle.getString("monitoringSettings.selectCustomMode"));
-        modeListComboBox.setPromptText(bundle.getString("monitoringSettings.selectMode"));
+        selectModeLabel.setText(bundle.getString("monitoringSettings.selectMode"));
         deleteButton.setText(bundle.getString("monitoringSettings.delete"));
         addButton.setText(bundle.getString("monitoringSettings.add"));
-        blockDomainCheckBox.setText(bundle.getString("monitoringSettings.blockURL"));
+        blockDomainLabel.setText(bundle.getString("monitoringSettings.blockURL"));
         deleteUrlButton.setText(bundle.getString("monitoringSettings.deleteURL"));
         addUrlButton.setText(bundle.getString("monitoringSettings.addURL"));
     }
