@@ -3,11 +3,14 @@ package productivityMonitor.services;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import productivityMonitor.application.MainApp;
 import productivityMonitor.interfaces.ModeWindow;
 import java.io.IOException;
 import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.services.SettingsService.iconImg;
 
 public class StageService {
     // Заменяет основное окно
@@ -50,6 +53,7 @@ public class StageService {
         // Создание окна
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
+        stage.getIcons().add(iconImg);
         stage.initOwner(MainStage);// Устанавливает владельца
         stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
         stage.setResizable(isResizable);
@@ -64,6 +68,7 @@ public class StageService {
         // Создание окна
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
+        stage.getIcons().add(iconImg);
         stage.initOwner(MainStage);// Устанавливает владельца
         stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
         stage.setResizable(isResizable);
@@ -81,6 +86,7 @@ public class StageService {
         // Создание окна
         stage.setTitle(windowTitle);
         stage.setScene(new Scene(root));
+        stage.getIcons().add(iconImg);
         stage.initOwner(MainStage);// Устанавливает владельца
         stage.initModality(Modality.WINDOW_MODAL);// Устанавливает модальность, то есть пока окно открыто, основное окно заблокировано
         stage.setResizable(isResizable);

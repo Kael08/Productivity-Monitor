@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.models.User.getUser;
+import static productivityMonitor.services.SettingsService.iconImg;
 import static productivityMonitor.services.SettingsService.statisticsStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
@@ -33,7 +34,7 @@ public class StatisticsController {
     @FXML private ImageView mainImageView;// Иконка приложения
 
     // Image
-    private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // Button
     @FXML private Button profileButton;// Кнопка профиля

@@ -52,7 +52,7 @@ public class SettingsController {
     private Stage authStage = null;
 
     // Image
-    private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;
@@ -233,21 +233,27 @@ public class SettingsController {
             switch (selectedColor) {
                 case "Purple":
                     setUIColor("purple");
+                    mainImageView.setImage(iconImg);
                     break;
                 case "Green":
                     setUIColor("green");
+                    mainImageView.setImage(iconImg);
                     break;
                 case "Black":
                     setUIColor("black");
+                    mainImageView.setImage(iconImg);
                     break;
                 case "Red":
                     setUIColor("red");
+                    mainImageView.setImage(iconImg);
                     break;
                 case "Blue":
                     setUIColor("blue");
+                    mainImageView.setImage(iconImg);
                     break;
                 case "White":
                     setUIColor("white");
+                    mainImageView.setImage(iconImg);
                     break;
             }
             // Очистка старых стилей и добавление нового

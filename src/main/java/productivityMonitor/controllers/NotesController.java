@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.SettingsController.getLang;
+import static productivityMonitor.services.SettingsService.iconImg;
 import static productivityMonitor.services.SettingsService.notesStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.TokenManager.*;
@@ -133,7 +134,7 @@ public class NotesController {
         }
     }
 
-    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // ResourceBundle для локализации
     private ResourceBundle bundle;

@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
+import static productivityMonitor.services.SettingsService.iconImg;
 import static productivityMonitor.services.SettingsService.plansStylePath;
 import static productivityMonitor.services.StageService.createScene;
 import static productivityMonitor.services.StageService.replaceMainScene;
@@ -91,7 +92,7 @@ public class PlansController {
     private TodoList selectedList = null;
     private TodoItem selectedItem = null;
     private Stage authStage;
-    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
     private ResourceBundle bundle;
 
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {

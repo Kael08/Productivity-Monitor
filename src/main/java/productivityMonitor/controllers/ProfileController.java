@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.TimerController.getLang;
+import static productivityMonitor.services.SettingsService.iconImg;
 import static productivityMonitor.services.SettingsService.profileStylePath;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
@@ -40,8 +41,7 @@ public class ProfileController {
     @FXML private ImageView avatarImageView;
 
     // Image
-    private Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm()),
-            avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
+    private Image avatarImg = new Image(getClass().getResource("/images/avatar-ico.png").toExternalForm());
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {

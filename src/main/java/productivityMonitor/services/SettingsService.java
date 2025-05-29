@@ -12,6 +12,19 @@ public class SettingsService {
 
     public static String localization="en";
 
+    // Пути до картинок
+    /*public static String clockImg = "/images/purple/clock-ico.png";
+    public static String pauseImg = "/images/purple/pause-ico.png";
+    public static String runImg = "/images/purple/run-ico.png";
+    public static String settingsImg = "/images/purple/settings-ico.png";*/
+
+    // Image
+    public static Image runImg = new Image(SettingsService.class.getResource("/images/purple/clock-ico.png").toExternalForm()),
+            settingsImg = new Image(SettingsService.class.getResource("/images/purple/settings-ico.png").toExternalForm()),
+            timerImg = new Image(SettingsService.class.getResource("/images/purple/clock-ico.png").toExternalForm()),
+            pauseImg = new Image(SettingsService.class.getResource("/images/purple/pause-ico.png").toExternalForm()),
+            iconImg = new Image(SettingsService.class.getResource("/images/purple/icon.png").toExternalForm());
+
     // Пути до стилей
     public static String profileStylePath = "/styles/purple/purple_profile.css";
     public static String statisticsStylePath = "/styles/purple/purple_statistics.css";
@@ -30,6 +43,7 @@ public class SettingsService {
 
     // Установка оформления
     public static void setUIColor(String color){
+        // Замена путей для стилей
         profileStylePath="/styles/"+color+"/"+color+"_profile.css";
         statisticsStylePath="/styles/"+color+"/"+color+"_statistics.css";
         authStylePath="/styles/"+color+"/"+color+"_auth.css";
@@ -43,6 +57,14 @@ public class SettingsService {
         notesStylePath="/styles/"+color+"/"+color+"_notes.css";
         settingsStylePath="/styles/"+color+"/"+color+"_settings.css";
         timerStylePath="/styles/"+color+"/"+color+"_timer.css";
+
+        // Замена путей для картинок
+        runImg=new Image(SettingsService.class.getResource("/images/"+color+"/run-ico.png").toExternalForm());
+        settingsImg = new Image(SettingsService.class.getResource("/images/"+color+"/settings-ico.png").toExternalForm());
+        timerImg = new Image(SettingsService.class.getResource("/images/"+color+"/clock-ico.png").toExternalForm());
+        pauseImg = new Image(SettingsService.class.getResource("/images/"+color+"/pause-ico.png").toExternalForm());
+        iconImg=new Image(SettingsService.class.getResource("/images/"+color+"/icon.png").toExternalForm());
+
         UIColor=color;
         saveColorToFile(color);
     }

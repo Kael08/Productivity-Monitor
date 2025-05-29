@@ -19,8 +19,7 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.application.MainApp.MainStage;
 import static productivityMonitor.controllers.TimerController.getLang;
-import static productivityMonitor.services.SettingsService.localization;
-import static productivityMonitor.services.SettingsService.regStylePath;
+import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.services.StageService.replaceScene;
 import static productivityMonitor.utils.DataLoader.saveLocalizationToFile;
 
@@ -32,7 +31,7 @@ public class RegController {
     @FXML private ImageView iconImageView;
 
     // Image
-    private Image iconImage = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private Image iconImage = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // TextField
     @FXML private TextField loginTextField;
@@ -127,7 +126,7 @@ public class RegController {
     @FXML public void initialize(){
         setLocalization(getLang());
 
-        iconImageView.setImage(iconImage);// Установка картинки для иконки
+        iconImageView.setImage(iconImg);// Установка картинки для иконки
 
         rootVBox.getStylesheets().add(getClass().getResource(regStylePath).toExternalForm());
     }

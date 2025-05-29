@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 import static productivityMonitor.controllers.SettingsController.getLang;
 import static productivityMonitor.services.MonitoringManager.isMonitoringActive;
-import static productivityMonitor.services.SettingsService.mainStylePath;
+import static productivityMonitor.services.SettingsService.*;
 import static productivityMonitor.services.StageService.*;
 import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.models.User.getUser;
@@ -34,11 +34,11 @@ public class MainController {
     @FXML private ImageView timerImageView;// Иконка установки таймера мониторинга
 
     // Image
-    private final Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
+    /*private final Image runImg = new Image(getClass().getResource("/images/run-ico.png").toExternalForm()),
             settingsImg = new Image(getClass().getResource("/images/settings-ico.png").toExternalForm()),
             timerImg = new Image(getClass().getResource("/images/clock-ico.png").toExternalForm()),
             pauseImg = new Image(getClass().getResource("/images/pause-ico.png").toExternalForm()),
-            iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+            iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());*/
 
     // Label
     @FXML private Label clockLabel;// Часы

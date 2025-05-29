@@ -38,7 +38,7 @@ public class AuthController {
     @FXML private ImageView iconImageView;
 
     // Image
-    private Image iconImage = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
+    //private Image iconImage = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
 
     // TextField
     @FXML private TextField loginTextField;
@@ -144,7 +144,7 @@ public class AuthController {
 
     @FXML public void initialize(){
         setLocalization(getLang());
-        iconImageView.setImage(iconImage);// Установка картинки для иконки
+        iconImageView.setImage(iconImg);// Установка картинки для иконки
 
         rootVBox.getStylesheets().add(getClass().getResource(authStylePath).toExternalForm());
     }
