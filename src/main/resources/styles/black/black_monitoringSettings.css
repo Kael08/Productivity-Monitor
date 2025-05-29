@@ -167,3 +167,22 @@
     -fx-border-width: 3px;
     -fx-padding: 10px;
 }
+
+#selectExeButton{
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-family: 'Jomhuria-Regular';
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #388E3C;
+    -fx-border-width: 2px;
+    -fx-padding: 5px 10px;
+}
+
+#selectExeButton:hover{
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+    -fx-cursor: hand;
+}

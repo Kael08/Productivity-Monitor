@@ -45,6 +45,7 @@ public class MonitoringSettingsController {
     @FXML private ComboBox<String> urlListComboBox;
     @FXML private ComboBox<String> customModeListComboBox;
 
+    // Button
     @FXML private Button addButton;
     @FXML private Button deleteButton;
     @FXML private Button openButton;
@@ -54,6 +55,7 @@ public class MonitoringSettingsController {
     @FXML private Button cancelButton;
     @FXML private Button deleteUrlButton;
     @FXML private Button addUrlButton;
+    @FXML private Button selectExeButton;
 
     @FXML private TextField inputTextField;
     @FXML private TextField inputUrlTextField;
@@ -107,6 +109,57 @@ public class MonitoringSettingsController {
         blockDomainLabel.setText(bundle.getString("monitoringSettings.blockURL"));
         deleteUrlButton.setText(bundle.getString("monitoringSettings.deleteURL"));
         addUrlButton.setText(bundle.getString("monitoringSettings.addURL"));
+        selectExeButton.setText(bundle.getString("monitoringSettings.selectExe"));
+    }
+
+    @FXML private void handleSelectExeButton(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(bundle.getString("monitoringSettings.selectExeFile"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
+
+        File defaultDirectory = new File("C:\\Program Files");
+        if (defaultDirectory.exists()) {
+            fileChooser.setInitialDirectory(defaultDirectory);
+        }
+
+        Stage stage = (Stage) selectExeButton.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            try {
+                // Запускаем .exe для получения имени процесса
+                ProcessBuilder pb = new ProcessBuilder(selectedFile.getAbsolutePath());
+                Process process = pb.start();
+
+                // Получаем информацию о процессе
+                ProcessHandle.Info info = process.info();
+                String processName = info.command()
+                        .map(path -> new File(path).getName())
+                        .orElse(selectedFile.getName());
+
+                // Уничтожаем процесс, чтобы не оставлять его открытым
+                process.destroy();
+
+                // Проверяем, что имя процесса заканчивается на .exe
+                if (!processName.toLowerCase().endsWith(".exe")) {
+                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorInvalidProcess"), processName) + "\n");
+                    return;
+                }
+
+                // Добавляем процесс в список
+                if (!processList.contains(processName)) {
+                    processList.add(processName);
+                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.processAdded"), processName) + "\n");
+                } else {
+                    consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorProcessExists"), processName) + "\n");
+                }
+
+            } catch (IOException e) {
+                consoleTextArea.appendText(String.format(bundle.getString("monitoringSettings.errorLaunchExe"), e.getMessage()) + "\n");
+            }
+        } else {
+            consoleTextArea.appendText(bundle.getString("monitoringSettings.selectCanceled") + "\n");
+        }
     }
 
     @FXML private void handleOpenButton(ActionEvent event) {

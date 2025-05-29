@@ -54,7 +54,8 @@
                <HBox fx:id="processAdd" spacing="10">
                   <children>
                      <TextField fx:id="inputTextField" HBox.hgrow="ALWAYS" minWidth="50.0" />
-                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" HBox.hgrow="NEVER" prefWidth="130.0" />
+                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" onAction="#handleAddProcess" HBox.hgrow="NEVER" prefWidth="100.0" />
+                     <Button fx:id="selectExeButton" mnemonicParsing="false" text="Select EXE" onAction="#handleSelectExeButton" HBox.hgrow="NEVER" prefWidth="100.0" />
                   </children>
                </HBox>
             </VBox>
