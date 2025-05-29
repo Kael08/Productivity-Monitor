@@ -1,6 +1,8 @@
 package productivityMonitor.controllers;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -11,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import productivityMonitor.models.TodoItem;
@@ -26,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,9 @@ import static productivityMonitor.services.TokenManager.*;
 import static productivityMonitor.controllers.SettingsController.getLang;
 
 public class PlansController {
+    // Задачи таблицы
+    private ObservableList<TodoItem> tableItems = FXCollections.observableArrayList();
+
     // Pane
     @FXML private BorderPane rootPane;
 
@@ -63,7 +70,7 @@ public class PlansController {
     // TextField
     @FXML private TextField itemDescriptionField;
     @FXML private TextField itemPriorityField;
-    @FXML private TextField itemDeadlineField;
+    @FXML private DatePicker itemDeadlineField;
     @FXML private TextField listTitleField;
 
     // TableColumn
@@ -150,15 +157,21 @@ public class PlansController {
 
         descriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         priorityColumn.setCellValueFactory(cellData -> cellData.getValue().priorityProperty());
-        deadlineColumn.setCellValueFactory(cellData -> cellData.getValue().deadlineProperty());
+        deadlineColumn.setCellValueFactory(cellData -> {
+            LocalDate deadline = cellData.getValue().getDeadline();
+            if (deadline != null) {
+                return new SimpleStringProperty(DateTimeFormatter.ofPattern("dd-MM-yyyy", bundle.getLocale()).format(deadline));
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             selectedItem = newSelection;
             if (newSelection != null) {
                 itemDescriptionField.setText(newSelection.getDescription());
                 itemPriorityField.setText(String.valueOf(newSelection.getPriority()));
-                itemDeadlineField.setText(newSelection.getDeadline() != null ?
-                        TodoItem.INPUT_FORMATTER.format(newSelection.getDeadline()) : "");
+                itemDeadlineField.setValue(newSelection.getDeadline());
                 updateItemButton.setDisable(false);
                 deleteItemButton.setDisable(false);
                 itemsTitle.setText(bundle.getString("plans.editTask"));
@@ -166,6 +179,8 @@ public class PlansController {
                 clearItemDetails();
             }
         });
+
+        itemsTable.setItems(tableItems);
     }
 
     private void updateAuthStatus() {
@@ -184,6 +199,8 @@ public class PlansController {
         } else {
             loadLocalLists();
         }
+
+        updateListsUI();
     }
 
     private void loadServerLists() {
@@ -342,24 +359,19 @@ public class PlansController {
             cardBox.getChildren().addAll(card, deleteButton);
             listsContainer.getChildren().add(cardBox);
         }
-        clearItemDetails();
-        itemsTable.setItems(FXCollections.observableArrayList());
         if (selectedList != null) {
-            for (TodoList list : todoLists) {
-                if (list.getId() == selectedList.getId() && list.isLocal() == selectedList.isLocal()) {
-                    selectedList = list;
-                    itemsTable.setItems(FXCollections.observableArrayList(selectedList.getItems()));
-                    itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.getTitle());
-                    break;
-                }
-            }
+            itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.getTitle());
+            tableItems.setAll(selectedList.getItems());
+        } else {
+            itemsTitle.setText(bundle.getString("plans.selectList"));
+            tableItems.clear();
         }
     }
 
     private void handleListCardClick(MouseEvent event) {
         Label card = (Label) event.getSource();
         selectedList = (TodoList) card.getUserData();
-        itemsTable.setItems(FXCollections.observableArrayList(selectedList.getItems()));
+        tableItems.setAll(selectedList.getItems());
         itemsTitle.setText(bundle.getString("plans.tasks") + selectedList.getTitle());
         //clearItemDetails();
     }
@@ -492,7 +504,7 @@ public class PlansController {
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
-        String deadlineStr = itemDeadlineField.getText().trim();
+        LocalDate deadline = itemDeadlineField.getValue(); // Получаем LocalDate из DatePicker
         if (description.isEmpty()) {
             showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
@@ -508,19 +520,12 @@ public class PlansController {
             showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
-        LocalDate deadline = null;
-        try {
-            deadline = TodoItem.parseInputDate(deadlineStr);
-        } catch (DateTimeParseException e) {
-            showError(bundle.getString("plans.errorInvalidDateFormat"));
-            return;
-        }
         if (selectedList.isLocal()) {
             addLocalItem(description, priority, deadline);
         } else {
             addServerItem(description, priority, deadline);
         }
-        //clearItemDetails();
+        clearItemDetails(); // Очистка поля после добавления
     }
 
     private void addServerItem(String description, int priority, LocalDate deadline) {
@@ -569,11 +574,8 @@ public class PlansController {
                         newItem.getString("updated_at")
                 ));
                 updateListsUI();
-            } else if (response.statusCode() == 404) {
-                showError(bundle.getString("plans.errorServerNotSuppAddTask"));
-            } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
+                // Обработка ошибок
                 showError(bundle.getString("plans.errorAddTask") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
@@ -598,7 +600,7 @@ public class PlansController {
         }
         String description = itemDescriptionField.getText().trim();
         String priorityStr = itemPriorityField.getText().trim();
-        String deadlineStr = itemDeadlineField.getText().trim();
+        LocalDate deadline = itemDeadlineField.getValue(); // Получаем LocalDate из DatePicker
         if (description.isEmpty()) {
             showError(bundle.getString("plans.errorFieldTaskDesc"));
             return;
@@ -614,18 +616,13 @@ public class PlansController {
             showError(bundle.getString("plans.errorPriorityMustBeDec"));
             return;
         }
-        LocalDate deadline = null;
-        try {
-            deadline = TodoItem.parseInputDate(deadlineStr);
-        } catch (DateTimeParseException e) {
-            showError(bundle.getString("plans.errorInvalidDateFormat"));
-            return;
-        }
         if (selectedList.isLocal()) {
             updateLocalItem(selectedItem, description, selectedItem.isCompleted(), priority, deadline);
         } else {
             updateServerItem(selectedItem, description, selectedItem.isCompleted(), priority, deadline);
         }
+        tableItems.setAll(selectedList.getItems());
+        itemsTable.getSelectionModel().select(selectedItem);
         clearItemDetails();
     }
 
@@ -639,6 +636,7 @@ public class PlansController {
         } else {
             updateServerItem(item, item.getDescription(), item.isCompleted(), item.getPriority(), item.getDeadline());
         }
+        tableItems.setAll(selectedList.getItems());
     }
 
     private void updateServerItem(TodoItem item, String description, boolean isCompleted, int priority, LocalDate deadline) {
@@ -650,6 +648,8 @@ public class PlansController {
             json.put("priority", priority);
             if (deadline != null) {
                 json.put("deadline", TodoItem.SERVER_FORMATTER.format(deadline));
+            } else {
+                json.put("deadline", JSONObject.NULL);
             }
             String authToken = getAuthToken();
             if (authToken == null || authToken.isEmpty()) {
@@ -663,8 +663,6 @@ public class PlansController {
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(json.toString()))
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("PATCH /plans/items/update Response Code: " + response.statusCode());
-            System.out.println("PATCH /plans/items/update Response Body: " + response.body());
             if (response.statusCode() == 200) {
                 JSONObject updatedItem = new JSONObject(response.body()).getJSONObject("item");
                 LocalDate itemDeadline = null;
@@ -683,11 +681,8 @@ public class PlansController {
                 item.setDeadline(itemDeadline);
                 item.setUpdatedAt(updatedItem.getString("updated_at"));
                 updateListsUI();
-            } else if (response.statusCode() == 404) {
-                showError(bundle.getString("plans.errorServerNotSuppUpdateTasks"));
-            } else if (response.statusCode() == 401 || response.statusCode() == 403) {
-                showError(bundle.getString("plans.errorAuthTryAg"));
             } else {
+                // Обработка ошибок
                 showError(bundle.getString("plans.errorUpdateTask") + response.statusCode() + " - " + response.body());
             }
         } catch (Exception e) {
@@ -769,7 +764,7 @@ public class PlansController {
         selectedItem = null;
         itemDescriptionField.clear();
         itemPriorityField.clear();
-        itemDeadlineField.clear();
+        itemDeadlineField.setValue(null);
         updateItemButton.setDisable(true);
         deleteItemButton.setDisable(true);
         itemsTitle.setText(selectedList != null ? bundle.getString("plans.tasks") + selectedList.getTitle() : bundle.getString("plans.errorSelectList"));
@@ -821,6 +816,7 @@ public class PlansController {
         priorityColumn.setText(bundle.getString("plans.priority"));
         itemDescriptionField.setPromptText(bundle.getString("plans.taskDescription"));
         itemPriorityField.setPromptText(bundle.getString("plans.priority(0-10)"));
+        itemDeadlineField.setPromptText(bundle.getString("plans.deadlinePrompt"));
         addItemButton.setText(bundle.getString("plans.addTask"));
         updateItemButton.setText(bundle.getString("plans.updateTask"));
         deleteItemButton.setText(bundle.getString("plans.deleteTask"));
@@ -830,7 +826,25 @@ public class PlansController {
     // Установка локализации
     private void setLocalization(String lang) {
         Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
         bundle = ResourceBundle.getBundle("lang.messages", locale);
+
+        // Настройка локали для DatePicker
+        itemDeadlineField.setPromptText(bundle.getString("plans.deadlinePrompt"));
+        itemDeadlineField.setConverter(new StringConverter<LocalDate>() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy", locale);
+
+            @Override
+            public String toString(LocalDate date) {
+                return (date != null) ? formatter.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+            }
+        });
+
         applyLocalization();
     }
 
