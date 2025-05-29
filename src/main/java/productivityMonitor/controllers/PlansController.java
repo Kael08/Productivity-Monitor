@@ -824,6 +824,7 @@ public class PlansController {
         addItemButton.setText(bundle.getString("plans.addTask"));
         updateItemButton.setText(bundle.getString("plans.updateTask"));
         deleteItemButton.setText(bundle.getString("plans.deleteTask"));
+        itemsTable.setPlaceholder(new Label(bundle.getString("plans.noContent")));
     }
 
     // Установка локализации

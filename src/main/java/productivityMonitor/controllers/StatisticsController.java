@@ -2,9 +2,7 @@ package productivityMonitor.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -33,15 +31,20 @@ public class StatisticsController {
     // ImageView
     @FXML private ImageView mainImageView;// Иконка приложения
 
-    // Image
-    //private final Image iconImg = new Image(getClass().getResource("/images/purple/icon.png").toExternalForm());
-
     // Button
     @FXML private Button profileButton;// Кнопка профиля
     @FXML private Button statisticsButton;// Кнопка статистики
     @FXML private Button settingsButton;// Кнопка настроек
     @FXML private Button notesButton;// Кнопка заметок
     @FXML private Button plansButton;// Кнопка планов
+
+    // Axis
+    @FXML private CategoryAxis monitoringDateLabel;
+    @FXML private NumberAxis monitoringMinutesLabel;
+    @FXML private CategoryAxis processDateLabel;
+    @FXML private NumberAxis processCountLabel;
+    @FXML private CategoryAxis domainsDateLabel;
+    @FXML private NumberAxis domainsCountLabel;
 
     // Нажатие кнопок навигационной области
     @FXML private void handleMainImageClick(MouseEvent event) throws IOException {
@@ -108,6 +111,13 @@ public class StatisticsController {
         monitoringLabel.setText(bundle.getString("statistics.monitoring"));
         processesLabel.setText(bundle.getString("statistics.processes"));
         domainsLabel.setText(bundle.getString("statistics.domains"));
+        monitoringDateLabel.setLabel(bundle.getString("statistics.date"));
+        monitoringMinutesLabel.setLabel(bundle.getString("statistics.minutes"));
+        processDateLabel.setLabel(bundle.getString("statistics.date"));
+        processCountLabel.setLabel(bundle.getString("statistics.count"));
+        domainsDateLabel.setLabel(bundle.getString("statistics.date"));
+        domainsCountLabel.setLabel(bundle.getString("statistics.count"));
+
     }
 
     // Установка локализации

@@ -46,10 +46,10 @@
             <Label fx:id="monitoringLabel" text="Monitoring Time (Minutes)"/>
             <LineChart fx:id="monitoringChart" prefWidth="900.0" prefHeight="200.0">
                 <xAxis>
-                    <CategoryAxis label="Date"/>
+                    <CategoryAxis fx:id="monitoringDateLabel" label="Date"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Minutes"/>
+                    <NumberAxis fx:id="monitoringMinutesLabel" label="Minutes"/>
                 </yAxis>
             </LineChart>
 
@@ -57,10 +57,10 @@
             <Label fx:id="processesLabel" text="Number of Blocked Processes"/>
             <BarChart fx:id="processesChart" prefWidth="900.0" prefHeight="200.0">
                 <xAxis>
-                    <CategoryAxis label="Date"/>
+                    <CategoryAxis fx:id="processDateLabel" label="Date"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Count"/>
+                    <NumberAxis fx:id="processCountLabel" label="Count"/>
                 </yAxis>
             </BarChart>
 
@@ -68,10 +68,10 @@
             <Label fx:id="domainsLabel" text="Number of Blocked Domains"/>
             <BarChart fx:id="domainsChart" prefWidth="900.0" prefHeight="200.0">
                 <xAxis>
-                    <CategoryAxis label="Date"/>
+                    <CategoryAxis fx:id="domainsDateLabel" label="Date"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Count"/>
+                    <NumberAxis fx:id="domainsCountLabel" label="Count"/>
                 </yAxis>
             </BarChart>
         </VBox>

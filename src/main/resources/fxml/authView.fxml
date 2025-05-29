@@ -24,11 +24,11 @@
                 <Insets left="10" right="10"/>
             </VBox.margin>
         </TextField>
-        <TextField fx:id="passwordTextField" promptText="password...">
+        <PasswordField fx:id="passwordTextField" promptText="password...">
             <VBox.margin>
                 <Insets left="10" right="10"/>
             </VBox.margin>
-        </TextField>
+        </PasswordField>
         <Button fx:id="authButton" onAction="#handleAuthButton" text="Sign In">
 
         </Button>
